@@ -1,0 +1,47 @@
+<!-- begin user form -->
+<div class="col-xs-12 col-md-4 device-details" ng-init="$ctrl.listGroups()">
+  <h5 ng-if="$ctrl.title" class="box-title text-uppercase fntmontessart">{{$ctrl.title}}</h5>
+  <div ng-if="$ctrl.message" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'default')  + ' m10'" close="$ctrl.closeAlert()" dismiss-on-timeout="5000">{{$ctrl.message.content}}</div>
+    <form novalidate class="simple-form" name="myForm">
+      <div class="form-group">
+        <label>Id</label>
+        <input type="text" ng-model="$ctrl.user.id" name="id" class="form-control" required ng-readonly="$ctrl.isUpdate"/>
+        <span ng-show="myForm.id.$dirty && myForm.id.$invalid">
+  			<span class="text-danger" ng-show="myForm.id.$error.required">Id is required.</span>
+        </span>
+      </div>
+        
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" ng-model="$ctrl.user.name" name="name" class="form-control" required/>
+        <span ng-show="myForm.name.$dirty && myForm.name.$invalid">
+  		 	<span class="text-danger" ng-show="myForm.name.$error.required">Name is required.</span>
+       	</span>
+      </div>
+        <div class="form-group"  ng-if="$ctrl.originalUser.id == null">
+              <label for="password">Password</label>
+       <input type="password" id="password" name="password" ng-model="$ctrl.user.password"  class="form-control"  required   />
+   <span ng-show="myForm.password.$error.required && myForm.password.$dirty">required</span>
+   
+           </div>
+        <div class="form-group" ng-if="$ctrl.originalUser.id == null">
+       <label for="password_c">Confirm Password</label>
+       <input type="password" id="password_c" name="password_c" ng-model="formData.password_c" class="form-control" valid-password-c required />
+   <span ng-show="myForm.password_c.$error.required && myForm.password_c.$dirty">Please confirm your password.</span>
+   <span ng-show="!myForm.password_c.$error.required && myForm.password_c.$error.noMatch ">Passwords do not match.</span>
+         
+      </div>
+       
+      <div class="form-group">
+        <tags-input ng-model="$ctrl.user.groups" key-property="name" display-property="name" placeholder="groups"  add-from-autocomplete-only="true">
+           <auto-complete source="$ctrl.filterGroups($query)" min-length="1"></auto-complete>
+        </tags-input>
+      </div>
+      <div class="form-group">
+        <input type="button" class="btn btn-primary" ng-click="$ctrl.reset(); myForm.$setPristine()"  value="Reset" ng-disabled="!$ctrl.isUserChanged()"/>
+        <input type="button" class="btn btn-default" ng-click="$ctrl.submit()" value="Save"
+               ng-disabled="!myForm.$valid"/>
+      </div>
+    </form>
+</div>
+ <!-- end user form -->

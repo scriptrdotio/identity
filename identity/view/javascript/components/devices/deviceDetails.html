@@ -1,0 +1,46 @@
+<!-- begin device form -->
+<div class="col-xs-12 col-md-4 device-details" ng-init="$ctrl.listGroups()">
+  <h5 ng-if="$ctrl.title" class="box-title text-uppercase fntmontessart">{{$ctrl.title}}</h5>
+   <div ng-if="$ctrl.message" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'default')  + ' m10'" close="$ctrl.closeAlert()" dismiss-on-timeout="5000">{{$ctrl.message.content}}</div>
+    <form novalidate class="simple-form" name="myForm">
+      <div class="form-group">
+        <label>Id</label>
+        <input type="text" ng-model="$ctrl.device.id" name="id" class="form-control" required ng-readonly="$ctrl.isUpdate"/>
+        <span ng-show="myForm.id.$dirty && myForm.id.$invalid">
+  			<span class="text-danger" ng-show="myForm.id.$error.required">Id is required.</span>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" ng-model="$ctrl.device.name" name="name" class="form-control" required/>
+        <span ng-show="myForm.name.$dirty && myForm.name.$invalid">
+  		 	<span class="text-danger" ng-show="myForm.name.$error.required">Name is required.</span>
+       	</span>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea ng-model="$ctrl.device.description" class="form-control"></textarea>
+      </div>  
+      <div class="form-group" ng-if="$ctrl.originalDevice.id != null">
+        <div class="row">
+            <label class="col-xs-12">Token</label>
+        	<div class="col-xs-11"><input type="text" value="{{$ctrl.token}}" name="name" class="form-control" required ng-readonly="true"/></div>
+        	<div class="pull-left mt10"><a ng-click="$ctrl.renewToken($ctrl.device.id, $ctrl.token)" class="pointer"><i class="fa fa-refresh" aria-hidden="true"></i></a></div>
+          <span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="col-xs-12">
+              <span class="text-danger" ng-show="myForm.name.$error.required">Name is required.</span>
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <tags-input ng-model="$ctrl.device.groups" key-property="name" display-property="name" placeholder="groups"  add-from-autocomplete-only="true">
+           <auto-complete source="$ctrl.filterGroups($query)" min-length="1"></auto-complete>
+        </tags-input>
+      </div>
+      <div class="form-group">
+        <input type="button" class="btn btn-primary" ng-click="$ctrl.reset(); myForm.$setPristine()"  value="Reset" ng-disabled="!$ctrl.isDeviceChanged()"/>
+        <input type="button" class="btn btn-default" ng-click="$ctrl.submit()" value="Save"
+               ng-disabled="myForm.name.$dirty && myForm.name.$invalid || myForm.id.$dirty && myForm.id.$invalid"/>
+      </div>
+    </form>
+</div>
+ <!-- end device form -->

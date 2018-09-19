@@ -1,0 +1,60 @@
+<html ng-app="myApp">
+
+<head>
+	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  	<!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+   
+    <!-- font awesome.css -->
+    <script src="//use.fontawesome.com/3d61d6959e.js"></script>
+    <link href="//fonts.googleapis.com/css?family=Josefin+Sans|Montserrat" rel="stylesheet">
+    <!-- font awesome.css -->
+    
+  	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.css" />
+  	<link rel="stylesheet" href="/identity/view/css/style.css">
+
+  	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>	
+  	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-cookies.js"></script>
+  	<script src="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.js"></script>
+  
+  	<script src="/UIComponents/httpProvider.js"></script>
+
+  	<script src="/Identity/view/components/module.js"></script>
+  	<script src="/Identity/view/components/service.js"></script>
+  	<script src="/Identity/view/components/common/list.js"></script>
+	<script src="/Identity/view/components/devices/devicesList.js"></script>
+	<script src="/Identity/view/components/devices/deviceDetails.js"></script>
+	<script src="/Identity/view/components/devices/container.js"></script>
+	<script src="/Identity/view/components/groups/groupsList.js"></script>
+	<script src="/Identity/view/components/groups/groupDetails.js"></script>
+	<script src="/Identity/view/components/groups/container.js"></script>
+	
+	<script src="/UIComponents/config/scriptrTransport.js"></script>
+</head>
+  
+<script>
+  
+      var underscore = angular.module('underscore', []);
+      underscore.factory('_', ['$window', function($window) {		
+          return $window._; // assumes underscore has already been loaded on the page		
+      }]);
+      var myApp = angular.module('myApp', ["HttpClient", "underscore", "Identity"]);
+  
+  	  myApp.config(httpsConfig);
+  
+  	  myApp
+        .constant("users",["t1","t2"])
+        .controller('testCtrl', ['$scope', 'users','httpClient', function($scope, users, httpClient) {
+          	$scope.users = users;
+        }]);
+</script>
+
+<body>
+  	<group-details title="'Groups Details'"></group-details>
+</body>
+
+</html>

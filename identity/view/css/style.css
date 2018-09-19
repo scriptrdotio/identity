@@ -1,0 +1,65 @@
+/* CSS Document */
+.management-list {font-family: 'Josefin Sans', sans-serif;}
+.fntmontessart {font-family: 'Montserrat', sans-serif;}
+.box-title {color: #9c9c9c; letter-spacing: -1px; display: inline-block; width: 100%;}
+.mt10 {margin-top: 10px;}
+
+/*** search box ***/
+.search-text {position: relative; z-index: 1; font-size: 13px;}
+.search-wrap {position: relative;}
+.search-wrap .fa-times {position: absolute; right: 8px; z-index: 1000; font-size: 0.75em; top: 13px; cursor: pointer; color: #999;}
+
+/*** Listing search ***/
+#searchTextResults {background: #f1f4f9; height: calc(100vh - 115px); min-height: 30px; overflow-y: auto; margin-top: -4px; padding: 0; cursor: default;}
+.listing-search {color: #555; padding: 0; margin: 0; list-style: none;}
+.listing-search a {display: block; padding: 4px 12px; color: #666; cursor: pointer;}
+.listing-search a:hover {background: #ddd;}
+.user-list {padding: 8px 10px; border-top: 1px dotted #999;}
+.user-list a {display: inline-block; padding: 1px 6px;}
+
+
+/*** Override boostrap button styles ***/
+.btn-default {
+  background: #90C143;
+  border: none;
+  color: #fff;
+  text-shadow: none;
+}
+
+.btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover  {
+  background: #85B531;
+  color: #fff;
+  border: none;
+  outline: 0;
+}
+
+
+.device-details {font-family: 'Josefin Sans', sans-serif;}
+.fntmontessart {font-family: 'Montserrat', sans-serif;}
+.box-title {color: #9c9c9c; letter-spacing: -1px; display: inline-block; width: 100%;}
+
+.mt10 {margin-top: 10px;}
+.pointer {cursor: pointer;}
+.break-word {word-wrap: break-word;}
+
+/*** angular input ***/
+tags-input .tags .input {font-family: 'Josefin Sans', sans-serif; background: #fff; font-size: 13px;}
+tags-input .tags {border:1px solid #ccc; border-radius:4px; box-shadow:inset 0 1px 1px rgba(0,0,0,.075); overflow-y: auto;}
+tags-input .tags .tag-item {height: auto; word-break: break-all; font-family: 'Josefin Sans', sans-serif; font-size: 13px;background: #22A3DD; border: 1px solid #137ABF; color: #fff;}
+tags-input .tags .tag-item .remove-button:active {color: #137ABF;}
+.form-group tags-input {height: 100px}
+
+
+tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-serif; background: #fff; font-size: 13px;}
+
+/*** Override boostrap button styles ***/
+.btn-primary {
+  background: #337ab7;
+  border: none;
+  color: #fff;
+  text-shadow: none;
+}
+
+
+.user-details {font-family: 'Josefin Sans', sans-serif;}
+
