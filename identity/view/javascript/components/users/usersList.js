@@ -7,7 +7,7 @@ angular.module('Identity')
     onDelete: '&',
     onUpdate: '&'
   },
-  templateUrl: '/Identity/view/javascript/components/users/usersList.html',
+  templateUrl: '/identity/view/javascript/components/users/usersList.html',
   controller: function($scope, _ , identityService){
     var self = this;
     self.isLoading = true;

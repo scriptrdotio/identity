@@ -9,7 +9,7 @@ angular
                   message : '@message',
                   title : '<title'
                },
-               templateUrl : '/Identity/view/javascript/components/devices/deviceDetails.html',
+               templateUrl : '/identity/view/javascript/components/devices/deviceDetails.html',
 
                controller : function($scope, _, identityService) {
 	               var self = this;

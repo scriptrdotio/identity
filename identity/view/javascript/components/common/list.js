@@ -12,7 +12,7 @@ angular.module('Generic', [])
     onSelect: '&?',
     onAdd: '&?'
   },
-  templateUrl: "/identity/view/list.html",
+  templateUrl: "/identity/view/javascript/components/common/list.html",
   controller: function(){
     this.$onInit = function() {
       this.hasAdd = false;

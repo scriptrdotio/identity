@@ -4,7 +4,7 @@ angular.module('Identity').component('groupDetails', {
       message : '@message',
       title: '<title'
    },
-   templateUrl : '/Identity/view/javascript/components/groups/groupDetails.html',
+   templateUrl : '/identity/view/javascript/components/groups/groupDetails.html',
 
    controller : function($scope, _, identityService) {
 	   var self = this;

@@ -5,7 +5,7 @@ angular.module('Identity')
     groups: '<groups',
     message: '@message'
   },
-  templateUrl: '/Identity/view/javascript/components/groups/groupsList.html',
+  templateUrl: '/identity/view/javascript/components/groups/groupsList.html',
   controller: function($scope, _ , identityService){
     var self = this;
     self.isLoading = true;
