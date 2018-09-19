@@ -1,0 +1,45 @@
+var aclEvaluator = require("../../lib/AclEvaluator");
+var paramsEvaluator = require("../../lib/ParamsEvaluator");
+var errorHandler = require("../../lib/ErrorHandler");
+
+var errorHandler = new errorHandler.ErrorHandler();
+
+var config = require("../../config").config;
+var log = require("log")
+log.setLevel("INFO");
+
+//Check permissions
+var userManagementGroups = config.userManagementGroups;
+//Check if user has rights to access the userManagement Module
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+//user needs to be in the userManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, userManagementGroups);
+if(!hasPermission) {
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage groups.");
+}
+
+//Check if required params
+var requiredParams = ["groupName"];
+var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+if(!hasAllRequiredParams.success) {
+  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+}
+
+log.info(JSON.stringify(request.body))
+var params = paramsEvaluator.buildParams(request.body, requiredParams, []);
+
+var response = apsdb.callApi("DeleteGroup", params, null);
+
+if(response.metadata.status == "failure") {
+   return response.metadata;
+} else {
+  return {"status": "success"};
+}
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+var _ = require("/modules/underscore/underscore.js")._;
+var aclEvaluator = require("../../lib/AclEvaluator");
+var paramsEvaluator = require("../../lib/ParamsEvaluator");
+var errorHandler = require("../../lib/ErrorHandler");
+
+var errorHandler = new errorHandler.ErrorHandler();
+
+var config = require("../../config").config;
+var log = require("log")
+log.setLevel("INFO");
+
+//Check permissions
+var userManagementGroups = config.userManagementGroups;
+
+//Check if user has rights to access the userManagement Module
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+
+//user needs to be in the userManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, userManagementGroups);
+if(!hasPermission) {
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+}
+
+var requiredParams = ["id", "token"];
+
+//Check if required params
+var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+if(!hasAllRequiredParams.success) {
+  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+}
+
+log.info(JSON.stringify(request.body))
+//var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
+
+var params = {};
+//TODO: putting the token param manually
+params["apsws.id"] = request.body.id
+params["apsdb.authToken"] = request.body.token
+
+
+log.info(JSON.stringify(params))
+var response = apsdb.callApi("RenewToken", params, null);
+
+if(response.metadata.status == "failure") {
+   return response.metadata;
+} else {
+  return response.result["apsdb.authToken"];
+}
+
+
+
+
+
+
