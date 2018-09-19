@@ -1,11 +1,11 @@
-var aclEvaluator = require("../../lib/AclEvaluator");
-var paramsEvaluator = require("../../lib/ParamsEvaluator");
-var errorHandler = require("../../lib/ErrorHandler");
+var aclEvaluator = require("../../entities/AclEvaluator");
+var paramsEvaluator = require("../../entities/ParamsEvaluator");
+var errorHandler = require("../../entities/ErrorHandler");
 var userModule = require("user");
 
 var errorHandler = new errorHandler.ErrorHandler();
 
-var config = require("../../config").config;
+var config = require("../../config/config").config;
 var log = require("log")
 log.setLevel("INFO");
 

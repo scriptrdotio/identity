@@ -1,0 +1,51 @@
+var _ = require("/modules/underscore/underscore.js")._;
+var log = require("log");
+log.setLevel("INFO")
+
+function ParamsEvaluator() {
+	/**
+	 * check if request has all the required parameters
+	 * 
+	 * @requestParams: The parameters passed in the request
+	 * @requiredParams: List of required params that need to be in the request
+	 * @return object {"sussess": boolean, "param": null || string} success: is true if all requiredParams are in requestParams, false if one is missing param: is null if all requiredParams are in requestParams, "paramName" of the first missing param
+	 * 
+	 */
+	this.hasRequiredParams = function(requestParams, requiredParams) {
+		var missedParam = null;
+		var valid = _.every(requiredParams, function(param) {
+			if (requestParams[param] != null && requestParams[param] != "") {
+				return true;
+			} else {
+				missedParam = param;
+				return false;
+			}
+		});
+		return {
+		   "success" : valid,
+		   "param" : missedParam
+		}
+	}
+
+	/**
+	 * Build a params object, from requestParams based on requiredParams and optionalParams
+	 * 
+	 * @requestParams: The parameters passed in the request
+	 * @requiredParams: List of required params that need to be in the request
+	 * @requiredParams: List of required params that might be in the request
+	 * @return object params {"<param_name>": "<value>",....}
+	 * 
+	 */
+	this.buildParams = function(requestParams, requiredParams, optionalParams) {
+		var params = {};
+		_.each(requiredParams, function(param) {
+			if (requestParams[param])
+				params[param] = requestParams[param];
+		});
+		_.each(optionalParams, function(param) {
+			if (requestParams[param])
+				params[param] = requestParams[param];
+		});
+		return params;
+	}
+}

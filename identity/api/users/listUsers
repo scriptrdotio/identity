@@ -1,9 +1,9 @@
-var aclEvaluator = require("../../lib/AclEvaluator");
-var errorHandler = require("../../lib/ErrorHandler");
+var aclEvaluator = require("../../entities/AclEvaluator");
+var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 var userModule = require("user");
 
-var config = require("../../config").config;
+var config = require("../../config/config").config;
 var log = require("log")
 log.setLevel("INFO");
 

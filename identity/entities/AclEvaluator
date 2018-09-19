@@ -1,0 +1,39 @@
+var _ = require("/modules/underscore/underscore.js")._;
+var log = require("log");
+log.setLevel("INFO")
+
+function AclEvaluator() {
+
+   this.hasPermissions = function(user, groups) {
+      var userGroups = this.getUserGroups(user.groups);
+      log.info(JSON.stringify(request.user.id));
+      //Check if user is in the managing group
+      return (_.intersection(userGroups, groups)).length > 0 || request.user.id == "scriptr";
+    }
+	/**
+	 * @return array of user groups ["admin","scriptr"....]
+	 */
+	this.getUserGroups = function(userGroups) {
+		if (_.isArray(userGroups)) {
+            var self = this;
+			return _.map(userGroups, function(group) {
+				return self.getGroupName(group)
+			});
+		} else {
+			return [ this.getGroupName(userGroups) ];
+		}
+	}
+	/**
+	 * @param group: group:name@accountKey
+	 * @return name
+	 */
+	this.getGroupName = function(group) {
+        if(group) {
+          return group.split("@")[0].split(":")[1];
+        } else {
+          return null;
+        }
+		
+	}
+
+}

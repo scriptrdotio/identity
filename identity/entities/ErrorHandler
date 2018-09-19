@@ -1,0 +1,16 @@
+var log = require("log");
+log.setLevel("INFO")
+
+function ErrorHandler() {
+	/**
+	 * Build Error Message
+	 * @return object with error message details
+     */
+	this.buildError = function(errorCode, errorDetail) {
+		return {
+		   "status" : "failure",
+		   "errorCode" : errorCode, 
+           "errorDetail": errorDetail
+		}
+	}
+}
