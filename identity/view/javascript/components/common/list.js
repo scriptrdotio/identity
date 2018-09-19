@@ -52,7 +52,7 @@ angular.module('Generic', [])
     hasUpdate: '<hasUpdate',
     hasDelete: '<hasDelete'
   },
-  templateUrl: "/identity/view/item.html",
+  templateUrl: "/identity/view/javascript/components/common/item.html",
   controller: function(){
     this.deleteItem = function(item) {
       this.onDelete({user: item});
