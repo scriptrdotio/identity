@@ -24,6 +24,7 @@ angular.module('Identity').component('groupDetails', {
 	   var originalGroup = angular.copy(this.group);
 
 	   self.isUpdate = true;
+       
 	   if (self.group != null) {
 		   self.isUpdate = true;
 		   this.loadGroup(self.group);
@@ -34,9 +35,11 @@ angular.module('Identity').component('groupDetails', {
         
 	   this.loadGroup = function(id) {
          if(id) {
-            this.group = {"groupName": id};
+            this.isUpdate = true;
+            this.group = {"name": id};
 			originalGroup = angular.copy(this.group);
          } else {
+           this.isUpdate = false;
            this.reset();
          }
 	   }
@@ -44,19 +47,23 @@ angular.module('Identity').component('groupDetails', {
 	   this.submit = function() {
 		   var self = this;
 		   var data = angular.copy(self.group);
-		   data["apsdb.update"] = self.isUpdate;
+		   data["update"] = self.isUpdate;
 		   console.log(self.group)
 		   identityService.saveGroup(data).then(function(data, response) {
 			   self.isLoading = false;
 			   if (data.status == "failure") {
-				   self.message = data.errorDetail
+                   self.setAlert(data.errorDetail, "danger")
 			   } else {
-				   self.message = "Group updated successfully."
+                   self.setAlert("Group updated successfully.", "success")
 			   }
 			   console.log("resolve", data)
 		   }, function(err) {
 			   self.isLoading = false;
-			   self.message = JSON.stringify(err)
+               if(err.data && err.data.response && err.data.response.metadata.status == "failure") {
+                   self.setAlert(err.data.response.metadata.errorDetail, "danger")
+               } else {
+                   self.setAlert(JSON.stringify(err), "danger")
+               }
 			   console.log("reject", err);
 		   });
 	   }
@@ -69,6 +76,14 @@ angular.module('Identity').component('groupDetails', {
 	   this.isGroupChanged = function() {
 		   return !angular.equals(this.group, originalGroup);
 	   }
+       
+       this.setAlert = function(message, type) {
+           self.message = {"content": message, "type": type};
+       }
+       
+       this.closeAlert = function() {
+           self.message = null;
+       }
          
        
    }

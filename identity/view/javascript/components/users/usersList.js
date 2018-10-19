@@ -5,7 +5,8 @@ angular.module('Identity')
     users: '<users',
     message: '@message',
     onDelete: '&',
-    onUpdate: '&'
+    onUpdate: '&',
+    onListTokens: '&'
   },
   templateUrl: '/identity/view/javascript/components/users/usersList.html',
   controller: function($scope, _ , identityService){
@@ -69,6 +70,12 @@ angular.module('Identity')
       
     this.addUser =  function() {
        $scope.$emit('addUser');
+    }
+    
+    this.listTokens = function(id) {
+        $scope.$emit('listTokens', {
+        "id": id 
+      });
     }
     
     this.setAlert = function(message, type) {

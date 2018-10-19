@@ -19,12 +19,9 @@ angular
 	               self.originalUser = angular.copy(this.user);
 
 	               this.$onInit = function() {
-		               self.isUpdate = true;
 		               if (self.user != null) {
-			               self.isUpdate = true;
 			               this.loadUser(self.user);
 		               } else {
-			               self.isUpdate = false;
 			               self.user = {};
 		               }
                        
@@ -33,7 +30,6 @@ angular
                                self.loadUser(data.id);
                            } else {
                                self.user = {};
-                               self.update = false;
                                self.originalUser = angular.copy(this.user);
                            }
 
@@ -115,7 +111,6 @@ angular
 	               this.submit = function() {
 		               var self = this;
 		               var data = angular.copy(self.user);
-		               data["apsdb.update"] = self.isUpdate;
 		               var groups = _.pluck(data.groups, "name");
 		               data["groups"] = groups;
 		               identityService.saveUser(data).then(

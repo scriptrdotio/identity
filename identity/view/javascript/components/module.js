@@ -10,5 +10,5 @@ angular.module('UserValidation', []).directive('validPasswordC', function () {
         }
     }
 })
-angular.module('Identity', ['underscore', 'ngTagsInput', 'Generic', 'UserValidation']);
+angular.module('Identity', ['underscore', 'ngTagsInput', 'Generic', 'UserValidation', 'ui.bootstrap']);
 

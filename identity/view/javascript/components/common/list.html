@@ -8,7 +8,19 @@
 	</div>
 	<div id="searchTextResults" class="form-control user-search">
 		<ul class="listing-search">
-          	<item ng-repeat="item in $ctrl.items | filter: $ctrl.searchItem | orderBy:'item' track by $index  " item="item" on-update="$ctrl.updateItem(item)" on-delete="$ctrl.deleteItem(item)" has-update="$ctrl.hasUpdate" has-delete="$ctrl.hasDelete"></item>
+          	<item ng-repeat="item in $ctrl.items | filter: $ctrl.searchItem | orderBy:'item' track by $index  " 
+                  item="item" 
+                  on-update="$ctrl.updateItem(item)" 
+                  on-delete="$ctrl.deleteItem(item)" 
+                  on-list-tokens='$ctrl.listTokens(item)' 
+                  on-revoke-token='$ctrl.revokeToken(item)' 
+                  on-renew-token='$ctrl.renewToken(item)' 
+                  has-update="$ctrl.hasUpdate" 
+                  has-delete="$ctrl.hasDelete"
+                  has-list-tokens="$ctrl.hasListTokens" 
+                  has-revoke-token="$ctrl.hasRevokeToken"
+                  has-renew-token="$ctrl.hasRenewToken">
+            </item>
 		</ul>
 	</div>
   <div class="mt10" ng-if="$ctrl.hasAdd">

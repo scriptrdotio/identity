@@ -18,18 +18,16 @@
   		 	<span class="text-danger" ng-show="myForm.name.$error.required">Name is required.</span>
        	</span>
       </div>
-        <div class="form-group"  ng-if="$ctrl.originalUser.id == null">
-              <label for="password">Password</label>
-       <input type="password" id="password" name="password" ng-model="$ctrl.user.password"  class="form-control"  required   />
-   <span ng-show="myForm.password.$error.required && myForm.password.$dirty">required</span>
-   
-           </div>
-        <div class="form-group" ng-if="$ctrl.originalUser.id == null">
-       <label for="password_c">Confirm Password</label>
-       <input type="password" id="password_c" name="password_c" ng-model="formData.password_c" class="form-control" valid-password-c required />
-   <span ng-show="myForm.password_c.$error.required && myForm.password_c.$dirty">Please confirm your password.</span>
-   <span ng-show="!myForm.password_c.$error.required && myForm.password_c.$error.noMatch ">Passwords do not match.</span>
-         
+      <div class="form-group"  ng-if="$ctrl.originalUser.id == null">
+            <label for="password">Password</label>
+       		<input type="password" id="password" name="password" ng-model="$ctrl.user.password"  class="form-control"  required   />
+   			<span ng-show="myForm.password.$error.required && myForm.password.$dirty">required</span>
+      </div>
+      <div class="form-group" ng-if="$ctrl.originalUser.id == null">
+            <label for="password_c">Confirm Password</label>
+            <input type="password" id="password_c" name="password_c" ng-model="formData.password_c" class="form-control" valid-password-c required />
+            <span ng-show="myForm.password_c.$error.required && myForm.password_c.$dirty">Please confirm your password.</span>
+            <span ng-show="!myForm.password_c.$error.required && myForm.password_c.$error.noMatch ">Passwords do not match.</span>
       </div>
        
       <div class="form-group">

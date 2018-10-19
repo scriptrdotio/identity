@@ -64,12 +64,16 @@ angular
 			                     if (data.status == "failure") {
 				                      self.setAlert(data.errorDetail, "danger")
 			                     } else {
-				                     self.token = data;
+				                     self.token = data.token;
 			                     }
 			                     console.log("resolve", data)
 		                     }, function(err) {
 			                     self.isLoading = false;
-			                     self.setAlert(JSON.stringify(err), "danger")
+			                      if(err.data && err.data.response && err.data.response.metadata.status == "failure") {
+                                       self.setAlert(err.data.response.metadata.errorDetail, "danger")
+                                  } else {
+                                      self.setAlert(JSON.stringify(err), "danger")
+          						  }
 			                     console.log("reject", err);
 		                     });
 	               }
@@ -83,9 +87,9 @@ angular
 				                           if (data.status == "failure") {
 					                            self.setAlert(data.errorDetail, "danger")
 				                           } else {
-					                           if (data.token) {
-						                           self.token = data.token["apsdb.authToken"]
-						                           delete data.token["apsdb.authToken"];
+					                           if (data.auth_token) {
+						                           self.token = data["auth_token"]
+						                           delete data["auth_token"];
 					                           }
                                                if(data.groups) {
                                                  if(_.isArray(data.groups)) {

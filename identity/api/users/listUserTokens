@@ -1,8 +1,7 @@
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-var userModule = require("user");
-
 var errorHandler = new errorHandler.ErrorHandler();
+var users = require("user");
 
 var log = require("log")
 log.setLevel("INFO");
@@ -10,20 +9,25 @@ log.setLevel("INFO");
 //Check if required params
 var requiredParams = ["id"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.parameters, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-log.info(JSON.stringify(request.body))
-var params = paramsEvaluator.buildParams(request.body, requiredParams, []);
-
-var response = userModule.delete(params["id"])//apsdb.callApi("DeleteDevice", params, null);
+var response = users.get(request.parameters.id)
 
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return {"status": "success"};
+  if(response.result.tokens) {
+	if(response.result.tokens.constructor === Array)
+		return response.result.tokens;
+    else
+        return [response.result.tokens]
+  } else {
+      return [];
+  }
+  	
 }
 
 

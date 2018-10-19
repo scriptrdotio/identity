@@ -8,7 +8,7 @@ angular.module('Identity').service(
 	      }
           this.deleteUser = function(id) {
 		      return httpClient.post(
-		            "identity/api/users/deleteUser", {
+		            "generateToken", {
 			            "id" : id
 		            });
 	      }
@@ -21,6 +21,13 @@ angular.module('Identity').service(
           this.saveUser = function(data) {
 		      return httpClient.post(
 		            "identity/api/users/saveUser", data)
+	      }
+          
+          this.listUserTokens = function(id) {
+		      return httpClient
+		            .get("identity/api/users/listUserTokens",  {
+			            id : id
+		            });
 	      }
           
 	      this.listDevices = function() {
@@ -50,7 +57,12 @@ angular.module('Identity').service(
           
           this.renewToken = function(id, token) {
 		      return httpClient.post(
-		            "identity/api/devices/renewToken", {"id": id, "token": token})
+		            "identity/api/users/renewToken", {"id": id, "token": token})
+	      }
+          
+          this.revokeToken = function(id, token) {
+		      return httpClient.post(
+		            "identity/api/users/revokeToken", {"id": id, "token": token})
 	      }
           
           

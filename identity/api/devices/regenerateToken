@@ -1,14 +1,18 @@
+var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-var userModule = require("user");
 
-var errorHandler = new errorHandler.ErrorHandler();
+var devices= require("device");
 
 var log = require("log")
 log.setLevel("INFO");
 
-//Check if required params
+var errorHandler = new errorHandler.ErrorHandler();
+
 var requiredParams = ["id"];
+
+
+//Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
 hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
 if(!hasAllRequiredParams.success) {
@@ -16,16 +20,14 @@ if(!hasAllRequiredParams.success) {
 }
 
 log.info(JSON.stringify(request.body))
-var params = paramsEvaluator.buildParams(request.body, requiredParams, []);
 
-var response = userModule.delete(params["id"])//apsdb.callApi("DeleteDevice", params, null);
+var response = devices.regenerateToken(request.body.id);
 
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return {"status": "success"};
+  return response.result;
 }
-
 
 
 

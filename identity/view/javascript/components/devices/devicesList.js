@@ -27,12 +27,16 @@ angular.module('Identity')
           } else {
             self.devices = _.flatten(_.pluck(data, "id"));
           }
-          console.log("resolve", data)
+          console.debug("resolve", data)
         },
         function(err) {
           self.isLoading = false;
-          self.setAlert(JSON.stringify(err), "danger")
-          console.log("reject", err);
+          if(err.data && err.data.response && err.data.response.metadata.status == "failure") {
+               self.setAlert(err.data.response.metadata.errorDetail, "danger")
+          } else {
+          	  self.setAlert(JSON.stringify(err), "danger")
+          }
+          console.error("reject", err);
         }
       );
     }

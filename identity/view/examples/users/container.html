@@ -13,30 +13,33 @@
     <script src="//use.fontawesome.com/3d61d6959e.js"></script>
     <link href="//fonts.googleapis.com/css?family=Josefin+Sans|Montserrat" rel="stylesheet">
     <!-- font awesome.css -->
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.css" />
+  	<link rel="stylesheet" href="/identity/view/css/style.css">
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>	
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-cookies.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
   
   <script src="/UIComponents/httpProvider.js"></script>
   
    <!--Multi Tags input -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.css" />
-
-  <link rel="stylesheet" href="/identity/view/javascript/components/common/list.css">
-  <link rel="stylesheet" href="/identity/view/javascript/components/devices/form.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.js"></script>
   
   <script src="/identity/view/javascript/components/common/list.js"></script>
   
   
   <script src="/identity/view/javascript/components/module.js"></script>
-  <script src="/UIComponents/userManagement/frontend/components/service.js"></script>
+  <script src="/identity/view/javascript/components/service.js"></script>
   
   <script src="/identity/view/javascript/components/users/container.js"></script>
  
   <script src="/identity/view/javascript/components/users/usersList.js"></script>
   <script src="/identity/view/javascript/components/users/userDetails.js"></script>
+    <script src="/identity/view/javascript/components/users/userTokens.js"></script>
   <script src="/identity/view/javascript/components/groups/groupsList.js"></script>
   <script src="/identity/view/javascript/components/groups/groupDetails.js"></script>
   <script src="/identity/view/javascript/components/groups/container.js"></script>
@@ -64,7 +67,8 @@
 <body>
   	<users-container>
   		<users-list title="'List'"></users-list>
-   		<user-details title="'Details'"></user-details>
+   		<!--user-details title="'Details'"></user-details-->
+        <user-tokens title="'Tokens'"></user-tokens>
     </users-container>
 </body>
 

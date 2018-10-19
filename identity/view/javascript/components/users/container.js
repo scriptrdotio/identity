@@ -17,5 +17,9 @@ angular.module('Identity').component('usersContainer', {
        $scope.$on('userAdded', function(event, data) {
 		   $scope.$broadcast('reloadUsersList', {});
 	   });
+       
+       $scope.$on('listTokens', function(event, data) {
+		   $scope.$broadcast('listUserTokens', data);
+	   });
    }
 });

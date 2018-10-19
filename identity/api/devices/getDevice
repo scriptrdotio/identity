@@ -1,25 +1,12 @@
-var aclEvaluator = require("../../entities/AclEvaluator");
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
+var devices = require("device");
 
 var errorHandler = new errorHandler.ErrorHandler();
-
-var config = require("../../config/config").config;
 
 var log = require("log")
 log.setLevel("INFO");
 
-
-//Check permissions
-var userManagementGroups = config.userManagementGroups;
-
-//Check if user has rights to access the userManagement Module
-var aclEvaluator = new aclEvaluator.AclEvaluator();
-//user needs to be in the userManagementGroups
-var hasPermission = aclEvaluator.hasPermissions(request.user, userManagementGroups);
-if(!hasPermission) {
-  return  errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
-}
 
 //Check if required params
 var requiredParams = ["id"];
@@ -28,13 +15,14 @@ hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.parameters, req
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
-var users =[];
-var response = apsdb.callApi("GetDevice", {"id": request.parameters.id}, null);
+
+
+var response = devices.get(request.parameters["id"])
 
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return response.result.device;
+  return response.result;
 }
 
 

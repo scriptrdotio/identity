@@ -1,27 +1,13 @@
 var _ = require("/modules/underscore/underscore.js")._;
-var aclEvaluator = require("../../entities/AclEvaluator");
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 
 var errorHandler = new errorHandler.ErrorHandler();
 
-var deviceModule = require("device");
+var devices= require("device");
 
-var config = require("../../config/config").config;
 var log = require("log")
 log.setLevel("INFO");
-
-//Check permissions
-var userManagementGroups = config.userManagementGroups;
-
-//Check if user has rights to access the userManagement Module
-var aclEvaluator = new aclEvaluator.AclEvaluator();
-
-//user needs to be in the userManagementGroups
-var hasPermission = aclEvaluator.hasPermissions(request.user, userManagementGroups);
-if(!hasPermission) {
-  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
-}
 
 var requiredParams = ["id", "name"];
 var optionalParams = ["apsdb.update", "description", "groups"];
@@ -39,8 +25,8 @@ var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalP
 //TODO: putting the password hardcoded
 params["password"] = "demo"
 log.info(JSON.stringify(params))
-var response = deviceModule.save(params);//apsdb.callApi("SaveDevice", params, null);
 
+var response = devices.save(params);
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
