@@ -63,3 +63,22 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 
 .user-details {font-family: 'Josefin Sans', sans-serif;}
 
+
+@media (min-width:768px) {
+  main {display: flex; min-height: 100vh;}
+	.menu-wrap {margin-top: 45px!important; display: flex; height: auto!important;}
+    main>section{flex: 1;}
+  .page-content {margin-top: 45px;}
+  .side-bar .nav-pills {position: fixed; overflow-y: auto;}
+  .page-content {overflow-y: auto; height: calc(100vh - 45px); position: relative;}
+
+}
+
+@media (min-width:320px) and (max-width: 767px) { 
+  header {position: relative!important;}
+ main>section{display: inline-block; width: 100%;}
+.side-bar {position: fixed!important; width: 100%; z-index: 100; height: auto!important; top: 45px;}
+.page-content {margin-top: 70px;}
+.side-bar .nav-pills>li a {padding: 10px 10px;}
+  .side-bar .nav li strong {margin-left: 8px;}
+}
