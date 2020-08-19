@@ -1,0 +1,26 @@
+<div class="filter-bar" ng-if="($ctrl.enableClientSideFilter && $ctrl.mode == 'normal') || ($ctrl.enableServerSideFilter && $ctrl.mode == 'infinite') || !$ctrl.disableAddRow || !$ctrl.disableDeleteRow">
+  <div class="{{$ctrl.class}}">
+  <form>
+    <div ng-if= "$ctrl.enableClientSideFilter && $ctrl.mode == 'normal'" class="form-group col-xs-12 col-sm-6">
+        <div class="form-group">
+           <input type="text" class="form-control" ng-change="$ctrl.onFilterChanged()" ng-model="$ctrl.quickFilterValue"  placeholder="Client filter" />
+       </div>
+    </div>   
+    <div ng-if= "$ctrl.enableServerSideFilter && $ctrl.mode == 'infinite'" class="form-group col-xs-10">
+        <div class="form-group">
+			<input type="text" class="form-control" ng-change="$ctrl.onServerFilterChanged()" ng-model="$ctrl.serverFilterText" placeholder="search users" />
+      </div>
+    </div>  
+    <div class="col-xs-2 pull-right text-right">
+      <button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn btn-default mt4" tooltip-placement="left" uib-tooltip="Delete selected row"><i class="fa fa-close" aria-hidden="true"></i></button>
+      <button ng-hide={{$ctrl.disableAddRow}} ng-click="$ctrl.onAddRow()" class="btn btn-warning mt4" tooltip-placement="bottom" uib-tooltip="Insert row"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    </div>
+   </form>  
+    </div>
+</div>
+    
+<div class="col-xs-12" ng-show="$ctrl.showError"><div class="alert" ng-class="'alert-' + ( $ctrl.message.type || 'warning')">{{$ctrl.message.content}}</div></div>
+<div class="clearfix"></div>
+<div class="col-xs-12">
+  <div ag-grid="$ctrl.gridOptions" class="ag-bootstrap"  ng-style="$ctrl.style" style="min-height: 200px"></div>
+</div>

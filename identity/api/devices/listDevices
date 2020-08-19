@@ -5,12 +5,12 @@ var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 log.setLevel("INFO");
 
-var response = devices.query({ "fields":"*", "sort":"name<string:DESC>"});
+var response = devices.query({ "fields":"*", "sort":"name<string:DESC>", "count": true});
   
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return response.result.devices;
+  return { "count": response.result.count, "documents": response.result.devices};
 }
 
 

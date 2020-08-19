@@ -16,7 +16,7 @@ var headerItems = {
 var routingItems = {
   "params": [
       {"route": "usermanagement", "template": "/identity/view/templates/users.html"},
-      {"route": "devicemanagement", "template": "/identity/view/templates/devices.html"},
+      {"route": "devicemanagement", "template": "/identity/view/html/views/devices/devicesList.html", "controller": "devicesHomeCtrl as vm"},
       {"route": "groupmanagement", "template": "/identity/view/templates/groups.html"}
   ],
   "otherwiseOption" : {"template": ""}

@@ -1,0 +1,44 @@
+Device Management 
+ 
+
+2 tabs device groups
+<div ng-init="vm.init();">
+     {{vm.test}}
+    
+      {{vm.test2}}
+    
+    
+    
+     <scriptr-identity-grid ng-if="vm.renderGrid"
+                                      columns-definition="vm.devicesColDef"
+                                      enable-sorting="false"
+                                      enable-delete-row="false"
+                                      boxlabel="{{ 'USERS.LIST' | translate}}"
+                                      fixed-height="true"
+                                      grid-height="350px"
+                                      enable-add-row="false"
+                                      msg-tag="grid"
+                                      cell-editable="false"
+                                      on-row-double-clicked="vm.onRowDoubleClicked"
+                                      enable-client-side-filter="false"
+                                      enable-server-side-filter="true"
+                                      enable-server-side-sorting="false"
+                                      row-model-selection="multiple"
+                                      pagination-page-size="10"
+                                      transport="https"
+                                      enable-client-side-sorting="false"
+                                      size-columns-to-fit ="false"
+                                      enable-col-resize="false"
+                                      pagination="true"
+                                      row-model-type="pagination"
+                                      suppress-filter="true"
+                                      boxheader="true"
+                                      transport="https"
+                                      api="{{vm.gridAPI}}"
+                                      api-params="vm.params"
+                                      row-height="50"
+                                      grid-data-identifier-property="id"
+                                      >
+                    </scriptr-identity-grid>
+</div>
+
