@@ -14,7 +14,7 @@ if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var response = devices.get(request.parameters["id"])
+var response = devices.delete(request.body["id"])
 
 if(response.metadata.status == "failure") {
    return response.metadata;
