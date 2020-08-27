@@ -6,7 +6,7 @@ var errorHandler = new errorHandler.ErrorHandler();
 log.setLevel("INFO");
 
 var response = devices.query({ "fields":"*", "sort":"name<string:DESC>", "count": true});
-  
+  //return response;
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {

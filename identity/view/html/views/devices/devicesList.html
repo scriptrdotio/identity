@@ -1,7 +1,13 @@
 <h1>{{vm.deviceTitle}}</h1>
 
 <div ng-init="vm.init();">
-    
+    <div class="box-label tgl-radio-tabs">
+                        <input  id="devices" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="devices" ng-change="vm.changeTab(null,vm.selectedTab)">
+                        <label for="devices">Devices</label>
+        <input  id="groups" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)">
+                        <label for="groups">Groups</label>
+        <button class="btn btn-primary">Add</button>
+                    </div>
      <scriptr-identity-grid ng-if="vm.renderGrid"
                             columns-definition="vm.devicesColDef"
                             enable-sorting="false"
@@ -17,6 +23,8 @@
                             enable-server-side-filter="true"
                             enable-server-side-sorting="false"
                             row-model-selection="multiple"
+                            suppress-row-click-selection="true"
+                            suppress-cell-selection="true"
                             pagination-page-size="10"
                             transport="https"
                             enable-client-side-sorting="false"
@@ -24,7 +32,7 @@
                             enable-col-resize="true"
                             pagination="true"
                             row-model-type="pagination"
-                            suppress-filter="true"
+                            suppress-filter="false"
                             boxheader="true"
                             transport="https"
                             api="{{vm.gridAPI}}"

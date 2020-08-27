@@ -49,6 +49,10 @@ angular
             "rowModelType" : "@", // rowModelType can be set to "pagination" or "virtual" (infinite scrolling)
 
             "rowModelSelection" : "@", //"multiple" or "single"
+            
+            "suppressRowClickSelection" : "<?",
+            
+            "suppressCellSelection" : "<?",
 
             "rowDeselection" : "<?",
 
@@ -230,6 +234,8 @@ angular
                     rowData: (this.rowData)? this.rowData : null,
                     rowModelType : (this.api) ? "infinite" : "",
                     rowSelection : (this.rowModelSelection) ? this.rowModelSelection : "multiple",
+                    suppressRowClickSelection : (this.suppressRowClickSelection) ? this.suppressRowClickSelection : true,
+                    suppressCellSelection : (this.suppressCellSelection) ? this.suppressCellSelection : true,
                     paginationPageSize : (this.paginationPageSize) ? this.paginationPageSize : 50,
                     overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Please wait while your rows are loading</span>',
                     defaultColDef : {

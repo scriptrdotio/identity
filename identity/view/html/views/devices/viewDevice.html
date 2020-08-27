@@ -1,0 +1,58 @@
+<md-dialog class="dialog">
+    <md-dialog-content>
+        <div ng-init="vm.init()">
+            <div class="dashboard-template dashboardTheme">
+                <div class="dashboardContainer">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="mrgb20"> 
+                                View Device
+                            </h3>
+                            <div class="clearfix"></div>
+                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceFetched">
+                                <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
+                                <span>{{vm.promptMessage}}</span>
+                            </div>
+                            <div ng-if="vm.deviceFetched">
+                                <label>Device Name</label>
+                                <span>{{vm.name}}</span>
+                                <label>Device ID</label>
+                                <span>{{vm.id}}</span>
+                                <label>Description</label>
+                                <span>{{vm.description}}</span>
+                                <label>Groups this device belongs to</label>
+                                <p ng-repeat="group in vm.groups">{{group}}</p>
+                                <label>Status</label>
+                                <span>{{vm.status}}</span>
+                                <label>Token</label>
+                                <span>{{vm.token}}</span>
+                                <button ng-click="vm.copyToken()" class="btn btn-primary">Copy</button>
+                                <button ng-if="vm.token == 'N/A'" ng-click="vm.generateToken()" class="btn btn-primary">Generate</button>
+                                <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-primary">Regenerate</button>
+                                <button ng-click="vm.revokeToken()" class="btn btn-primary">Delete</button>
+                                <label>Device Attributes</label>
+                                <table border="1">
+                                    <thead>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Value</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions class="col-md-12">
+    	<md-button ng-click="vm.closeDialog()" class="btn btn-primary">Close</md-button>
+    </md-dialog-actions>
+</md-dialog> 

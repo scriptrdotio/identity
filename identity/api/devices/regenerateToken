@@ -3,7 +3,7 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 
 var devices= require("device");
-
+//return devices.generateToken("mobile");
 var log = require("log")
 log.setLevel("INFO");
 

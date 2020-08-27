@@ -1,35 +1,30 @@
+var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-var devices = require("device");
 
-//return devices.get("mobile");
-
-var errorHandler = new errorHandler.ErrorHandler();
-
+var devices= require("device");
+//return devices.generateToken("mobile");
 var log = require("log")
 log.setLevel("INFO");
 
+var errorHandler = new errorHandler.ErrorHandler();
+
+var requiredParams = ["id"];
+
 
 //Check if required params
-var requiredParams = ["id"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
 hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
+log.info(JSON.stringify(request.body))
 
-var response = devices.get(request.body["id"])
+var response = devices.generateToken(request.body.id);
 
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
   return response.result;
 }
-
-
-
-
-
-
-
