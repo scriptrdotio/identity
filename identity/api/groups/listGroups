@@ -1,19 +1,27 @@
 var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 var groups = require("group");
+var devices = require("device");
 
 var log = require("log")
 log.setLevel("INFO");
 
 var users =[];
-var response = groups.list();
-  
-if(response.metadata.status == "failure") {
-   return response.metadata;
-} else {
-  return response.result.groups;
+var results = [];
+var groups = groups.list();
+var result = groups.result.groups;
+if(result!= null && result.length >0){
+    for (var i=0; i<result.length;i++){
+        var name = result[i].name;
+        var response = devices.query({"query":'groups = "' +name+ '"', "count": true});
+        response.result["groupName"] = name;
+        users.push(response.result);
+    }
+
+    if(response.metadata.status == "failure") {
+        return response.metadata;
+    } else {
+        return  { "count": users.length, "documents": users };
+    }
 }
-
-
-
 

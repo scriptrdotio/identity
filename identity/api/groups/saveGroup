@@ -5,6 +5,7 @@ var groups = require("group");
 
 var errorHandler = new errorHandler.ErrorHandler();
 
+
 var log = require("log")
 log.setLevel("INFO");
 
@@ -20,8 +21,10 @@ if(!hasAllRequiredParams.success) {
 
 var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
 
+
 if(!params["update"])
 	var response = groups.create(params["name"]);
+//return response;
 else 
     var response = groups.rename(params["name"], params["newName"]);
 
