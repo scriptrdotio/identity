@@ -1,7 +1,9 @@
-myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpClient, $routeParams, $timeout, $mdDialog, $uibModal, $route) {
+myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route) {
     var vm = this;
     vm.deviceTitle = "Device Manager";
     vm.renderGrid = true;
+    vm.infoWindowActions = infoWindowActions;
+    vm.addButton = "Add Device";
     
     vm.devicesColDef = [
         {
@@ -166,6 +168,10 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         });
     }
     
+      vm.addDeviceOverLay = function (){
+         vm.loadOverlay(null, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
+    };
+    
     vm.showViewDeviceDialog = function(params) {
         $mdDialog.show({
             controller: 'viewDeviceDialogCtrl',
@@ -181,6 +187,77 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.init = function() {
         vm.test2 = 3;
     }
+     vm.closeAlert = function() {
+        vm.hasAlert = false;
+    };
+
+    vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
+        console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
+        vm._callBackendApi(apiId, parameters, 'P', successHandler, failureHandler);
+    };
+    
+    vm._callBackendApi = function(apiId, parameters, method, successHandler, failureHandler) {
+        var httpMeth = httpClient.post;
+        if (method == 'G') {
+            httpMeth = httpClient.get;
+        }
+        
+    	httpMeth(apiId, parameters)
+        .then(
+        function(data, response) {
+            console.log(data);
+            if (data && data.status && data.status == 'failure') {
+            	if (typeof failureHandler === 'function') failureHandler(data);
+            } else {
+	            if (typeof successHandler === 'function') successHandler(data);
+            }
+        },
+        function(err) {
+            console.log(err);
+            if (typeof failureHandler === 'function') failureHandler(err);
+        });
+    }
+
+    vm.loadOverlay = function(marker, overlayForm, backendApi) {
+        vm.closeAlert();
+        var of = angular.copy(overlayForm);
+        var formWidget = {
+            'label': of.title,
+            'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+            'schema': angular.copy(of.schema),
+            'form': angular.copy(of.form),
+            'options': {}
+        }
+        var self = this;
+        var modalInstance= $uibModal.open({
+            animation: true,
+            component: 'formOverlay',
+            size: 'lg',
+            scope: $scope,
+            resolve: {
+                widget: function() {
+                    return formWidget;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (wdgModel) {
+            if(wdgModel != 'cancel') {
+                console.log('Model Data', wdgModel);
+                // console.log(' Data', marker.data);
+                var successHandler = function(data) {
+                    vm.showAlert('success', of.title + ' successful')
+                }
+                var failureHandler = function(err) {
+                    vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                }
+                //wdgModel.groupName = marker.data.id;
+                vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+            }
+        }, function () {
+            console.info('modal-component for widget update dismissed at: ' + new Date());
+        });
+    };
     
 });
 

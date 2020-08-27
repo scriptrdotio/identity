@@ -17,7 +17,7 @@ var routingItems = {
   "params": [
       {"route": "usermanagement", "template": "/identity/view/templates/users.html"},
       {"route": "devicemanagement", "template": "/identity/view/html/views/devices/devicesList.html", "controller": "devicesHomeCtrl as vm"},
-      {"route": "groupmanagement", "template": "/identity/view/templates/groups.html"}
+      {"route": "groupmanagement", "template": "/identity/view/html/views/groups/groupsList.html", "controller": "groupsHomeCtrl as vm"}
   ],
   "otherwiseOption" : {"template": ""}
 };
