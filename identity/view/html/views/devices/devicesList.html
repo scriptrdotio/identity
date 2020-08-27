@@ -6,8 +6,10 @@
                         <label for="devices">Devices</label>
         <input  id="groups" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)">
                         <label for="groups">Groups</label>
-        <button class="btn btn-primary">Add</button>
+        <button class="btn btn-primary" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
                     </div>
+    
+    
      <scriptr-identity-grid ng-if="vm.renderGrid"
                             columns-definition="vm.devicesColDef"
                             enable-sorting="false"
