@@ -30,21 +30,23 @@
                                 <button ng-if="vm.token == 'N/A'" ng-click="vm.generateToken()" class="btn btn-primary">Generate</button>
                                 <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-primary">Regenerate</button>
                                 <button ng-click="vm.revokeToken()" class="btn btn-primary">Delete</button>
-                                <label>Device Attributes</label>
-                                <table border="1">
-                                    <thead>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Value</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div ng-if="vm.hasAttrs">
+                                    <label>Device Attributes</label>
+                                    <table border="1">
+                                        <thead>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Value</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="attr in vm.deviceAttrs">
+                                                <td>{{attr.name}}</td>
+                                                <td>{{attr.type}}</td>
+                                                <td>{{attr.value}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

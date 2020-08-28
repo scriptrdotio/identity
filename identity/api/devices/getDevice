@@ -2,7 +2,7 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 
-//return devices.get("mobile");
+//return devices.get("mobile",{"includeFieldType" : true});
 
 var errorHandler = new errorHandler.ErrorHandler();
 
@@ -19,7 +19,7 @@ if(!hasAllRequiredParams.success) {
 }
 
 
-var response = devices.get(request.body["id"])
+var response = devices.get(request.body["id"], {"includeFieldType" : true})
 
 if(response.metadata.status == "failure") {
    return response.metadata;
