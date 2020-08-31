@@ -1,0 +1,27 @@
+var log = require("log")
+var devices = require("device");
+var errorHandler = require("../../entities/ErrorHandler");
+
+var errorHandler = new errorHandler.ErrorHandler();
+log.setLevel("INFO");
+
+
+var jsonArr = [];
+
+var response = devices.query({ "fields":"name", "sort":"name<string:DESC>"});
+  
+//return response;
+if(response.metadata.status == "failure") {
+   return response.metadata;
+} else {
+    var result = response.result.devices;
+    for(var i =0; i<result.length;i++){
+        var jsonObj = {};
+        var name = result[i].name;
+        var id = result[i].id;
+        jsonObj["name"] = name+" - "+id;
+        jsonObj["value"] = id;
+        jsonArr.push(jsonObj);
+    }
+}
+return jsonArr;

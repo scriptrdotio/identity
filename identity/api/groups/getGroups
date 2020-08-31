@@ -1,0 +1,20 @@
+var errorHandler = require("../../entities/ErrorHandler");
+var errorHandler = new errorHandler.ErrorHandler();
+var groups = require("group");
+var devices = require("device");
+
+var log = require("log")
+log.setLevel("INFO");
+
+var users =[];
+var results = [];
+var groups = groups.list();
+var groups = groups.result.groups;
+
+if(groups!= null && groups.length >0 ){
+    for ( var i=0; i<groups.length; i++){
+        var name = groups[i].name;
+        groups[i]["value"] = name;
+    }
+}
+return groups;

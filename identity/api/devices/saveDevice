@@ -10,7 +10,7 @@ var log = require("log")
 log.setLevel("INFO");
 
 var requiredParams = ["id", "name"];
-var optionalParams = ["apsdb.update", "description", "groups"];
+var optionalParams = ["apsdb.update", "description", "groups", "isSuspended"];
 
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();

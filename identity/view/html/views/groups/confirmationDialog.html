@@ -1,18 +1,18 @@
 <md-dialog class="dialog">
     <md-dialog-content>
         <h2 ng-init="vm.init()" class="col-xs-12">{{vm.header}}</h2>
-        <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceDeleted">
-            <i ng-if="vm.isLoading" class="fa fa-spinner fa-spin fa-1x"></i>
+        <div class="data-notification center mt20 mrgb20" ng-if="vm.isLoading">
+            <i class="fa fa-spinner fa-spin fa-1x"></i> 
             <span>{{vm.deleteStatus}}</span>
         </div>
         <div class="photos">
-          <div ng-if="vm.showMessage" class="col-xs-12 col-md-6 photoSection">
-            <span>{{vm.confirmationMessage}}</span>
+          <div ng-if="vm.showMessage" class="col-xs-12 col-md-6">
+            <span>{{vm.promptMessage}}</span>
           </div>
         </div>
     </md-dialog-content>
     <md-dialog-actions class="col-md-12">
+        <md-button ng-click="vm.deleteGroup()" class="btn btn-primary" ng-hide="vm.groupDeleted">Delete</md-button>
     	<md-button ng-click="vm.closeDialog()" class="btn btn-primary">Close</md-button>
-        <md-button ng-click="vm.hideLoading()" class="btn btn-primary">Hide Loading</md-button>
     </md-dialog-actions>
 </md-dialog>
