@@ -25,12 +25,15 @@ myApp.constant(
                         'type': 'section',
                         'htmlClass': 'col-xs-12',
                         'items': [{
-                            'type':'select',
+                            'type':'uiselectmultiple',
                             "placeholder": "select device",
                             'key': 'id',
- 							'titleMap': [{ 
-                               
-                            }]
+                            "options": {
+                                "httpGet":{
+                                    "url":"identity/api/devices/getDevicesNamesIDs"
+                                } ,
+                                "map": {valueProperty: "value", nameProperty: "name"} 
+                            }
                         }]
                     }
                 ]
@@ -45,10 +48,14 @@ myApp.constant(
                        'title': 'Group Name',
                        'type': 'string',
                    },
-                   'id': {
-                       'title': 'Devices',
-                       'type': 'string',
-                   },
+                   "id": {
+                       "type": "array",
+                       "title": "Devices ",
+                       //"description": "Select your device attributes",
+                       "items": {
+                           "type": "object"
+                       }
+                   }
 
                },
                'required': []
@@ -145,10 +152,15 @@ myApp.constant(
                          "htmlClass": "col-xs-12",
                         'items':[
                             {
-                                'type': 'select',
-                                'key': 'groupName',
+                                'type':'uiselectmultiple',
                                 "placeholder": "select group",
-                                'titleMap': [{}]
+                                'key': 'groupName',
+                                "options": {
+                                    "httpGet":{
+                                        "url":"identity/api/groups/getGroups"
+                                    } ,
+                                    "map": {valueProperty: "value", nameProperty: "name"} 
+                                }
                             }
                         ]
                        
@@ -273,7 +285,7 @@ myApp.constant(
                         "value": {
                             "title": "Value",
                             "type": "string",
-                        },
+                        }
                     }
                 }
             }

@@ -377,6 +377,7 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
                 }
                 vm.status = devStatus != "" ? devStatus : 'N/A';
                 vm.token = data.auth_token ? data.auth_token : "N/A";
+                
                 vm.hasAttrs = false;
                 var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
                 var deviceAttrsArray = [];
@@ -384,14 +385,15 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
                 Object.keys(data).forEach(function(key) {
                     if(defaultAttrs.indexOf(key)<0){
                         vm.hasAttrs = true;
-						var deviceAttrsObj = {};
-						deviceAttrsObj.name = key;
+                        var deviceAttrsObj = {};
+                        deviceAttrsObj.name = key;
                         deviceAttrsObj.type = metaTypes[key];
                         deviceAttrsObj.value = data[key];
                         deviceAttrsArray.push(deviceAttrsObj);
                     }
                 })
                 vm.deviceAttrs = deviceAttrsArray;
+                
                 
                 vm.promptMessage = "Success";
                 vm.deviceFetched = true;
