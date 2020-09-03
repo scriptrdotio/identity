@@ -6,7 +6,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.addButton = "Add Device";
     
     vm.devicesColDef = [
-        {
+        {	checkboxSelection: true,
             headerName: "Device Name", 
             field: "name", 
             width: 180,

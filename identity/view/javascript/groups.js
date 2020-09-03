@@ -15,6 +15,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     vm.renderGrid = true;
 
                         vm.groupsColDef = [{
+                            checkboxSelection: true,
                             headerName: "Group Name", 
                             field: "groupName", 
                             width: 180,
@@ -61,7 +62,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                                eDiv.innerHTML = btn;
                                var editBtn = eDiv.querySelectorAll('.btn')[0];
                                editBtn.addEventListener('click', function(clickParams) { 
-                                   vm.loadEditOverlay(params, vm.infoWindowActions.addGroup, 'identity/api/groups/getGroups');
+                                   vm.loadEditOverlay(params, vm.infoWindowActions.addGroup, 'identity/api/groups/saveGroup');
                                });
                                return eDiv;
                            }
@@ -76,8 +77,10 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                                var btn = '<button class="btn btn-primary btn-block" type="button">Delete</button>';
                                eDiv.innerHTML = btn;
                                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
-                               deleteBtn.addEventListener('click', function(clickParams) { 
-                                  vm.showConfirmDialog(params);
+                               deleteBtn.addEventListener('click', function(event, params) { 
+                                  var gridInstance =  params.api;
+                                  vm.showConfirmDialog(event);
+                                  
                                });
                                return eDiv;
                            }
@@ -161,45 +164,85 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     };
     
         vm.loadEditOverlay = function(marker, overlayForm, backendApi) {
-        vm.closeAlert();
-        var of = angular.copy(overlayForm);
-        var formWidget = {
-            'label': of.title,
-            'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-            'schema': angular.copy(of.schema),
-            'form': angular.copy(of.form),
-            'options': {}
-        }
-        var self = this;
-        var modalInstance= $uibModal.open({
-            animation: true,
-            component: 'formOverlay',
-            size: 'lg',
-            scope: $scope,
-            resolve: {
-                widget: function() {
-                    return formWidget;
-                }
-            }
-        });
+            httpClient.post("identity/api/groups/getGroupDevices", marker.data).then(
+                function(data, response) {
+                    if(data.status && data.status == "failure"){
+                        console.log("getGroupDevices response", data);
+                        return;
+                    }
+                    if(data != null && data.length >0){
+                        var arr = [];
+                        for(var i=0; i<data.length; i++){
+                            var id = data[i].id;
+                            arr.push(id);
+                        }
+                    }
+                    vm.closeAlert();
+                    var of = angular.copy(overlayForm);
+                    var formWidget = {
+                        'label': of.title,
+                        'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                        'schema': angular.copy(of.schema),
+                        'form': angular.copy(of.form),
+                        'model': {"name": marker.data.groupName, "devices": arr, "originalName":marker.data.groupName}
+                    }
+                    
+                    var self = this;
+                    var modalInstance= $uibModal.open({
+                        animation: true,
+                        component: 'formOverlay',
+                        size: 'lg',
+                        scope: $scope,
+                        resolve: {
+                            widget: function() {
+                                return formWidget;
+                            }
+                        }
+                    });
 
-        modalInstance.result.then(function (wdgModel) {
-            console.log('Model Data', wdgModel);
-            if(wdgModel != 'cancel') {
-                console.log('Model Data', wdgModel);
-                // console.log(' Data', marker.data);
-                var successHandler = function(data) {
-                    vm.showAlert('success', of.title + ' successful')
+                    modalInstance.result.then(function (wdgModel) {
+                        console.log('Model Data', wdgModel);
+                        if(wdgModel != 'cancel') {
+                            console.log('Model Data', wdgModel);
+                            // console.log(' Data', marker.data);
+                            var successHandler = function(data) {
+                                vm.showAlert('success', of.title + ' successful')
+                            }
+                            var failureHandler = function(err) {
+                                vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                            }
+                            wdgModel.update = true;
+                            if(wdgModel.originalName != wdgModel.name){
+                                wdgModel.newName = wdgModel.name;
+                                wdgModel.name = wdgModel.originalName;
+                                console.log("newName");
+                            }
+                            else{
+                                console.log("sameName");
+                            }
+                            vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+                        }
+                    }, function () {
+                        console.info('modal-component for widget update dismissed at: ' + new Date());
+                    });
+                },
+                function(err) {
+                    console.dir(err);
+                    if(err.status == "success"){
+                        //refresh grid
+                        console.log("getGroupDevices response", err);
+                        return;
+                    }
+
+                    var errDesc = 'Unknown error';
+                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                        errDesc = err.data.metadata.description.en;
+                    } else if (err.errorDetail) {
+                        errDesc = err.errorDetail;
+                    }
+                    console.log("getGroupDevices response", err);
                 }
-                var failureHandler = function(err) {
-                    vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
-                }
-                //wdgModel.groupName = marker.data.id;
-                vm.callBackendApiGet(backendApi, wdgModel, successHandler, failureHandler) 
-            }
-        }, function () {
-            console.info('modal-component for widget update dismissed at: ' + new Date());
-        });
+                );
     };
     
     vm.callBackendApiGet = function(apiId, parameters, successHandler, failureHandler) {
@@ -219,46 +262,8 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             ok: 'Close'
         });
     }
-    
-    
-   /* vm.loadData = function() {
-        //vm.isLoading = true;
-        var parameters = {
-            groupName: vm.groupName
-        }
-        console.log('calling getGroupToView with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/groups/getGroupToView", parameters).then(
-            function(data, response) {
-                if(data.status && data.status == "failure"){
-                    console.log("getDevice response", data);
-                    //vm.promptMessage = "Could not fetch device, please try again later";
-                    //vm.isLoading = false;
-                    return;
-                }
-                vm.params : {
-                    "name" = data.groupName ? data.groupName : "N/A";
-                }
-                vm.promptMessage = "Success";
-                vm.deviceFetched = true;
-                vm.isLoading = false;
-                console.log("getDevice response", JSON.stringify(data));
-            },
-            function(err) {
-                console.dir(err);
-                var errDesc = 'Unknown error';
-                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
-                    errDesc = err.data.metadata.description.en;
-                } else if (err.errorDetail) {
-                    errDesc = err.errorDetail;
-                }
-                vm.promptMessage = "Could not fetch device, please try again later";
-                vm.isLoading = false;
-                console.log("getDevice response", JSON.stringify(err));
-            }
-        );
-    }*/
-    
     vm.gridAPI = "identity/api/groups/listGroups";
+     
     vm.showViewGroupDialog = function(params) {
         $mdDialog.show({
             controller: 'viewGroupDialogCtrl',

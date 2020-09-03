@@ -13,6 +13,7 @@ myApp.constant(
                         'htmlClass': 'col-xs-6',
                         'items': [{
                             'key': "name"
+                            
                         }]
                     }
                 ]
@@ -22,20 +23,20 @@ myApp.constant(
                 'htmlClass': 'row',
                 'items': [
                     {
-                        'type': 'section',
+                        "key": "devices",
+                        "type": 'uiselectmultiple',
                         'htmlClass': 'col-xs-12',
-                        'items': [{
-                            'type':'uiselectmultiple',
-                            "placeholder": "select device",
-                            'key': 'id',
-                            "options": {
-                                "httpGet":{
-                                    "url":"identity/api/devices/getDevicesNamesIDs"
-                                } ,
-                                "map": {valueProperty: "value", nameProperty: "name"} 
-                            }
-                        }]
-                    }
+                        "placeholder": "Select devices",
+                        "options": {
+                            "multiple": true,
+                            "closeOnSelect": true,
+                            "httpGet":{
+                                "url":"identity/api/devices/listDevices",
+                                "parameter": "{\"count\": false, \"fields\": \"id,name\"}"
+                            } ,
+                            "map": {valueProperty: "id", nameProperty: "name"},
+                        },
+                    },
                 ]
             },
 
@@ -46,19 +47,19 @@ myApp.constant(
                'properties': {
                    "name": {
                        'title': 'Group Name',
-                       'type': 'string',
+                       'type': 'string'
                    },
-                   "id": {
+                   "devices": {
                        "type": "array",
-                       "title": "Devices ",
-                       //"description": "Select your device attributes",
+                       "title": "Devices",
+                       "description": "Select your group devices",
                        "items": {
                            "type": "object"
                        }
                    }
 
                },
-               'required': []
+               'required': ["name"]
            }
        },
  'addDevice': {
@@ -157,9 +158,10 @@ myApp.constant(
                                 'key': 'groupName',
                                 "options": {
                                     "httpGet":{
-                                        "url":"identity/api/groups/getGroups"
+                                        "url":"identity/api/groups/listGroups",
+                                         "parameter": "{\"count\": false}"
                                     } ,
-                                    "map": {valueProperty: "value", nameProperty: "name"} 
+                                    "map": {valueProperty: "name", nameProperty: "name"} 
                                 }
                             }
                         ]
@@ -180,7 +182,7 @@ myApp.constant(
                             "type": "section",
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
-                                "key": "device.name",
+                                "key": "device[].name",
                                 "title": "name",
 
                             }]
@@ -190,7 +192,7 @@ myApp.constant(
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
                                 'type':'select',
-                                "key": "device.type",
+                                "key": "device[].type",
                                 'placeholder': 'select type',
                                 'titleMap': [
                                     {
@@ -222,7 +224,7 @@ myApp.constant(
                             "type": "section",
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
-                                "key": "device.value",
+                                "key": "device[].value",
                                 "title": "value",
                             }]
                         }]
@@ -268,18 +270,16 @@ myApp.constant(
             "device":{
                 'title': 'Device Attributes',
                 "type": "array",
-                'items':{
+                "items":{
                     "type": "object",
                     "properties":{
                         "name": {
                             "title": "Name",
                             "type": "string",
-                            "default": "device"
                         },
                         "type": {
                             "title": "type",
                             "type": "string",
-                            "default": "Numeric",
                             "placeholder":"select type"
                         },
                         "value": {
