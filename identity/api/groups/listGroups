@@ -10,18 +10,31 @@ var users =[];
 var results = [];
 var groups = groups.list();
 var result = groups.result.groups;
-if(result!= null && result.length >0){
-    for (var i=0; i<result.length;i++){
-        var name = result[i].name;
-        var response = devices.query({"query":'groups = "' +name+ '"', "count": true});
-        response.result["groupName"] = name;
-        users.push(response.result);
-    }
+//return result;
 
-    if(response.metadata.status == "failure") {
-        return response.metadata;
-    } else {
-        return  { "count": users.length, "documents": users };
-    }
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+
+var count = true;
+if(params["count"] !== undefined && params["count"] !== null) {
+    count = (params["count"] === "true") ?  true : false;
 }
 
+if(result!= null && result.length >0){
+    if(count){
+        for (var i=0; i<result.length;i++){
+            var name = result[i].name;
+            var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
+            response.result["groupName"] = name;
+            users.push(response.result);
+        }
+        if(response.metadata.status == "failure") {
+            return response.metadata;
+        }
+        else
+            return { "count": users.length, "documents": users};
+    }
+    else{
+        return  result;
+    }
+}

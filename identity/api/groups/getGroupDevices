@@ -1,38 +1,29 @@
-var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
+var devices = require("device");
 var groups = require("group");
-
 var errorHandler = new errorHandler.ErrorHandler();
-
-
 var log = require("log")
 log.setLevel("INFO");
 
-var requiredParams = ["name"]; //add new group name on apsdb.update = true
-var optionalParams = ["update", "newName","devices"];
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 //Check if required params
+var requiredParams = ["groupName"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
-
-//return params;
-
-if(!params["update"])
-	var response = groups.create(params["name"]);
-else 
-    var response = groups.rename(params["name"], params["newName"]);
-
+var response = devices.query({"query":'groups = "' +params["groupName"]+ '"'});
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-   return {"status": "success"};
+  return response.result.devices;
 }
+
 
 
 
