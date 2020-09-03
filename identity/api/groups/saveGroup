@@ -3,9 +3,7 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var groups = require("group");
 var errorHandler = new errorHandler.ErrorHandler();
-var a = ["1", "2", "3", "4"]; 
-var b= ["1", "2", "3", "4"];
-return JSON.stringify(a)==JSON.stringify(b);
+
 var log = require("log")
 log.setLevel("INFO");
 
