@@ -2,40 +2,82 @@ var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var groups = require("group");
-
 var errorHandler = new errorHandler.ErrorHandler();
-
-
+var a = ["1", "2", "3", "4"]; 
+var b= ["1", "2", "3", "4"];
+return JSON.stringify(a)==JSON.stringify(b);
 var log = require("log")
 log.setLevel("INFO");
 
 var requiredParams = ["name"]; //add new group name on apsdb.update = true
-var optionalParams = ["update", "newName","devices"];
+var optionalParams = ["update", "newName", "devices"];
 
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(requestParams, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
-
-//return params;
-
-if(!params["update"])
-	var response = groups.create(params["name"]);
-else 
-    var response = groups.rename(params["name"], params["newName"]);
-
-if(response.metadata.status == "failure") {
-   return response.metadata;
-} else {
-   return {"status": "success"};
+var params = paramsEvaluator.buildParams(requestParams, requiredParams, optionalParams);
+var updateDevices = true;
+if(params["updateDevices"] != null && params["updateDevices"] != ""){
+    updateDevices = params["updateDevices"];
 }
 
+var groupName = params["name"];
+var groupResponse = null;
+if(!params["update"])
+    groupResponse = groups.create(groupName);
+else {
+    if(params["newName"] != null && params["newName"] != ""){
+        groupResponse = groups.rename(groupName, params["newName"]);
+    	groupName = params["newName"];
+    }
+}
 
+if(groupResponse != null && groupResponse.metadata.status == "failure") {
+    updateDevices = false;
+   	var response = groupResponse.metadata;
+} else {
+   	var response =  {"status": "success"};
+}
 
+if(updateDevices){
+    var devices = params["devices"];
+    if(devices != null && devices != ""){
+        var devicesArr = [];
+        if(devices instanceof Array){
+            devicesArr = devices;
+        }else{
+            devicesArr = [devices];
+        }
+        var deviceModule = require("device");
+        var ts = apsdb.beginTransaction();
+        try{
+            devicesArr.forEach(function(deviceId) {
+                var saveDeviceParams = {
+                    "id": deviceId,
+                    "groups": {"append": groupName}
+                }
+                var deviceResponse = deviceModule.save(saveDeviceParams);
+                if(deviceResponse.metadata.status == "failure") {
+                   throw {
+                        errorCode: deviceResponse.metadata.errorCode,
+                        errorDetail: deviceResponse.metadata.errorDetail
+                    };
+                } else {
+                    log.info("Successfully appended group to device ["+ deviceId +"]");
+                }
+            })
+            ts.commit();
+        } catch(e){
+            ts.rollback();
+            log.error("Failure when updating devices' groups\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+        }
+    }
+}
 
-
-
+return response;

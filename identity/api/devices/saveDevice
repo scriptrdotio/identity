@@ -1,22 +1,13 @@
 var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-
 var errorHandler = new errorHandler.ErrorHandler();
-
 var devices= require("device");
-
 var log = require("log")
 log.setLevel("INFO");
 
-
-
 var requiredParams = ["id", "name"];
 var optionalParams = ["apsdb.update", "description", "groups", "Password", "confirmPassword", "isSuspended", "device"];
-
-
-
-//return request;
 
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
@@ -27,12 +18,6 @@ if(!hasAllRequiredParams.success) {
 
 log.info(JSON.stringify(request.body))
 var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
-
-//update
-
-
-
-
 
 var jsonObj = {};
 params['meta.types'] = {};
@@ -47,16 +32,7 @@ if(device !=null && device.length > 0){
     }
     params['meta.types'] = jsonObj;
 }
-//return params;
 delete params['device'];
-
-//return params;
-//TODO: putting the password hardcoded
-params["password"] = "demo";
-
-log.info(JSON.stringify(params))
-
-
 
 var response = devices.save(params);
 if(response.metadata.status == "failure") {
@@ -64,9 +40,3 @@ if(response.metadata.status == "failure") {
 } else {
       return response.result.device;
 }
-
-
-
-
-
-
