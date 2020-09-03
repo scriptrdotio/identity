@@ -432,8 +432,9 @@ angular
                 if(self.gridOptions.api.getSelectedNodes().length > 0){
                     var modalInstance = $uibModal.open({
                         animation: true,
-                        component: 'deleteConfirmation',
-                        size: 'md',
+                        component: 'deleteConfirmationOverlay',
+                        size: 'lg',
+                        scope: $scope,
                         resolve: {
                             grid: function () {
                                 return self;
@@ -448,18 +449,24 @@ angular
                     if(self.api){
                         var selectedNodes = self.gridOptions.api.getSelectedNodes();
                         var selectedKeys = [];
+                       // console.log("the data is "+ data);
                         for(var i = 0; i < selectedNodes.length; i++){
                            	selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
                         }
                         if(selectedKeys.length > 0){
-                            self.gridOptions.api.showLoadingOverlay();   
-                            var params = {keys : selectedKeys, action: "delete"}
+                            var params;
+                            self.gridOptions.api.showLoadingOverlay();
+                            if(self._dataIdentifierProperty == "groupName")
+                                params = {"groupName" : selectedKeys}
+                            if(self._dataIdentifierProperty == "name")
+                                    params = {"id" : selectedKeys}
                             if(this.deleteParams){
                                 for(var key in this.deleteParams){
                                     params[key] = this.deleteParams[key]
                                 }
                             }  
-                            dataStore.gridHelper(self.api, params).then(
+                            
+                            dataStore.postGridHelper(params, self._dataIdentifierProperty).then(
                                 function(data, response) {
                                     self.gridOptions.api.hideOverlay();     
                                     if (data && (data.result == "success" || data.status == "success")) {
@@ -579,7 +586,6 @@ angular
 angular
     .module('Grid')
     .service("dataStore", function(httpClient, wsClient, $q) {
-
     this.subscribe = function(callback, tag, $scope){
         wsClient.onReady.then(function() {
             wsClient.subscribe(tag, callback.bind(self), $scope.$id);
@@ -593,6 +599,27 @@ angular
             d.resolve(data, response)
         }, function(err) {
             d.reject(err)
+        });
+        return d.promise;
+    }
+    
+    
+    this.postGridHelper = function(params, dataIdentifierProperty){
+        var d = $q.defer(); 
+        var api;
+        if(dataIdentifierProperty == "name")
+            api = "identity/api/devices/deleteDevice";
+        if(dataIdentifierProperty == "groupName")
+            api = "identity/api/groups/deleteGroup";
+      httpClient.post(api, params)
+        .then(
+        function(data, response) {
+           d.resolve(data, response)
+            console.log(data);
+        },
+        function(err) {
+            d.reject(err)
+            console.log(err);
         });
         return d.promise;
     }
@@ -664,7 +691,7 @@ angular
 
 angular
     .module('Identity')
-    .component('deleteConfirmation', 
+    .component('deleteConfirmationOverlay', 
                {
     bindings: {
         resolve: '<',
@@ -673,7 +700,7 @@ angular
     },
     templateUrl:  '/identity/view/javascript/components/grid/popup.html',
     controller: function ($scope) {
-
+  this.$onInit = function () {
         this.onSubmit = function() {
             this.resolve.grid.onRemoveRow();
             this.close({$value: true});
@@ -681,5 +708,6 @@ angular
         this.onCancel = function () {
             this.dismiss({$value: false});
         };
+    }
     }
 });
