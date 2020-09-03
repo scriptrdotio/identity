@@ -21,18 +21,18 @@ var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalP
 
 var jsonObj = {};
 params['meta.types'] = {};
-var device = params.device;
-if(device !=null && device.length > 0){
-    for(var i=0; i<device.length; i++){
-        var name = device[i].name;
-        var value = device[i].value;
-        var type = device[i].type;
+var deviceAttrs = params.deviceAttrs;
+if(deviceAttrs !=null && deviceAttrs.length > 0){
+    for(var i=0; i<deviceAttrs.length; i++){
+        var name = deviceAttrs[i].name;
+        var value = deviceAttrs[i].value;
+        var type = deviceAttrs[i].type;
         jsonObj[name]= type;
         params[name] = value;
     }
     params['meta.types'] = jsonObj;
 }
-delete params['device'];
+delete params['deviceAttrs'];
 
 var response = devices.save(params);
 if(response.metadata.status == "failure") {
