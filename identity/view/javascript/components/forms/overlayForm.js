@@ -53,7 +53,7 @@ angular
                this.form =   angular.copy(this.widget.form)
             }
             
-            this.model =  (this.widget.options) ?  angular.copy(this.widget.options) : {}
+            this.model =  (this.widget.model) ?  angular.copy(this.widget.model) : {}
             
             if(this.widget.onFormModelChange) {
                  this.frmGlobalOptions["formDefaults"].onChange = this.widget.onFormModelChange;
