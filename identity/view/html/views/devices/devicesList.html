@@ -13,7 +13,7 @@
      <scriptr-identity-grid ng-if="vm.renderGrid"
                             columns-definition="vm.devicesColDef"
                             enable-sorting="false"
-                            enable-delete-row="false"
+                            enable-delete-row="true"
                             boxlabel="{{ 'USERS.LIST' | translate}}"
                             fixed-height="true"
                             grid-height="350px"
@@ -40,7 +40,7 @@
                             api="{{vm.gridAPI}}"
                             api-params="vm.params"
                             row-height="50"
-                            grid-data-identifier-property="id"
+                            grid-data-identifier-property="name"
                             >
     </scriptr-identity-grid>
 </div>

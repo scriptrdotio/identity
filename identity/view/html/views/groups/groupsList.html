@@ -5,7 +5,7 @@
     <scriptr-identity-grid ng-if="vm.renderGrid"
                            columns-definition="vm.groupsColDef"
                            enable-sorting="false"
-                           enable-delete-row="false"
+                           enable-delete-row="true"
                            boxlabel="{{ 'USERS.LIST' | translate}}"
                            fixed-height="true"
                            grid-height="350px"
@@ -22,6 +22,7 @@
                            pagination-page-size="10"
                            transport="https"
                            enable-client-side-sorting="false"
+                           enable-delete-row="true"
                            size-columns-to-fit ="false"
                            enable-col-resize="true"
                            pagination="true"
@@ -32,7 +33,7 @@
                            api="{{vm.gridAPI}}"
                            api-params="vm.params"
                            row-height="50"
-                           grid-data-identifier-property="id"
+                           grid-data-identifier-property="groupName"
                            >
     </scriptr-identity-grid>
 </div>
