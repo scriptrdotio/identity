@@ -8,18 +8,19 @@ var errorHandler = new errorHandler.ErrorHandler();
 
 var log = require("log")
 log.setLevel("INFO");
-
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 //Check if required params
 var requiredParams = ["id"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
 
-var response = devices.get(request.body["id"], {"includeFieldType" : true})
+var response = devices.get(params["id"], {"includeFieldType" : true})
 
 if(response.metadata.status == "failure") {
    return response.metadata;

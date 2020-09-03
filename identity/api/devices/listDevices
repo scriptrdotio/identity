@@ -5,15 +5,33 @@ var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 log.setLevel("INFO");
 
-//return devices.query({ "fields":"*"});
+
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("Request normalized params: " + JSON.stringify(params));
+
+var fields = "*";
+if(params["fields"] !== undefined && params["fields"] !== null ) {
+    fields = params["fields"];
+}
+
+var count = true;
+if(params["count"] !== undefined && params["count"] !== null) {
+    count = (params["count"] === "true") ?  true : false;
+}
 
 
-var response = devices.query({ "fields":"*", "sort":"name<string:DESC>", "count": true});
+var response = devices.query({ "fields": fields, "sort":"name<string:DESC>", "count": count});
   
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return { "count": response.result.count, "documents": response.result.devices};
+  if(count) {
+      return { "count": response.result.count, "documents": response.result.devices};
+  } else {
+      return response.result.devices;
+  }
+  
 }
 
 
