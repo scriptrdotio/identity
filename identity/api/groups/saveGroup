@@ -7,8 +7,8 @@ var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
 
-var requiredParams = ["name"]; //add new group name on apsdb.update = true
-var optionalParams = ["update", "newName", "devices"];
+var requiredParams = ["name"];
+var optionalParams = ["update", "newName", "devices", "originalDevices", "updateDevices"];
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
@@ -46,22 +46,58 @@ if(groupResponse != null && groupResponse.metadata.status == "failure") {
 if(updateDevices){
     var devices = params["devices"];
     if(devices != null && devices != ""){
-        var devicesArr = [];
-        if(devices instanceof Array){
-            devicesArr = devices;
-        }else{
-            devicesArr = [devices];
-        }
-        var deviceModule = require("device");
         var ts = apsdb.beginTransaction();
         try{
+            var deviceModule = require("device");
+            
+            var devicesArr = [];
+            if(devices instanceof Array){
+                devicesArr = devices;
+            }else{
+                devicesArr = [devices];
+            }
+
+            var originalDevices = params["originalDevices"];
+            //if adding new group, originalDevices is not passed
+            if(originalDevices != null && originalDevices != ""){
+                var oldDevicesArr = [];
+                if(originalDevices instanceof Array){
+                    oldDevicesArr = originalDevices;
+                }else{
+                    oldDevicesArr = [originalDevices];
+                }
+                //loop on old devices
+                oldDevicesArr.forEach(function(oldDeviceId) {
+                    //if old device is not found in new devices array, delete group from that device
+                    var indexOfOldInNewDevices = devicesArr.indexOf(oldDeviceId);
+                    if(indexOfOldInNewDevices < 0){
+                        var saveDeviceParams = {
+                            "id": oldDeviceId,
+                            "groups": {"delete": groupName}
+                        }
+                        var deviceResponse = deviceModule.save(saveDeviceParams);
+                        if(deviceResponse && deviceResponse.metadata.status == "failure") {
+                            throw {
+                                errorCode: deviceResponse.metadata.errorCode,
+                                errorDetail: deviceResponse.metadata.errorDetail
+                            };
+                        } else {
+                            log.info("Successfully deleted group from device ["+ oldDeviceId +"]");
+                        }  
+                    } else {
+						//if found, delete it from new devices array to avoid the append process below
+                        devicesArr.splice(indexOfOldInNewDevices, 1);
+                    }
+                })
+            }
+
             devicesArr.forEach(function(deviceId) {
                 var saveDeviceParams = {
                     "id": deviceId,
                     "groups": {"append": groupName}
                 }
                 var deviceResponse = deviceModule.save(saveDeviceParams);
-                if(deviceResponse.metadata.status == "failure") {
+                if(deviceResponse && deviceResponse.metadata.status == "failure") {
                    throw {
                         errorCode: deviceResponse.metadata.errorCode,
                         errorDetail: deviceResponse.metadata.errorDetail
