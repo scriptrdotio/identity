@@ -17,7 +17,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                         vm.groupsColDef = [{
                             checkboxSelection: true,
                             headerName: "Group Name", 
-                            field: "groupName", 
+                            field: "groups", 
                             width: 180,
                             cellClass: "textWrap", 
                             editable : false,
@@ -77,9 +77,9 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                                var btn = '<button class="btn btn-primary btn-block" type="button">Delete</button>';
                                eDiv.innerHTML = btn;
                                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
-                               deleteBtn.addEventListener('click', function(event, params) { 
-                                  var gridInstance =  params.api;
-                                  vm.showConfirmDialog(event);
+                               deleteBtn.addEventListener('click', function(clickParams) { 
+                                  //var gridInstance =  params.api;
+                                  vm.showConfirmDialog(params);
                                   
                                });
                                return eDiv;
@@ -170,13 +170,6 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                         console.log("getGroupDevices response", data);
                         return;
                     }
-                    if(data != null && data.length >0){
-                        var arr = [];
-                        for(var i=0; i<data.length; i++){
-                            var id = data[i].id;
-                            arr.push(id);
-                        }
-                    }
                     vm.closeAlert();
                     var of = angular.copy(overlayForm);
                     var formWidget = {
@@ -184,7 +177,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                         'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
                         'schema': angular.copy(of.schema),
                         'form': angular.copy(of.form),
-                        'model': {"name": marker.data.groupName, "devices": arr, "originalName":marker.data.groupName}
+                        'model': {"name": marker.data.groups, "devices": data.devices, "originalName":marker.data.groups, "originalDevices":data.devices}
                     }
                     
                     var self = this;
@@ -211,15 +204,17 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                             var failureHandler = function(err) {
                                 vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
                             }
+                            
+                            //JSON.stringify(a)==JSON.stringify(b)
                             wdgModel.update = true;
+                            wdgModel.originalDevices = formWidget.model.originalDevices;
                             if(wdgModel.originalName != wdgModel.name){
                                 wdgModel.newName = wdgModel.name;
                                 wdgModel.name = wdgModel.originalName;
-                                console.log("newName");
                             }
-                            else{
-                                console.log("sameName");
-                            }
+                            //console.log(formWidget.original);
+                            if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
+                                wdgModel.updateDevices = false;
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
                         }
                     }, function () {
@@ -289,7 +284,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDi
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting group...';
-    vm.groupName = groupData.groupName;
+    vm.groupName = groupData.groups;
     vm.groupDeleted = false;
 	vm.showMessage = true;
     vm.header = "Confirmation";
@@ -359,7 +354,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDi
 myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching group...';
-    vm.groupName = groupData.groupName;
+    vm.groupName = groupData.groups;
     vm.groupFetched = false;
     vm.init = function() {
         vm.getGroup();
@@ -371,7 +366,7 @@ myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialo
             groupName: vm.groupName
         }
         console.log('calling getGroupToView with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/groups/getGroupToView", parameters).then(
+        httpClient.post("identity/api/groups/getGroupDevicesToView", parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     console.log("getDevice response", data);

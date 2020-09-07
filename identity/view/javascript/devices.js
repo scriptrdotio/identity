@@ -97,10 +97,9 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                     var eDiv = document.createElement('div');
                     var vButton;
                     eDiv.innerHTML = '<button class="btn btn-primary btn-edit">Edit</button>';
-
                     vButton = eDiv.querySelectorAll('.btn-edit')[0];
-                    vButton.addEventListener('click', function() {
-                        vm.showAlert(params);
+                    vButton.addEventListener('click', function(clickParams) {
+                         vm.loadEditOverlay(params, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
                     });
                     return eDiv;
                 },
@@ -184,6 +183,98 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         });
     }
     
+            vm.loadEditOverlay = function(marker, overlayForm, backendApi) {
+            httpClient.post("identity/api/devices/getDevice", marker.data).then(
+                function(data, response) {
+                    if(data.status && data.status == "failure"){
+                        console.log("getGroupDevices response", data);
+                        return;
+                    }
+                    var groupsArr = [];
+                    if(data.groups instanceof Array){
+                        groupsArr = data.groups;
+                    }else{
+                        groupsArr = [data.groups];
+                    };
+                    var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
+                    var deviceAttrsArray = [];
+                    var metaTypes = data["meta.types"];
+                    Object.keys(data).forEach(function(key) {
+                        if(defaultAttrs.indexOf(key)<0){
+                            vm.hasAttrs = true;
+                            var deviceAttrsObj = {};
+                            deviceAttrsObj.name = key;
+                            deviceAttrsObj.type = metaTypes[key];
+                            deviceAttrsObj.value = data[key];
+                            deviceAttrsArray.push(deviceAttrsObj);
+                        }
+                    });
+                    
+                    
+                    vm.closeAlert();
+                    var of = angular.copy(overlayForm);
+                    var form = angular.copy(of.form);
+                    form[0].items[1].readonly = true;
+                    var formWidget = {
+                        'label': of.title,
+                        'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                        'schema': angular.copy(of.schema),
+                        'form': form,
+                        'model': {"name": marker.data.name, "id": marker.data.id, "description": marker.data.description, "isSuspended": marker.data.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
+                    }
+                    
+                    var self = this;
+                    var modalInstance= $uibModal.open({
+                        animation: true,
+                        component: 'formOverlay',
+                        size: 'lg',
+                        scope: $scope,
+                        resolve: {
+                            widget: function() {
+                                return formWidget;
+                            }
+                        }
+                    });
+
+                    modalInstance.result.then(function (wdgModel) {
+                        console.log('Model Data', wdgModel);
+                        if(wdgModel != 'cancel') {
+                            console.log('Model Data', wdgModel);
+                            // console.log(' Data', marker.data);
+                            var successHandler = function(data) {
+                                vm.showAlert('success', of.title + ' successful')
+                            }
+                            var failureHandler = function(err) {
+                                vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                            }
+                            vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+                        }
+                    }, function () {
+                        console.info('modal-component for widget update dismissed at: ' + new Date());
+                    });
+                },
+                function(err) {
+                    console.dir(err);
+                    if(err.status == "success"){
+                        //refresh grid
+                        console.log("getGroupDevices response", err);
+                        return;
+                    }
+
+                    var errDesc = 'Unknown error';
+                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                        errDesc = err.data.metadata.description.en;
+                    } else if (err.errorDetail) {
+                        errDesc = err.errorDetail;
+                    }
+                    console.log("getGroupDevices response", err);
+                }
+                );
+    };
+    
+    
+    
+    
     vm.init = function() {
         vm.test2 = 3;
     }
@@ -221,6 +312,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.loadOverlay = function(marker, overlayForm, backendApi) {
         vm.closeAlert();
         var of = angular.copy(overlayForm);
+        //var schema = angular.copy(of.schema);
+        //schema.properties.id.isDisabled = true;
         var formWidget = {
             'label': of.title,
             'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},

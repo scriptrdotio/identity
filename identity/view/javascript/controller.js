@@ -43,7 +43,7 @@ myApp.constant(
         ],
            'schema': {
                'type': 'object',
-               'title': 'Schema',
+               'title': 'groupSchema',
                'properties': {
                    "name": {
                        'title': 'Group Name',
@@ -78,6 +78,7 @@ myApp.constant(
                     },
                     {
                         "type": "section",
+                        //"readonly": true,
                         "htmlClass": "col-xs-12 col-sm-6",
                         'items': [{
                             'key': 'id',
@@ -94,7 +95,7 @@ myApp.constant(
                         'type': 'section',
                         'htmlClass': 'col-xs-12 col-sm-6',
                         'items': [{
-                            'key': 'Password',
+                            'key': 'password',
                         }]
                     },
                     {
@@ -155,7 +156,7 @@ myApp.constant(
                             {
                                 'type':'uiselectmultiple',
                                 "placeholder": "select group",
-                                'key': 'groupName',
+                                'key': 'groups',
                                 "options": {
                                     "httpGet":{
                                         "url":"identity/api/groups/listGroups",
@@ -173,7 +174,7 @@ myApp.constant(
                 "type": "section",
                 "htmlClass": "",
                 "items": [{
-                    "key": "device",
+                    "key": "deviceAttrs",
                     "title": "Device Attributes",
                     "items": [{
                         "type": "section",
@@ -182,7 +183,7 @@ myApp.constant(
                             "type": "section",
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
-                                "key": "device[].name",
+                                "key": "deviceAttrs[].name",
                                 "title": "name",
 
                             }]
@@ -192,7 +193,7 @@ myApp.constant(
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
                                 'type':'select',
-                                "key": "device[].type",
+                                "key": "deviceAttrs[].type",
                                 'placeholder': 'select type',
                                 'titleMap': [
                                     {
@@ -224,7 +225,7 @@ myApp.constant(
                             "type": "section",
                             "htmlClass": "col-xs-6 col-sm-3",
                             "items": [{
-                                "key": "device[].value",
+                                "key": "deviceAttrs[].value",
                                 "title": "value",
                             }]
                         }]
@@ -236,7 +237,7 @@ myApp.constant(
  
     'schema': {
         'type': 'object',
-        'title': 'Schema',
+        'title': 'deviceSchema',
         'properties': {
             'name': {
                 'title': 'Device Name',
@@ -246,13 +247,19 @@ myApp.constant(
                 'title': 'Device ID',
                 'type': 'string',
             },
-            'Password': {
+            'password': {
                 'title': 'Password',
                 'type': 'string',
+                 'x-schema-form': {
+                    'type': 'password',
+                }
             },
             'confirmPassword': {
                 'title': 'Confirm Password',
                 'type': 'string',
+                 'x-schema-form': {
+                    'type': 'password',
+                }
             },
             'description': {
                 'title': 'Description',
@@ -262,12 +269,15 @@ myApp.constant(
                     'placeholder': 'Description for this device'
                 }
             },
-            "groupName":{
-                'title': 'Group Name',
-                'type': 'string',
-                "placeholder": "select group"
+            "groups": {
+                "type": "array",
+                "title": "groups",
+                "description": "Select your group",
+                "items": {
+                    "type": "object"
+                }
             },
-            "device":{
+            "deviceAttrs":{
                 'title': 'Device Attributes',
                 "type": "array",
                 "items":{
@@ -290,7 +300,7 @@ myApp.constant(
                 }
             }
         },
-        'required': ["name","id"]
+        'required': ["name","id","password","confirmPassword"]
     }
      },
         }
