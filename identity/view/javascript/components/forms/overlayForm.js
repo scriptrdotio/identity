@@ -1,26 +1,3 @@
-/*angular.module("QmcForms", [
-	"underscore", 
-	"btford.markdown", 
-	"schemaForm", 
-	"ui.bootstrap", 
-	"ngRoute", 
-	"ngAnimate", 
-	"ngSanitize", 
-	"WsClient", 
-	"HttpClient", 
-	"DataService", 
-	"ngMaterial", 
-	"ngMessages", 
-	"material.svgAssetsCache", 
-	"angularSpectrumColorpicker",
-	"angular-underscore/filters", 
-	"ui.codemirror",  
-	"mgcrea.ngStrap", 
-	"mgcrea.ngStrap.modal",
-    "pascalprecht.translate",
-    'ui.select', 
-    'ui.highlight',
-    'mgcrea.ngStrap.select']);*/
 angular
   .module('Identity')
   .component('formOverlay', 
@@ -85,7 +62,15 @@ angular
            setTimeout(function() {
            self.highlightTabs(form.$name);
         }, 100);
-
+		
+          if(this.schema.title == "deviceSchema"){
+              if( form.password.$viewValue == form.confirmPassword.$viewValue)
+                  $scope.$broadcast('schemaForm.error.confirmPassword','passwordMatchValidation', true);
+              else
+                  $scope.$broadcast('schemaForm.error.confirmPassword','passwordMatchValidation','Password does not match');
+          }
+          
+          
         // Then we check if the form is valid
         if (form.$valid) {
           //angular.extend(this.widget.options, this.model);
