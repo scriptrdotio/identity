@@ -7,7 +7,7 @@ var log = require("log")
 log.setLevel("INFO");
 
 var requiredParams = ["id", "name"];
-var optionalParams = ["apsdb.update", "description", "groups", "Password", "confirmPassword", "isSuspended", "device"];
+var optionalParams = ["apsdb.update", "description", "groups", "password", "isSuspended", "deviceAttrs"];
 
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
@@ -19,20 +19,28 @@ if(!hasAllRequiredParams.success) {
 log.info(JSON.stringify(request.body))
 var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
 
-var jsonObj = {};
-params['meta.types'] = {};
 var deviceAttrs = params.deviceAttrs;
-if(deviceAttrs !=null && deviceAttrs.length > 0){
-    for(var i=0; i<deviceAttrs.length; i++){
-        var name = deviceAttrs[i].name;
-        var value = deviceAttrs[i].value;
-        var type = deviceAttrs[i].type;
-        jsonObj[name]= type;
-        params[name] = value;
+if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
+        return Object.keys(el).length !== 0;
+    }).length === 0)){
+    var jsonObj = {};
+    params['meta.types'] = {};
+    if(deviceAttrs !=null && deviceAttrs.length > 0){
+        for(var i=0; i<deviceAttrs.length; i++){
+            if(deviceAttrs[i] != null && Object.keys(deviceAttrs[i]).length > 0){
+                var name = deviceAttrs[i].name;
+                var value = deviceAttrs[i].value;
+                var type = deviceAttrs[i].type;
+                jsonObj[name]= type;
+                params[name] = value;
+            }
+        }
+        params['meta.types'] = jsonObj;
     }
-    params['meta.types'] = jsonObj;
 }
 delete params['deviceAttrs'];
+
+log.info(JSON.stringify(params))
 
 var response = devices.save(params);
 if(response.metadata.status == "failure") {

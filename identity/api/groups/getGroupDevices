@@ -18,10 +18,21 @@ if(!hasAllRequiredParams.success) {
 }
 
 var response = devices.query({"query":'groups = "' +params["groupName"]+ '"'});
+
+
+
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
-  return response.result.devices;
+    var devices = response.result.devices;
+    if(devices != null && devices.length >0){
+        var devicesArr = [];
+        for(var i=0; i<devices.length; i++){
+            var id = devices[i].id;
+            devicesArr.push(id);
+        }
+    }
+    return {"devices" :devicesArr};
 }
 
 

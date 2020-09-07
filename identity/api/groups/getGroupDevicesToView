@@ -24,8 +24,10 @@ response.result["groupName"] = request.body["groupName"];
 if(response.result.devices != null && response.result.devices.length>0){
     for(var i=0; i<response.result.devices.length; i++){
         var id = response.result.devices[i].id;
-        id = request.body["groupName"]+" - "+ id;
-        response.result.devices[i]["id"] = id;
+        var name = devices.get(id);
+        name = name.result.name;
+        name = name+" - "+ id;
+        response.result.devices[i]["id"] = name;
     }
 }
 
