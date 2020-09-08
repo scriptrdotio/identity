@@ -42,7 +42,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-primary btn-block" type="button">View</button>';
+                               var btn = '<button class="btn btn-default btn-block" type="button">View</button>';
                                eDiv.innerHTML = btn;
                                var viewBtn = eDiv.querySelectorAll('.btn')[0];
                                viewBtn.addEventListener('click', function(clickParams) { 
@@ -58,7 +58,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-primary btn-block" type="button">Edit</button>';
+                               var btn = '<button class="btn btn-default btn-block" type="button">Edit</button>';
                                eDiv.innerHTML = btn;
                                var editBtn = eDiv.querySelectorAll('.btn')[0];
                                editBtn.addEventListener('click', function(clickParams) { 
@@ -74,12 +74,12 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-primary btn-block" type="button">Delete</button>';
+                               var btn = '<button class="btn btn-default btn-block" type="button">Delete</button>';
                                eDiv.innerHTML = btn;
                                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
-                               deleteBtn.addEventListener('click', function(clickParams) { 
-                                  //var gridInstance =  params.api;
-                                  vm.showConfirmDialog(params);
+                               deleteBtn.addEventListener('click', function(event, params) { 
+                                  var gridInstance =  params.api;
+                                  vm.showConfirmDialog(event);
                                   
                                });
                                return eDiv;

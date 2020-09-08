@@ -1,30 +1,36 @@
 <md-dialog class="dialog">
     <md-dialog-content>
         <div ng-init="vm.init()">
-            <div class="dashboard-template dashboardTheme">
-                <div class="dashboardContainer">
+            <div class="dashboard-template dashboardTheme viewDeviceContainer">
+                <div class="dashboardContainer modal-lg">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="mrgb20"> 
-                                View Group
-                            </h3>
+                            <div class="title-header">
+                                <h4 class="mrgb20"> 
+                                    View Group
+                                </h4>
+                            </div>
                             <div class="clearfix"></div>
                             <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceFetched">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
                                 <span>{{vm.promptMessage}}</span>
                             </div>
-                            <div ng-if="vm.deviceFetched">
-                                <label>Device Name</label>
-                                <span>{{vm.name}}</span>
-                                <label>Devices belonging to this group</label>
-                                <div ng-if="vm.devices == 'N/A'" class="col-xs-12 col-md-6">
-                                <p >{{vm.devices}}</p>
+                            <div ng-if="vm.deviceFetched" class="contentContainer container">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <label>Device Name</label>
+                                        <p>{{vm.name}}</p>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Devices belonging to this group</label>
+                                        <div ng-if="vm.devices == 'N/A'" class="col-xs-12 col-md-6">
+                                        	<p >{{vm.devices}}</p>
+                                        </div>
+                                        <div class="mt5">
+                                        	<div ng-repeat="device in vm.devices" class="blockContent">{{device.id}}</div>
+                                    	</div>
+                                    </div>
                                 </div>
-                                <table border="1">
-                                <tr ng-repeat="device in vm.devices">
-                                    <td>{{device.id}}</td>
-                                </tr>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -32,7 +38,7 @@
             </div>
         </div>
     </md-dialog-content>
-    <md-dialog-actions class="col-md-12">
-        <md-button ng-click="vm.closeDialog()" class="btn btn-primary">Close</md-button>
+    <md-dialog-actions class="col-md-12  pb15 pt15">
+        <md-button ng-click="vm.closeDialog()" class="btn btn-default">Close</md-button>
     </md-dialog-actions>
 </md-dialog> 

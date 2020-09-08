@@ -1,15 +1,26 @@
-<h1>{{vm.deviceTitle}}</h1>
+<div class="col-xs-12">
+    <h1>{{vm.deviceTitle}}</h1>
 
 <div ng-init="vm.init();">
-    <div class="box-label tgl-radio-tabs">
+      <div class="btn-group" data-toggle="buttons">
+            <label class="btn btnContent">
+           		 <input type="radio" name="devices" id="devices" class="devices" ng-model="vm.selectedTab" value="devices" ng-change="vm.changeTab(null,vm.selectedTab)"> Devices
+          	</label>
+          	<label class="btn btnContent">
+            	<input id="groups" type="radio" class="groups " ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)"> Groups
+          	</label>
+        </div>
+   <!-- <div class="box-label tgl-radio-tabs">
                         <input  id="devices" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="devices" ng-change="vm.changeTab(null,vm.selectedTab)">
                         <label for="devices">Devices</label>
         <input  id="groups" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)">
-                        <label for="groups">Groups</label>
-        <button class="btn btn-primary" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
-                    </div>
+                        <label for="groups">Groups</label>-->
+        <button class="btn btn-default" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
+        
+      
+                   
     
-    
+    <div class="row">
      <scriptr-identity-grid ng-if="vm.renderGrid"
                             columns-definition="vm.devicesColDef"
                             enable-sorting="false"
@@ -27,7 +38,8 @@
                             row-model-selection="multiple"
                             suppress-row-click-selection="true"
                             suppress-cell-selection="true"
-                            pagination-page-size="10"
+                            pagination-page-size="2"
+                            cache-block-size="10"
                             transport="https"
                             enable-client-side-sorting="false"
                             size-columns-to-fit ="false"
@@ -43,5 +55,6 @@
                             grid-data-identifier-property="name"
                             >
     </scriptr-identity-grid>
+    </div>
 </div>
-
+</div>

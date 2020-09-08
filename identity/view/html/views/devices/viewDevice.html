@@ -1,51 +1,73 @@
 <md-dialog class="dialog">
     <md-dialog-content>
         <div ng-init="vm.init()">
-            <div class="dashboard-template dashboardTheme">
-                <div class="dashboardContainer">
+            <div class="dashboard-template dashboardTheme viewDeviceContainer">
+                <div class="dashboardContainer modal-lg">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="mrgb20"> 
-                                View Device
-                            </h3>
+                            <div class="title-header">
+                                <h4 class="mrgb20"> 
+                                    View Device
+                                </h4>
+                            </div>
                             <div class="clearfix"></div>
                             <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceFetched">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
                                 <span>{{vm.promptMessage}}</span>
                             </div>
-                            <div ng-if="vm.deviceFetched">
-                                <label>Device Name</label>
-                                <span>{{vm.name}}</span>
-                                <label>Device ID</label>
-                                <span>{{vm.id}}</span>
-                                <label>Description</label>
-                                <span>{{vm.description}}</span>
-                                <label>Groups this device belongs to</label>
-                                <p ng-repeat="group in vm.groups">{{group}}</p>
-                                <label>Status</label>
-                                <span>{{vm.status}}</span>
-                                <label>Token</label>
-                                <span>{{vm.token}}</span>
-                                <button ng-click="vm.copyToken()" class="btn btn-primary">Copy</button>
-                                <button ng-if="vm.token == 'N/A'" ng-click="vm.generateToken()" class="btn btn-primary">Generate</button>
-                                <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-primary">Regenerate</button>
-                                <button ng-click="vm.revokeToken()" class="btn btn-primary">Delete</button>
-                                <div ng-if="vm.hasAttrs">
-                                    <label>Device Attributes</label>
-                                    <table border="1">
-                                        <thead>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Value</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="attr in vm.deviceAttrs">
-                                                <td>{{attr.name}}</td>
-                                                <td>{{attr.type}}</td>
-                                                <td>{{attr.value}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                            <div ng-if="vm.deviceFetched" class="contentContainer container">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <label>Device Name</label>
+                                        <p>{{vm.name}}</p>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Device ID</label>
+                                        <p>{{vm.id}}</p>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Description</label>
+                                        <p>{{vm.description}}</p>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Groups this device belongs to</label>
+                                        <div class="mt5">
+                                        	<div ng-repeat="group in vm.groups" class="blockContent">{{group}}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <label>Status</label>
+                                        <p>{{vm.status}}</p>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <label>Token</label>
+                                        <p>{{vm.token}}</p>
+                                    </div>
+                                    <div class="col-xs-12 mb15">
+                                        <button ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
+                                        <button ng-if="vm.token == 'N/A'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-default mgr5">Regenerate</button>
+                                        <button ng-click="vm.revokeToken()" class="btn btn-default mgr5">Delete</button>
+                                    </div>
+                                    <div ng-if="vm.hasAttrs" class="col-xs-12">
+                                        <label>Device Attributes</label>
+                                        <table border="1" class="table">
+                                            <thead>
+                                                <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="attr in vm.deviceAttrs">
+                                                    <td>{{attr.name}}</td>
+                                                    <td>{{attr.type}}</td>
+                                                    <td>{{attr.value}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                	</div>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +76,7 @@
             </div>
         </div>
     </md-dialog-content>
-    <md-dialog-actions class="col-md-12">
-    	<md-button ng-click="vm.closeDialog()" class="btn btn-primary">Close</md-button>
+    <md-dialog-actions class="col-md-12 pb15 pt15">
+    	<md-button ng-click="vm.closeDialog()" class="btn btn-default">Close</md-button>
     </md-dialog-actions>
 </md-dialog> 

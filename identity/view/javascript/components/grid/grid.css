@@ -9,7 +9,7 @@
 .ag-bootstrap {font-family: "Josefin Sans",sans-serif!important; text-align: left;}
 .ag-bootstrap .ag-body {background-color: #fff!important;}
 .ag-bootstrap .ag-cell-label-container {display: flex; height: 100%;}
-.ag-bootstrap .ag-header-cell-label {padding: 2px 2px!important; display: flex;}
+.ag-bootstrap .ag-header-cell-label {padding: 2px 2px!important; display: flex; color: ##5477a0;}
 .ag-bootstrap .ag-header-cell-text {font-weight: 700; color: #72abb7; margin: auto;}
 .ag-bootstrap .ag-header {border-bottom: 2px solid #ddd!important;}
 .ag-bootstrap .ag-header-cell {text-align: left!important;}
@@ -41,7 +41,7 @@
 .ag-bootstrap .ag-cell-focus .ag-cell-edit-input {color: #000;}
 .ag-bootstrap .ag-row-selected {background-color:rgba(166, 203, 208, 0.44)!important;}
 .ag-bootstrap .ag-paging-button {}
-.ag-bootstrap .ag-header-icon {fill: #ff8c00!important;}
+.ag-bootstrap .ag-header-icon {fill: #5477a0!important;}
 
 .ag-cell {overflow: visible!important;}
 

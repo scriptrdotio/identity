@@ -80,7 +80,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-primary btn-view">View</button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-view">View</button>';
 
                 vButton = eDiv.querySelectorAll('.btn-view')[0];
                 vButton.addEventListener('click', function() {
@@ -96,7 +96,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             cellRenderer: function(params){
                     var eDiv = document.createElement('div');
                     var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-primary btn-edit">Edit</button>';
+                    eDiv.innerHTML = '<button class="btn btn-default btn-edit">Edit</button>';
+
                     vButton = eDiv.querySelectorAll('.btn-edit')[0];
                     vButton.addEventListener('click', function(clickParams) {
                          vm.loadEditOverlay(params, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
@@ -111,7 +112,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             cellRenderer: function(params){
                 	var eDiv = document.createElement('div');
                     var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-primary btn-delete">Delete</button>';
+                    eDiv.innerHTML = '<button class="btn btn-default btn-delete">Delete</button>';
 
                     vButton = eDiv.querySelectorAll('.btn-delete')[0];
                     vButton.addEventListener('click', function() {
@@ -127,7 +128,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             cellRenderer: function(params){
                 	var eDiv = document.createElement('div');
                     var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-primary btn-cptoken">Copy Token</button>';
+                    eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
 
                     vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
                     vButton.addEventListener('click', function() {
@@ -312,8 +313,6 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.loadOverlay = function(marker, overlayForm, backendApi) {
         vm.closeAlert();
         var of = angular.copy(overlayForm);
-        //var schema = angular.copy(of.schema);
-        //schema.properties.id.isDisabled = true;
         var formWidget = {
             'label': of.title,
             'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
