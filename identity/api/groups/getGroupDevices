@@ -10,14 +10,14 @@ var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : 
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 //Check if required params
-var requiredParams = ["groupName"];
+var requiredParams = ["groups"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
 hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var response = devices.query({"query":'groups = "' +params["groupName"]+ '"'});
+var response = devices.query({"query":'groups = "' +params["groups"]+ '"'});
 
 
 
