@@ -1,10 +1,8 @@
 var log = require("log")
 var devices = require("device");
 var errorHandler = require("../../entities/ErrorHandler");
-
 var errorHandler = new errorHandler.ErrorHandler();
 log.setLevel("INFO");
-
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
@@ -20,15 +18,39 @@ if(params["count"] !== undefined && params["count"] !== null) {
     count = (params["count"] === "true") ?  true : false;
 }
 
+var queryFilter = "";
+if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
+    queryFilter = params["queryFilter"];
+}
 
-var response = devices.query({ "fields": fields, "sort":"name<string:DESC>", "count": count});
-  
+var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count};
+if(queryFilter!="")
+	queryObj.query = 'id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
+var response = devices.query(queryObj);
+
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
   if(count) {
-      return { "count": response.result.count, "documents": response.result.devices};
+      var documents = response.result.devices;
+      if(documents!=null && documents.length>0 && params.pageNumber!=null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
+          var startRow = parseInt(params.startRow);
+          var endRow = parseInt(params.endRow);
+          var pageDocuments = [];
+          var x=0;
+          for(i=startRow; i<endRow; i++){
+              if(documents[i]!=null && documents[i]!="")
+              	pageDocuments[x++] = documents[i];
+          }
+          documents = pageDocuments;
+          log.info("pageDocuments: "+JSON.stringify(pageDocuments));
+          log.info("documents: "+JSON.stringify(documents));
+      }
+      var responseObj = { "count": response.result.count, "documents": documents};
+      log.info("Response" + JSON.stringify(responseObj));
+      return responseObj;
   } else {
+      log.info("Response: " + response.result.devices);
       return response.result.devices;
   }
   
