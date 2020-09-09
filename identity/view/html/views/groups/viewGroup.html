@@ -26,7 +26,7 @@
                                         <div ng-if="vm.devices == 'N/A'" class="col-xs-12 col-md-6">
                                         	<p >{{vm.devices}}</p>
                                         </div>
-                                        <div class="mt5">
+                                        <div ng-hide="vm.devices == 'N/A'" class="mt5">
                                         	<div ng-repeat="device in vm.devices" class="blockContent">{{device.id}}</div>
                                     	</div>
                                     </div>

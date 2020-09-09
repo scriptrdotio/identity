@@ -1,9 +1,20 @@
 <div class="col-xs-12">
 <h1>{{vm.title}}</h1>
 <br>
-<button class="btn btn-default" type="button" ng-click="vm.addGroupOverLay();" >{{vm.button}}</button>
-<div class="row">
-    <div ng-init="vm.init();">
+    <button class="btn btn-default" type="button" ng-click="vm.addGroupOverLay();" >{{vm.button}}</button>
+    <div class="row">
+ <div>
+      <label><input type="checkbox" id="allColumns" /> allColumns = true</label>
+</div>
+ <div style="margin: 10px 0">
+    <button ng-click="vm.onBtnExportDataAsCsv()">
+     exportDataAsCsv
+    </button>
+    <button ng-click="vm.onBtnExportDataAsExcel()">
+      exportDataAsExcel
+    </button>
+  </div>
+<div ng-init="vm.init();">
     <scriptr-identity-grid ng-if="vm.renderGrid"
                            columns-definition="vm.groupsColDef"
                            enable-sorting="false"
@@ -36,9 +47,10 @@
                            api="{{vm.gridAPI}}"
                            api-params="vm.params"
                            row-height="50"
-                           grid-data-identifier-property="groupName"
+                           grid-data-identifier-property="groups"
                            >
     </scriptr-identity-grid>
+</div>
     </div>
 </div>
-</div>
+
