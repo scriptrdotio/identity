@@ -456,9 +456,9 @@ angular
                         if(selectedKeys.length > 0){
                             var params;
                             self.gridOptions.api.showLoadingOverlay();
-                            if(self._dataIdentifierProperty == "groupName")
+                            if(self._dataIdentifierProperty == "groups")
                                 params = {"groupName" : selectedKeys}
-                            if(self._dataIdentifierProperty == "name")
+                            if(self._dataIdentifierProperty == "id")
                                     params = {"id" : selectedKeys}
                             if(this.deleteParams){
                                 for(var key in this.deleteParams){
@@ -609,7 +609,7 @@ angular
         var api;
         if(dataIdentifierProperty == "name")
             api = "identity/api/devices/deleteDevice";
-        if(dataIdentifierProperty == "groupName")
+        if(dataIdentifierProperty == "groups")
             api = "identity/api/groups/deleteGroup";
       httpClient.post(api, params)
         .then(
