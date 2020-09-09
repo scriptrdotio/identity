@@ -278,7 +278,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             templateUrl: 'html/views/groups/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {groupData: params.data},
+            locals: {groupData: params.data, grid: params.api},
             ok: 'Close'
         });
     }
@@ -346,11 +346,12 @@ myApp.controller('groupDialog', function(httpClient, response, $mdDialog) {
 
 
 
-myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDialog) {
+myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting group...';
     vm.groupName = groupData.groups;
+    vm.grid = grid;
     vm.groupDeleted = false;
 	vm.showMessage = true;
     vm.header = "Confirmation";
@@ -378,6 +379,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDi
                 vm.groupDeleted = true;
                 vm.hideLoading();
                 //refresh grid
+                vm.grid.api.refreshInfiniteCache();
                 console.log("deleteGroup response", data);
             },
             function(err) {
@@ -387,6 +389,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDi
                     vm.groupDeleted = true;
                     vm.hideLoading();
                     //refresh grid
+                    vm.grid.api.refreshInfiniteCache();
                 	console.log("deleteGroup response", err);
                     return;
                 }

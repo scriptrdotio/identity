@@ -163,7 +163,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             templateUrl: 'html/views/devices/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {deviceData: params.data},
+            locals: {deviceData: params.data, grid: params.api},
             ok: 'Close'
         });
     }
@@ -384,11 +384,12 @@ myApp.controller('deviceDialog', function(httpClient, response, $mdDialog) {
 });
 
 
-myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, $mdDialog) {
+myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting device...';
     vm.deviceId = deviceData.id;
+    vm.grid = grid;
     vm.deviceDeleted = false;
 	vm.showMessage = true;
     vm.header = "Confirmation";
@@ -416,6 +417,7 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, $mdDialog
                 vm.deviceDeleted = true;
                 vm.hideLoading();
                 //refresh grid
+                vm.grid.api.refreshInfiniteCache();
                 console.log("deleteDevice response", data);
             },
             function(err) {
@@ -425,6 +427,7 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, $mdDialog
                     vm.deviceDeleted = true;
                     vm.hideLoading();
                     //refresh grid
+                    vm.grid.api.refreshInfiniteCache();
                 	console.log("deleteDevice response", err);
                     return;
                 }
