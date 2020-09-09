@@ -77,17 +77,45 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                                var btn = '<button class="btn btn-default btn-block" type="button">Delete</button>';
                                eDiv.innerHTML = btn;
                                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
-                               deleteBtn.addEventListener('click', function(event, params) { 
-                                  var gridInstance =  params.api;
-                                  vm.showConfirmDialog(event);
+                               deleteBtn.addEventListener('click', function(clickParams) { 
+                                  //var gridInstance =  params.api;
+                                  vm.showConfirmDialog(params);
                                   
                                });
                                return eDiv;
                            }
-                       }
-
-
+                       },
                       ];
+    
+    /*vm.gridOptions ={
+        columnDefs: vm.groupsColDef ,
+        enableFilter: true,
+        enableSorting: true,
+        showToolPanel: true,
+        rowSelection: 'multiple',
+        
+    }
+    
+
+    vm.onBtnExportDataAsCsv = function() {
+        var params = vm.getParams();
+        $scope.gridOptions.api.exportDataAsCsv(params);
+    }
+
+    vm.onBtnExportDataAsExcel = function(params) {
+        params.api.exportDataAsExcel(params.data);
+    }
+
+
+    vm.getBooleanValue = function (checkboxSelector) {
+        return document.querySelector(checkboxSelector).checked === true;
+    }
+
+    vm.getParams = function() {
+        return {
+            allColumns:true
+        }}*/
+    
     vm.closeAlert = function() {
         vm.hasAlert = false;
     };
@@ -129,6 +157,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
             'schema': angular.copy(of.schema),
             'form': angular.copy(of.form),
+            
             'options': {}
         }
         var self = this;
@@ -148,14 +177,12 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             console.log('Model Data', wdgModel);
             if(wdgModel != 'cancel') {
                 console.log('Model Data', wdgModel);
-                // console.log(' Data', marker.data);
                 var successHandler = function(data) {
-                    vm.showAlert('success', of.title + ' successful')
+                    vm.showDialog(data);
                 }
                 var failureHandler = function(err) {
-                    vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                     vm.showDialog(err);
                 }
-                //wdgModel.groupName = marker.data.id;
                 vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
             }
         }, function () {
@@ -164,6 +191,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     };
     
         vm.loadEditOverlay = function(marker, overlayForm, backendApi) {
+            
             httpClient.post("identity/api/groups/getGroupDevices", marker.data).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
@@ -197,22 +225,19 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                         console.log('Model Data', wdgModel);
                         if(wdgModel != 'cancel') {
                             console.log('Model Data', wdgModel);
-                            // console.log(' Data', marker.data);
                             var successHandler = function(data) {
-                                vm.showAlert('success', of.title + ' successful')
+                                vm.showDialog(data)
                             }
                             var failureHandler = function(err) {
-                                vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                                 vm.showDialog(err);
                             }
                             
-                            //JSON.stringify(a)==JSON.stringify(b)
                             wdgModel.update = true;
                             wdgModel.originalDevices = formWidget.model.originalDevices;
                             if(wdgModel.originalName != wdgModel.name){
                                 wdgModel.newName = wdgModel.name;
                                 wdgModel.name = wdgModel.originalName;
                             }
-                            //console.log(formWidget.original);
                             if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
                                 wdgModel.updateDevices = false;
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
@@ -278,8 +303,49 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
         vm.closeAlert = function() {
             vm.hasAlert = false;
         };
+    
+    
+    vm.showDialog = function(data) {
+    $mdDialog.show({
+        controller: 'groupDialog',
+        controllerAs: 'vm',
+        templateUrl: 'html/views/dialog.html',
+        clickOutsideToClose:true,
+        escapeToClose: true,
+        locals: {response: data},
+        ok: 'Close'
+    });
+}
+    
 
 });
+
+
+myApp.controller('groupDialog', function(httpClient, response, $mdDialog) {
+    var vm = this;
+    vm.response = response;
+    vm.title = "Saving Group";
+    
+    vm.init = function() {
+        if(response.errorDetail != null)
+            vm.promptMessage = vm.response.status +": " +response.errorDetail;
+        else 
+            vm.promptMessage = vm.response.status;
+        if(response.status == null )
+            vm.promptMessage = "success";
+
+    } 
+ 
+    vm.closeDialog = function() {
+        $mdDialog.hide();
+    };
+});
+
+
+
+
+
+
 myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
@@ -404,11 +470,6 @@ myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialo
             }
         );
     }
-    
-    
-    
-    
-    
     
      vm.closeDialog = function() {
         $mdDialog.hide();

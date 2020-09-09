@@ -241,12 +241,11 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         console.log('Model Data', wdgModel);
                         if(wdgModel != 'cancel') {
                             console.log('Model Data', wdgModel);
-                            // console.log(' Data', marker.data);
                             var successHandler = function(data) {
-                                vm.showAlert('success', of.title + ' successful')
+                                vm.showDialog(data)
                             }
                             var failureHandler = function(err) {
-                                vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                                vm.showDialog(err)
                             }
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
                         }
@@ -336,14 +335,12 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         modalInstance.result.then(function (wdgModel) {
             if(wdgModel != 'cancel') {
                 console.log('Model Data', wdgModel);
-                // console.log(' Data', marker.data);
                 var successHandler = function(data) {
-                    vm.showAlert('success', of.title + ' successful')
+                    vm.showDialog(data)
                 }
                 var failureHandler = function(err) {
-                    vm.showAlert('danger', of.title + ' failure: ' + err.errorDetail);
+                    vm.showDialog(err)
                 }
-                //wdgModel.groupName = marker.data.id;
                 vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
             }
         }, function () {
@@ -351,7 +348,41 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         });
     };
     
+    vm.showDialog = function(data) {
+        $mdDialog.show({
+            controller: 'deviceDialog',
+            controllerAs: 'vm',
+            templateUrl: 'html/views/dialog.html',
+            clickOutsideToClose:true,
+            escapeToClose: true,
+            locals: {response: data},
+            ok: 'Close'
+        });
+    }
+    
 });
+
+
+myApp.controller('deviceDialog', function(httpClient, response, $mdDialog) {
+    var vm = this;
+    vm.response = response;
+    vm.title = "Saving Device";
+
+    vm.init = function() {
+        if(response.errorDetail != null)
+            vm.promptMessage = vm.response.status +": " +response.errorDetail;
+        else 
+            vm.promptMessage = vm.response.status;
+        if(response.status == null )
+            vm.promptMessage = "success";
+
+    } 
+
+    vm.closeDialog = function() {
+        $mdDialog.hide();
+    };
+});
+
 
 myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, $mdDialog) {
     var vm = this;
