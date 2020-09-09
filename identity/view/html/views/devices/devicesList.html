@@ -10,11 +10,6 @@
             	<input id="groups" type="radio" class="groups " ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)"> Groups
           	</label>
         </div>
-   <!-- <div class="box-label tgl-radio-tabs">
-                        <input  id="devices" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="devices" ng-change="vm.changeTab(null,vm.selectedTab)">
-                        <label for="devices">Devices</label>
-        <input  id="groups" type="radio" class="form-check-input tgl-radio-tab-child" ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)">
-                        <label for="groups">Groups</label>-->
         <button class="btn btn-default" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
         
       
@@ -38,7 +33,7 @@
                             row-model-selection="multiple"
                             suppress-row-click-selection="true"
                             suppress-cell-selection="true"
-                            pagination-page-size="10"
+                            pagination-page-size="3"
                             cache-block-size="10"
                             transport="https"
                             enable-client-side-sorting="false"

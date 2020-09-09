@@ -8,20 +8,46 @@ var errorHandler = new errorHandler.ErrorHandler();
 
 //Check if required params
 var requiredParams = ["id"];
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("Request normalized params: " + JSON.stringify(params));
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var response = devices.delete(request.body["id"])
-
-if(response.metadata.status == "failure") {
-   return response.metadata;
-} else {
-  return {"status": "success"};
+var deviceIdParam = params["id"];
+var deviceArr = [];
+if(deviceIdParam instanceof Array){
+    deviceArr = deviceIdParam;
+}else{
+    deviceArr = [deviceIdParam];
 }
 
+var ts = apsdb.beginTransaction();
+try{
+    var responseObj = {};
+    deviceArr.forEach(function(deviceId) {
+        var response = devices.delete(deviceId);
+        if(response.metadata.status == "failure") {
+            responseObj = response.metadata;
+            throw {
+                errorCode: response.metadata.errorCode,
+                errorDetail: response.metadata.errorDetail
+            };
+        } else {
+          responseObj = {"status": "success"};
+        }
+    })
+    
+	ts.commit();
+} catch(e){
+    ts.rollback();
+    log.error("Failure when deleting devices\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+}      
+
+return responseObj;
 
 
 

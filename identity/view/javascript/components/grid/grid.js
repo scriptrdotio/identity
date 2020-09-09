@@ -607,7 +607,7 @@ angular
     this.postGridHelper = function(params, dataIdentifierProperty){
         var d = $q.defer(); 
         var api;
-        if(dataIdentifierProperty == "name")
+        if(dataIdentifierProperty == "id")
             api = "identity/api/devices/deleteDevice";
         if(dataIdentifierProperty == "groups")
             api = "identity/api/groups/deleteGroup";
