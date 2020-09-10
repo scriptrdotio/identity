@@ -1,0 +1,69 @@
+var log = require("log");
+log.setLevel("INFO");
+var devices = require("device");
+var errorHandler = require("./ErrorHandler");
+var errorHandler = new errorHandler.ErrorHandler();
+
+function getDevices(params){
+    log.info("Request normalized params: " + JSON.stringify(params));
+
+    var fields = "*";
+    if(params["fields"] !== undefined && params["fields"] !== null ) {
+        fields = params["fields"];
+    }
+
+    var count = true;
+    if(params["count"] !== undefined && params["count"] !== null) {
+        count = (params["count"] === "true") ?  true : false;
+    }
+
+    var queryFilter = "";
+    if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
+        queryFilter = params["queryFilter"];
+    }
+
+    var documents = [];
+    var pageNumber = 1;
+    var continueLoop = true;
+    while(continueLoop){
+        var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count};
+        if(queryFilter!="")
+            queryObj.query = 'id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
+        queryObj.pageNumber = pageNumber;
+        log.info("queryObj"+pageNumber+": " + JSON.stringify(queryObj));
+        var response = devices.query(queryObj);
+        log.info("Response"+pageNumber+": " + JSON.stringify(response));
+        if(response.metadata.status == "failure") {
+            return response.metadata;
+        }
+        if(response.result.devices.length < 50){
+            continueLoop = false;
+        } else {
+            pageNumber++;
+        }
+        if(response.result.devices.length > 0)
+            documents = documents.concat(response.result.devices);
+    }
+    log.info("documents: " + documents);
+    if(count) {
+        if(documents!=null && documents.length>0 && params.pageNumber!=null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
+            var startRow = parseInt(params.startRow);
+            var endRow = parseInt(params.endRow);
+            var pageDocuments = [];
+            var x=0;
+            for(i=startRow; i<endRow; i++){
+                if(documents[i]!=null && documents[i]!="")
+                    pageDocuments[x++] = documents[i];
+            }
+            documents = pageDocuments;
+            log.info("pageDocuments: "+JSON.stringify(pageDocuments));
+            log.info("documents: "+JSON.stringify(documents));
+        }
+        var responseObj = { "count": response.result.count, "documents": documents};
+        log.info("Response" + JSON.stringify(responseObj));
+        return responseObj;
+    } else {
+        log.info("Documents: " + documents);
+        return documents;
+    }
+}
