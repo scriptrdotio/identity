@@ -379,7 +379,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                 vm.groupDeleted = true;
                 vm.hideLoading();
                 //refresh grid
-                vm.grid.api.refreshInfiniteCache();
+                vm.grid.refreshInfiniteCache();
                 console.log("deleteGroup response", data);
             },
             function(err) {
@@ -389,7 +389,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                     vm.groupDeleted = true;
                     vm.hideLoading();
                     //refresh grid
-                    vm.grid.api.refreshInfiniteCache();
+                    vm.grid.refreshInfiniteCache();
                 	console.log("deleteGroup response", err);
                     return;
                 }

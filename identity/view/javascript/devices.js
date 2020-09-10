@@ -417,7 +417,7 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $md
                 vm.deviceDeleted = true;
                 vm.hideLoading();
                 //refresh grid
-                vm.grid.api.refreshInfiniteCache();
+                vm.grid.refreshInfiniteCache();
                 console.log("deleteDevice response", data);
             },
             function(err) {
@@ -427,7 +427,7 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $md
                     vm.deviceDeleted = true;
                     vm.hideLoading();
                     //refresh grid
-                    vm.grid.api.refreshInfiniteCache();
+                    vm.grid.refreshInfiniteCache();
                 	console.log("deleteDevice response", err);
                     return;
                 }
