@@ -11,7 +11,7 @@
           </div>
         </div>
     </md-dialog-content>
-    <md-dialog-actions class="col-md-12">
+    <md-dialog-actions class="col-md-12" ng-hide="vm.isLoading">
         <md-button ng-click="vm.deleteGroup()" class="btn btn-primary" ng-hide="vm.groupDeleted">Delete</md-button>
     	<md-button ng-click="vm.closeDialog()" class="btn btn-primary">Close</md-button>
     </md-dialog-actions>

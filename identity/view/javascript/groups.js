@@ -7,7 +7,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     vm.addGroupOverLay = function (){
          vm.loadOverlay(null, vm.infoWindowActions.addGroup, 'identity/api/groups/saveGroup');
     };
-    
+    vm.gridId =  "groupsGrid";
         vm.init = function() {
           
         }
@@ -87,38 +87,20 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                        },
                       ];
     
-    /*vm.gridOptions ={
-        columnDefs: vm.groupsColDef ,
-        enableFilter: true,
-        enableSorting: true,
-        showToolPanel: true,
-        rowSelection: 'multiple',
-        
-    }
-    
-
-    vm.onBtnExportDataAsCsv = function() {
-        var params = vm.getParams();
-        $scope.gridOptions.api.exportDataAsCsv(params);
-    }
-
-    vm.onBtnExportDataAsExcel = function(params) {
-        params.api.exportDataAsExcel(params.data);
-    }
-
-
-    vm.getBooleanValue = function (checkboxSelector) {
-        return document.querySelector(checkboxSelector).checked === true;
-    }
-
-    vm.getParams = function() {
-        return {
-            allColumns:true
-        }}*/
-    
     vm.closeAlert = function() {
-        vm.hasAlert = false;
+        this.showError = false;
     };
+
+    vm.showAlert = function(type, content) {
+        vm.message = {
+            "type" : type,
+            "content" : content
+        }
+        vm.showError = true;
+        $timeout(function(){
+            vm.showError = false;
+        }, 5000);
+    }
 
     vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
         console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
@@ -178,10 +160,12 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             if(wdgModel != 'cancel') {
                 console.log('Model Data', wdgModel);
                 var successHandler = function(data) {
-                    vm.showDialog(data);
+                    $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                    vm.showAlert("success", "Successfully saved group");
                 }
                 var failureHandler = function(err) {
-                     vm.showDialog(err);
+                    vm.showAlert("danger", "Could not save group, please try again later");
+                    console.log('Error when saving group', err);
                 }
                 vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
             }
@@ -226,10 +210,12 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                         if(wdgModel != 'cancel') {
                             console.log('Model Data', wdgModel);
                             var successHandler = function(data) {
-                                vm.showDialog(data)
+                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                    			vm.showAlert("success", "Successfully saved group");
                             }
                             var failureHandler = function(err) {
-                                 vm.showDialog(err);
+                                vm.showAlert("danger", "Could not save group, please try again later");
+                                console.log('Error when saving group', err);
                             }
                             
                             wdgModel.update = true;
@@ -278,7 +264,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             templateUrl: 'html/views/groups/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {groupData: params.data, grid: params.api},
+            locals: {groupData: params.data, grid: params.api, parent: vm},
             ok: 'Close'
         });
     }
@@ -295,15 +281,6 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
             ok: 'Close'
         });
     }
-        vm.showAlert = function(msg) {
-        console.log(msg);
-        alert(msg);
-    }
-
-        vm.closeAlert = function() {
-            vm.hasAlert = false;
-        };
-    
     
     vm.showDialog = function(data) {
     $mdDialog.show({
@@ -319,7 +296,6 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     
 
 });
-
 
 myApp.controller('groupDialog', function(httpClient, response, $mdDialog) {
     var vm = this;
@@ -341,17 +317,13 @@ myApp.controller('groupDialog', function(httpClient, response, $mdDialog) {
     };
 });
 
-
-
-
-
-
-myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, $mdDialog) {
+myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, parent, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting group...';
     vm.groupName = groupData.groups;
     vm.grid = grid;
+    vm.parent = parent;
     vm.groupDeleted = false;
 	vm.showMessage = true;
     vm.header = "Confirmation";
@@ -370,27 +342,27 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     console.log("deleteGroup response", data);
-                    vm.promptMessage = "Could not delete group, please try again later";
-                    vm.hideLoading();
+                    vm.parent.showAlert("danger", "Could not delete group, please try again later");
+                    vm.closeDialog();
                     return;
                 }
 
-                vm.promptMessage = "Success";
+                vm.parent.showAlert("success", "Successfully deleted group");
                 vm.groupDeleted = true;
-                vm.hideLoading();
                 //refresh grid
                 vm.grid.refreshInfiniteCache();
                 console.log("deleteGroup response", data);
+                vm.closeDialog();
             },
             function(err) {
                 console.dir(err);
                 if(err.status == "success"){
-                    vm.promptMessage = "Success";
+                    vm.parent.showAlert("success", "Successfully deleted group");
                     vm.groupDeleted = true;
-                    vm.hideLoading();
                     //refresh grid
                     vm.grid.refreshInfiniteCache();
                 	console.log("deleteGroup response", err);
+                    vm.closeDialog();
                     return;
                 }
 
@@ -400,9 +372,9 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.promptMessage = "Could not delete group, please try again later";
-                vm.hideLoading();
+                vm.parent.showAlert("danger", "Could not delete group, please try again later");
                 console.log("deleteGroup response", err);
+                vm.closeDialog();
             }
         );
     }

@@ -104,7 +104,9 @@ angular
             
             "onRowDoubleClicked": "&",
             
-            "sizeColumnsToFit": "<?"
+            "sizeColumnsToFit": "<?",
+            
+            "gridEventsId": "@"
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
@@ -326,11 +328,11 @@ angular
                     dataStore.subscribe(this.onServerCall, self.msgTag, $scope);
                 }
 
-                $scope.$on("updateGridData", function(event, broadcastData) {
+                $scope.$on("updateGridData-"+self.gridEventsId, function(event, broadcastData) {
                     self.broadcastData = broadcastData;
                     self._createNewDatasource();
-                })
-
+                });
+                
             }
 
             this.closeAlert = function() {

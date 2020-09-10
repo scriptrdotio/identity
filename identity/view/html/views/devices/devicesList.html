@@ -1,6 +1,6 @@
 <div class="col-xs-12">
     <h1>{{vm.deviceTitle}}</h1>
-
+<div class="col-xs-12" ng-if="vm.showError"><div class="alert" ng-class="'alert-' + ( vm.message.type || 'warning')">{{vm.message.content}}</div></div>
 <div ng-init="vm.init();">
       <div class="btn-group" data-toggle="buttons">
             <label class="btn btnContent">
@@ -12,12 +12,12 @@
         </div>
         <button class="btn btn-default" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
         
-      
                    
     
     <div class="row">
      <scriptr-identity-grid ng-if="vm.renderGrid"
                             columns-definition="vm.devicesColDef"
+                            grid-events-id="{{vm.gridId}}"
                             enable-sorting="false"
                             enable-delete-row="true"
                             boxlabel="{{ 'USERS.LIST' | translate}}"
@@ -33,7 +33,7 @@
                             row-model-selection="multiple"
                             suppress-row-click-selection="true"
                             suppress-cell-selection="true"
-                            pagination-page-size="3"
+                            pagination-page-size="10"
                             cache-block-size="10"
                             transport="https"
                             enable-client-side-sorting="false"

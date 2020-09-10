@@ -140,9 +140,19 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
           }
         ];
     
-    vm.showAlert = function(msg) {
-        console.log(msg);
-        alert(msg);
+    vm.closeAlert = function() {
+        this.showError = false;
+    };
+
+    vm.showAlert = function(type, content) {
+        vm.message = {
+            "type" : type,
+            "content" : content
+        }
+        vm.showError = true;
+        $timeout(function(){
+            vm.showError = false;
+        }, 5000);
     }
     
     vm.copyToClipboard = function(text) {
@@ -163,7 +173,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             templateUrl: 'html/views/devices/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {deviceData: params.data, grid: params.api},
+            locals: {deviceData: params.data, grid: params.api, parent: vm},
             ok: 'Close'
         });
     }
@@ -172,6 +182,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
          vm.loadOverlay(null, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
     };
     
+    vm.gridId =  "devicesGrid";
+  
     vm.showViewDeviceDialog = function(params) {
         $mdDialog.show({
             controller: 'viewDeviceDialogCtrl',
@@ -240,12 +252,13 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                     modalInstance.result.then(function (wdgModel) {
                         console.log('Model Data', wdgModel);
                         if(wdgModel != 'cancel') {
-                            console.log('Model Data', wdgModel);
                             var successHandler = function(data) {
-                                vm.showDialog(data)
+                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                                vm.showAlert("success", "Successfully saved device");
                             }
                             var failureHandler = function(err) {
-                                vm.showDialog(err)
+                                vm.showAlert("danger", "Could not save device, please try again later");
+                                console.log('Error when saving device', err);
                             }
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
                         }
@@ -273,14 +286,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     };
     
     
-    
-    
     vm.init = function() {
-        vm.test2 = 3;
     }
-     vm.closeAlert = function() {
-        vm.hasAlert = false;
-    };
 
     vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
         console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
@@ -336,10 +343,12 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             if(wdgModel != 'cancel') {
                 console.log('Model Data', wdgModel);
                 var successHandler = function(data) {
-                    vm.showDialog(data)
+                    $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                    vm.showAlert("success", "Successfully saved device");
                 }
                 var failureHandler = function(err) {
-                    vm.showDialog(err)
+                    vm.showAlert("danger", "Could not save device, please try again later");
+                    console.log('Error when saving device', err);
                 }
                 vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
             }
@@ -383,13 +392,13 @@ myApp.controller('deviceDialog', function(httpClient, response, $mdDialog) {
     };
 });
 
-
-myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $mdDialog) {
+myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, parent, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting device...';
     vm.deviceId = deviceData.id;
     vm.grid = grid;
+    vm.parent = parent;
     vm.deviceDeleted = false;
 	vm.showMessage = true;
     vm.header = "Confirmation";
@@ -408,27 +417,28 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $md
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     console.log("deleteDevice response", data);
-                    vm.promptMessage = "Could not delete device, please try again later";
-                    vm.hideLoading();
+                    vm.parent.showAlert("danger", "Could not delete device, please try again later");
+                    vm.closeDialog();
                     return;
                 }
-
-                vm.promptMessage = "Success";
+				
+                vm.parent.showAlert("success", "Successfully deleted device");
                 vm.deviceDeleted = true;
-                vm.hideLoading();
+                
                 //refresh grid
                 vm.grid.refreshInfiniteCache();
                 console.log("deleteDevice response", data);
+                vm.closeDialog();
             },
             function(err) {
                 console.dir(err);
                 if(err.status == "success"){
-                    vm.promptMessage = "Success";
+                    vm.parent.showAlert("success", "Successfully deleted device");
                     vm.deviceDeleted = true;
-                    vm.hideLoading();
                     //refresh grid
                     vm.grid.refreshInfiniteCache();
                 	console.log("deleteDevice response", err);
+                    vm.closeDialog();
                     return;
                 }
 
@@ -438,8 +448,8 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, $md
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.promptMessage = "Could not delete device, please try again later";
-                vm.hideLoading();
+                vm.parent.showAlert("danger", "Could not delete device, please try again later");
+                vm.closeDialog();
                 console.log("deleteDevice response", err);
             }
         );

@@ -87,6 +87,7 @@ myApp.constant(
                         }
                 ]
             },
+                                
                  {
                 'type': 'section',
                 'htmlClass':'row',
@@ -95,37 +96,37 @@ myApp.constant(
                         'type': 'section',
                         'htmlClass': 'col-xs-12 col-sm-6',
                         'items': [{
-                            'key': 'password',
-                            /*"onChange": function(viewValue, form, model, scope) {
-                                console.log("password viewValue: " + viewValue)
-                                console.log(model["confirmPassword"])
-                                if(viewValue != model["confirmPassword"])
-                                    scope.$root.$broadcast('schemaForm.error.password','doNotMatch',false);
-                                else {
-                                    console.log("Matching")
-                                    scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
-                                    scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
-                                }
-                             }*/
-                        }]
+                                    "key" : "password",
+                                    "type": "password",
+                                    "ngModelOptions": { allowInvalid: true },
+                                    "onChange": function(modelValue, form, model, scope) {
+                                        console.log(model)
+                                        if(modelValue != model["confirmPassword"])
+                                            scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',false);
+                                        else {
+                                            scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                            scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
+                                        }
+                                     }
+                                }]
                     },
                     {
                         "type": "section",
                         "htmlClass": "col-xs-12 col-sm-6",
                         'items': [{
-                            'key': 'confirmPassword',
-                            /*"onChange": function(viewValue, form, model, scope) {
-                                console.log("confirmPassword viewValue: " + viewValue)
-                                console.log(model["password"])
-                                 if(viewValue != model["password"])
-                                    scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
-                                 else {
-                                     console.log("Matching")
-                                     scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
-                                     scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
-                                 }
-                             }*/
-                        }]
+                                    "key" : "confirmPassword",
+                                    "type": "password",
+                                    "ngModelOptions": { allowInvalid: true },
+                                    "onChange": function(modelValue, form, model, scope) {
+                                        console.log(model)
+                                         if(modelValue != model["password"])
+                                            scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
+                                         else {
+                                             scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                             scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
+                                         }
+                                     }
+                                }]
 
                         }
                 ]
@@ -272,9 +273,9 @@ myApp.constant(
             'password': {
                 'title': 'Password',
                 'type': 'string',
-                /*'validationMessage': {
+                'validationMessage': {
                         "doNotMatch": "Passwords do not match"
-                    },*/
+                    },
                  'x-schema-form': {
                     'type': 'password',
                 }
@@ -282,9 +283,9 @@ myApp.constant(
             'confirmPassword': {
                 'title': 'Confirm Password',
                 'type': 'string',
-                /*'validationMessage': {
+                'validationMessage': {
                         "doNotMatch": "Passwords do not match"
-                    },*/
+                    },
                  'x-schema-form': {
                     'type': 'password',
                 }
