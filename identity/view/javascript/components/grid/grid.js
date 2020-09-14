@@ -110,7 +110,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, wsClient, dataStore, $routeParams) {
+        controller : function($scope, $window, $uibModal, $timeout, wsClient, dataStore, $routeParams,httpClient) {
 
             var self = this;
 
@@ -445,6 +445,54 @@ angular
                     }); 
                 }
             }
+            
+            this.exportData = function(){
+                var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
+                console.log("params" + JSON.stringify(params));
+                httpClient.post("identity/api/reports/scheduleExport", params).then(
+                    function(data, response) {
+                        if(data.status == "failure") {
+                            console.log("failure");
+                        } else {
+                             self.getJobStatus("identity/api/reports/scheduleExport", {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                 var win = window.open(res, '_blank');
+                                 win.focus();
+                            },function(err){
+                                 console.log("failure", err); 
+                            })
+                        } 
+                    }, function(err) {
+                        console.log("reject", err);
+                    }
+                );
+            }
+            
+            this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
+                var checkInterval = 1;
+                if(timeout > 0 ){
+                    timeout = timeout - checkInterval;
+                     httpClient.get(api, params).then(
+                        function(data, response) {
+                            console.dir(data);
+                            if(data.jobStatus == "complete"){
+                                var jobResult = JSON.parse(data.jobResult);
+                                if(jobResult.resultJSON.response.metadata.status == "success"){
+                                    onSuccess(jobResult.resultJSON.response.result);
+                                    return;
+                                }else{
+                                      onFailure("An error occurred, please try again later.");
+                                }
+
+                            }
+                            var nextFireTime = checkInterval * 1000;
+                            setTimeout(self.getJobStatus, nextFireTime, api,params, timeout, onSuccess, onFailure);
+                    },function(ex){
+                         onFailure(ex);
+                    });
+                }else{
+                    onFailure("TIME_OUT");
+                }
+            }
 
             this.onRemoveRow = function(key) {
                 if(self.gridOptions.rowModelType == "infinite"){
@@ -597,7 +645,7 @@ angular
     this.gridHelper = function(api, params){
         var d = $q.defer(); 
         httpClient
-            .get(api, params, "grid").then(function(data, response){
+            .get(api, params).then(function(data, response){
             d.resolve(data, response)
         }, function(err) {
             d.reject(err)
@@ -611,7 +659,7 @@ angular
         var api;
         if(dataIdentifierProperty == "id")
             api = "identity/api/devices/deleteDevice";
-        if(dataIdentifierProperty == "groups")
+        else if(dataIdentifierProperty == "groups")
             api = "identity/api/groups/deleteGroup";
       httpClient.post(api, params)
         .then(

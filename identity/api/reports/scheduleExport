@@ -1,0 +1,52 @@
+var paramsEvaluator = require("../entities/ParamsEvaluator");
+var errorHandler = require("../entities/ErrorHandler");
+var errorHandler = new errorHandler.ErrorHandler();
+var log = require("log")
+log.setLevel("INFO");
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("method: " + request.method);
+switch (request.method) {
+  case "GET":
+        var requiredParams = ["scriptHandleId"];
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
+        if(!hasAllRequiredParams.success) {
+          return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+        }
+        var getJobStatusParams = {
+            "apsdb.handle": params.scriptHandleId
+        };
+        var result = apsdb.callApi("GetJobStatus", getJobStatusParams, null);
+        if (result.status == "failure") {
+            var errorMsg = "[scheduleExport] An error occurred while fetching job status [" + JSON.stringify(result) + "]";
+            return { "status": "failure", "errorDetail": errorMsg };
+        } else {
+            return result.result;
+        }
+        break;
+  case "POST":
+        var requiredParams = ["gridType"];
+        var optionalParams = ["queryFilter"];
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
+        if(!hasAllRequiredParams.success) {
+          return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+        }
+        params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
+        var data = {
+            "apsdb.scriptName":"identity/api/exportTest",
+            "params": JSON.stringify(params)
+        };
+        var result = apsdb.callApi("QueueScript", data, null);
+
+        if (result.status == "failure") {
+            var errorMsg = "[scheduleExport] An error occurred while queueing job [" + JSON.stringify(result) + "]";
+            return { "status": "failure", "errorDetail": errorMsg };
+        } else {
+            return {"status":"success", "scriptHandleId": result.result.script.scriptHandle};
+        }
+        break;
+  default:
+       return errorHandler.buildError("invalid_method", "Invalid HTTP method"); 
+}
