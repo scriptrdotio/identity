@@ -1,0 +1,77 @@
+var log = require("log");
+log.setLevel("INFO");
+var utils = require("identity/entities/listUtils");
+var defaultStore = require('document').getInstance('DefaultStore');
+
+
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+params = typeof(params.params) == "string" ? JSON.parse(params.params) : params.params;
+
+function ConvertToCSV(params) {
+    var gridType = params.gridType;
+    log.info('start converting document to CSV');
+    var str = '';
+    if(gridType == "groupsGrid"){
+        var fileName = "Groups";
+        var object  = utils.getGroups({"queryFilter" : params.queryFilter});
+        str += "Group Name,Number of Devices\r\n";
+        var array = typeof object != 'object' ? JSON.parse(object) : object;
+        array = array.documents;
+        if(array!= null && array.length >0){
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                line += ((array[i].groups != undefined && array[i].groups!= null) ? array[i].groups : "") + ","; 
+                line += ((array[i].count != undefined && array[i].count!=null) ? array[i].count : "") + ","; 
+
+                str += line + '\r\n';            
+            }
+        }
+    }
+    if(gridType == "devicesGrid"){
+        var fileName = "Devices";
+        var object  = utils.getDevices({"queryFilter" : params.queryFilter});
+        str += "Device Name,Device ID,Description,Token,Last Modified,Status\r\n";
+        var array = typeof object != 'object' ? JSON.parse(object) : object;
+        array = array.documents;
+        if(array!= null && array.length >0){
+            for (var i = 0; i < array.length; i++) {
+                var line = '';
+                line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "") + ","; 
+                line += ((array[i].id != undefined && array[i].id!=null) ? array[i].id : "") + ","; 
+                line += ((array[i].description != undefined && array[i].description!=null) ? array[i].description : "") + ","; 
+                line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "") + ","; 
+                line += ((array[i].lastModifiedDate != undefined && array[i].lastModifiedDate!=null) ? array[i].lastModifiedDate : "") + ","; 
+                line += ((array[i].isSuspended != undefined && array[i].isSuspended!=null) ? array[i].isSuspended : "") + ","; 
+
+                str += line + '\r\n';            
+            }
+        }
+    }
+    log.info('end converting document to CSV');
+    return {"str": str, "fileName": fileName};
+}
+
+var fileCSV = ConvertToCSV(params);
+var fileContent = fileCSV.str;
+var fileName = fileCSV.fileName;
+fileName += '.csv';	
+var result = apsdb.createFile(fileContent,fileName);
+var timestamp = new Date().getTime();
+var docKey = 'Rpt-' + timestamp;
+var reportData = {
+    "key": docKey,
+    "attachments": result.file,
+    "report": true
+};
+var reportResult = defaultStore.save(reportData);
+if(reportResult && reportResult.metadata){
+    if (reportResult.metadata.status == 'failure') {
+        log.error("unable to create report document\n" + JSON.stringify(reportResult));
+        throw reportResult;
+    }
+} else {
+    log.error("unable to create report document\n");
+    throw reportResult;
+}
+return "https://google.com";

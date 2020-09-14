@@ -1,6 +1,10 @@
 var log = require("log");
 log.setLevel("INFO");
 var devices = require("device");
+var config = require ("identity/config/config");
+var queryDocsPerPage = config.queryDocsPerPage;
+var buildCsvSciptPath = config.buildCsvSciptPath;
+
 var errorHandler = require("./ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 
@@ -36,7 +40,7 @@ function getDevices(params){
         if(response.metadata.status == "failure") {
             return response.metadata;
         }
-        if(response.result.devices.length < 50){
+        if(response.result.devices.length < queryDocsPerPage){
             continueLoop = false;
         } else {
             pageNumber++;
@@ -65,5 +69,61 @@ function getDevices(params){
     } else {
         log.info("Documents: " + documents);
         return documents;
+    }
+}
+
+function getGroups(params){
+    var groups = require("group");
+    var users =[];
+    var results = [];
+    var groups = groups.list();
+    var result = groups.result.groups;
+    log.info("Request normalized params: " + JSON.stringify(params));
+
+    var count = true;
+    if(params["count"] !== undefined && params["count"] !== null) {
+        count = (params["count"] === "true") ?  true : false;
+    }
+
+    var queryFilter = "";
+    if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
+        queryFilter = params["queryFilter"];
+    }
+
+    if(result!= null && result.length >0){
+        if(count){
+            for (var i=0; i<result.length;i++){
+                var name = result[i].name;
+                if(queryFilter!="" && !name.includes(queryFilter)){
+                    continue;
+                }
+                var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
+                response.result["groups"] = name;
+                users.push(response.result);
+            }
+            if(response.metadata.status == "failure") {
+                return response.metadata;
+            }
+            else{
+                var originalCount = users.length;
+                if(users!=null && users.length>0 && params.pageNumber != null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
+                    var startRow = parseInt(params.startRow);
+                    var endRow = parseInt(params.endRow);
+                    var pageDocuments = [];
+                    var x=0;
+                    for(i=startRow; i<endRow; i++){
+                        if(users[i]!=null && users[i]!="")
+                            pageDocuments[x++] = users[i];
+                    }
+                    users = pageDocuments;
+                    log.info("pageDocuments: "+JSON.stringify(pageDocuments));
+                    log.info("users: "+JSON.stringify(users));
+                }
+                return { "count": originalCount, "documents": users};
+            }
+        }
+        else{
+            return  result;
+        }
     }
 }

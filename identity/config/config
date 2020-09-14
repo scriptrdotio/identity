@@ -1,3 +1,6 @@
 var config = {
   "userManagementGroups": ["administrators"]
 }
+
+const queryDocsPerPage = 50;
+const buildCsvSciptPath = 'identity/api/reports/buildCSV';
