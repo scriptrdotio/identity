@@ -1,8 +1,8 @@
 myApp.constant(
     "infoWindowActions",
     {
-       'addGroup': {
-       'title': 'New Group',
+       'group': {
+       'title': 'Group',
        'form': [
             {
                 'type': 'section',
@@ -62,8 +62,8 @@ myApp.constant(
                'required': ["name"]
            }
        },
- 'addDevice': {
-    'title': 'New Device',
+ 'device': {
+    'title': 'Device',
         'form': [
             {
                 'type': 'section',

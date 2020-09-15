@@ -3,11 +3,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     var vm = this;
     vm.title = "Group Manager";
     vm.infoWindowActions = infoWindowActions;
-    vm.button = "Add Group";
-    vm.addGroupOverLay = function (){
-         vm.loadOverlay(null, vm.infoWindowActions.addGroup, 'identity/api/groups/saveGroup');
-    };
-    vm.gridId =  "groupsGrid";
+    vm.gridId =  "group";
         vm.init = function() {
           
         }
@@ -62,7 +58,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                                eDiv.innerHTML = btn;
                                var editBtn = eDiv.querySelectorAll('.btn')[0];
                                editBtn.addEventListener('click', function(clickParams) { 
-                                   vm.loadEditOverlay(params, vm.infoWindowActions.addGroup, 'identity/api/groups/saveGroup');
+                                   vm.loadEditOverlay(params, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
                                });
                                return eDiv;
                            }
@@ -130,52 +126,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
     }
 
     
-    
-    vm.loadOverlay = function(marker, overlayForm, backendApi) {
-        vm.closeAlert();
-        var of = angular.copy(overlayForm);
-        var formWidget = {
-            'label': of.title,
-            'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-            'schema': angular.copy(of.schema),
-            'form': angular.copy(of.form),
-            
-            'options': {}
-        }
-        var self = this;
-        var modalInstance= $uibModal.open({
-            animation: true,
-            component: 'formOverlay',
-            size: 'lg',
-            scope: $scope,
-            resolve: {
-                widget: function() {
-                    return formWidget;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (wdgModel) {
-            console.log('Model Data', wdgModel);
-            if(wdgModel != 'cancel') {
-                console.log('Model Data', wdgModel);
-                var successHandler = function(data) {
-                    $scope.$broadcast("updateGridData-"+vm.gridId, {});
-                    vm.showAlert("success", "Successfully saved group");
-                }
-                var failureHandler = function(err) {
-                    vm.showAlert("danger", "Could not save group, please try again later");
-                    console.log('Error when saving group', err);
-                }
-                vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
-            }
-        }, function () {
-            console.info('modal-component for widget update dismissed at: ' + new Date());
-        });
-    };
-    
         vm.loadEditOverlay = function(marker, overlayForm, backendApi) {
-            
             httpClient.post("identity/api/groups/getGroupDevices", marker.data).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
@@ -184,6 +135,7 @@ myApp.controller('groupsHomeCtrl', function($location,$scope,$rootScope,httpClie
                     }
                     vm.closeAlert();
                     var of = angular.copy(overlayForm);
+                    of.title = "Edit "+of.title;
                     var formWidget = {
                         'label': of.title,
                         'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},

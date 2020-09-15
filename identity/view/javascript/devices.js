@@ -3,7 +3,6 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.deviceTitle = "Device Manager";
     vm.renderGrid = true;
     vm.infoWindowActions = infoWindowActions;
-    vm.addButton = "Add Device";
     
     vm.devicesColDef = [
         {	checkboxSelection: true,
@@ -100,7 +99,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
 
                     vButton = eDiv.querySelectorAll('.btn-edit')[0];
                     vButton.addEventListener('click', function(clickParams) {
-                         vm.loadEditOverlay(params, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
+                         vm.loadEditOverlay(params, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
                     });
                     return eDiv;
                 },
@@ -178,11 +177,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         });
     }
     
-      vm.addDeviceOverLay = function (){
-         vm.loadOverlay(null, vm.infoWindowActions.addDevice, 'identity/api/devices/saveDevice');
-    };
     
-    vm.gridId =  "devicesGrid";
+    vm.gridId =  "device";
   
     vm.showViewDeviceDialog = function(params) {
         $mdDialog.show({
@@ -226,6 +222,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                     
                     vm.closeAlert();
                     var of = angular.copy(overlayForm);
+                    of.title = "Edit "+of.title;
                     var form = angular.copy(of.form);
                     form[0].items[1].readonly = true;
                     var formWidget = {
@@ -316,46 +313,6 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         });
     }
 
-    vm.loadOverlay = function(marker, overlayForm, backendApi) {
-        vm.closeAlert();
-        var of = angular.copy(overlayForm);
-        var formWidget = {
-            'label': of.title,
-            'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-            'schema': angular.copy(of.schema),
-            'form': angular.copy(of.form),
-            'options': {}
-        }
-        var self = this;
-        var modalInstance= $uibModal.open({
-            animation: true,
-            component: 'formOverlay',
-            size: 'lg',
-            scope: $scope,
-            resolve: {
-                widget: function() {
-                    return formWidget;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (wdgModel) {
-            if(wdgModel != 'cancel') {
-                console.log('Model Data', wdgModel);
-                var successHandler = function(data) {
-                    $scope.$broadcast("updateGridData-"+vm.gridId, {});
-                    vm.showAlert("success", "Successfully saved device");
-                }
-                var failureHandler = function(err) {
-                    vm.showAlert("danger", "Could not save device, please try again later");
-                    console.log('Error when saving device', err);
-                }
-                vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
-            }
-        }, function () {
-            console.info('modal-component for widget update dismissed at: ' + new Date());
-        });
-    };
     
     vm.showDialog = function(data) {
         $mdDialog.show({
