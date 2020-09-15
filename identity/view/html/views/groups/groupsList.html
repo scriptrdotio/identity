@@ -1,7 +1,6 @@
 <div class="col-xs-12">
 <h1>{{vm.title}}</h1>
 <div class="col-xs-12" ng-if="vm.showError"><div class="alert" ng-class="'alert-' + ( vm.message.type || 'warning')">{{vm.message.content}}</div></div>
-<button class="btn btn-default" type="button" ng-click="vm.addGroupOverLay();" >{{vm.button}}</button>
 <div class="row">
     <div ng-init="vm.init();">
     <scriptr-identity-grid ng-if="vm.renderGrid"
@@ -9,10 +8,10 @@
                            grid-events-id="{{vm.gridId}}"
                            enable-sorting="false"
                            enable-delete-row="true"
+                           enable-add-row="true"
                            boxlabel="{{ 'USERS.LIST' | translate}}"
                            fixed-height="true"
                            grid-height="350px"
-                           enable-add-row="false"
                            msg-tag="grid"
                            cell-editable="false"
                            on-row-double-clicked="vm.onRowDoubleClicked"

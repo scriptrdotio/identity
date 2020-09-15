@@ -10,7 +10,6 @@
             	<input id="groups" type="radio" class="groups " ng-model="vm.selectedTab" value="groups" ng-change="vm.changeTab(null,vm.selectedTab)"> Groups
           	</label>
         </div>
-        <button class="btn btn-default" ng-click="vm.addDeviceOverLay();">{{vm.addButton}}</button>
         
                    
     
@@ -23,7 +22,7 @@
                             boxlabel="{{ 'USERS.LIST' | translate}}"
                             fixed-height="true"
                             grid-height="350px"
-                            enable-add-row="false"
+                            enable-add-row="true"
                             msg-tag="grid"
                             cell-editable="false"
                             on-row-double-clicked="vm.onRowDoubleClicked"

@@ -12,7 +12,7 @@ function ConvertToCSV(params) {
     var gridType = params.gridType;
     log.info('start converting document to CSV');
     var str = '';
-    if(gridType == "groupsGrid"){
+    if(gridType == "group"){
         var fileName = "Groups";
         var object  = utils.getGroups({"queryFilter" : params.queryFilter});
         str += "Group Name,Number of Devices\r\n";
@@ -28,7 +28,7 @@ function ConvertToCSV(params) {
             }
         }
     }
-    if(gridType == "devicesGrid"){
+    if(gridType == "device"){
         var fileName = "Devices";
         var object  = utils.getDevices({"queryFilter" : params.queryFilter});
         str += "Device Name,Device ID,Description,Token,Last Modified,Status\r\n";
