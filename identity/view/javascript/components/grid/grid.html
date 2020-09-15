@@ -12,8 +12,8 @@
       </div>
     </div>  
     <div class="col-xs-1 pull-right text-right">
-      <button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn btn-default mt4" tooltip-placement="left" uib-tooltip="Delete selected row"><i class="fa fa-close" aria-hidden="true"></i></button>
-      <button ng-hide={{$ctrl.disableAddRow}} ng-click="$ctrl.onAddRow()" class="btn btn-warning mt4" tooltip-placement="bottom" uib-tooltip="Insert row"><i class="fa fa-plus" aria-hidden="true"></i></button>
+      <button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn btn-default mt4" tooltip-placement="left" uib-tooltip="Delete selected {{$ctrl.gridEventsId}}(s)"><i class="fa fa-close" aria-hidden="true"></i></button>
+      <button ng-hide={{$ctrl.disableAddRow}} ng-click="$ctrl.onAddRow()" class="btn btn-default mt4" tooltip-placement="bottom" uib-tooltip="Add {{$ctrl.gridEventsId}}"><i class="fa fa-plus" aria-hidden="true"></i></button>
         
         <button ng-click="$ctrl.exportData()" class="btn btn-default mt4" tooltip-placement="left" uib-tooltip="Export to CSV"><i class="glyphicon glyphicon-export" aria-hidden="true"></i></button>
     </div>

@@ -106,16 +106,19 @@ angular
             
             "sizeColumnsToFit": "<?",
             
-            "gridEventsId": "@"
+            "gridEventsId": "@",
+            
+            
+           
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, wsClient, dataStore, $routeParams,httpClient) {
+        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout) {
 
             var self = this;
 
             self.broadcastData = null;
-
+			this.infoWindowActions = infoWindowActions;
             this.dataSource = {
                 getRows : function(params) {
                     if(self.broadcastData != null){
@@ -218,7 +221,6 @@ angular
                 
                 this._dataIdentifierProperty = (this.gridDataIdentifierProperty) ? this.gridDataIdentifierProperty : "key";
                 this.useWindowParams = (this.useWindowParams) ? this.useWindowParams : "true";
-                
                 this.sizeColumnsToFit = (this.sizeColumnsToFit !== undefined) ? this.sizeColumnsToFit : true; //backward compatibility default true
                 this.gridOptions = {
                     angularCompileRows: true,
@@ -416,19 +418,80 @@ angular
             }
 
             this.onAddRow = function(){
-                var newRow = {};
-                // Create a json object to save new row fields 
-                for (var n = 0; n < self.gridOptions.columnDefs.length; n++){
-                    newRow[self.gridOptions.columnDefs[n].field] = "";
+                if(self.gridEventsId == "device")
+                    self.loadOverlay(null, this.infoWindowActions.device, 'identity/api/devices/saveDevice');
+                else if (self.gridEventsId == "group")
+                    self.loadOverlay(null, this.infoWindowActions.group, 'identity/api/groups/saveGroup');
+            }
+            this.loadOverlay = function(marker, overlayForm, backendApi) {
+                var of = angular.copy(overlayForm);
+                of.title = "Add "+of.title;
+                var formWidget = {
+                    'label': of.title,
+                    'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                    'schema': angular.copy(of.schema),
+                    'form': angular.copy(of.form),
+                    'options': {}
                 }
-                self.gridOptions.api.insertItemsAtIndex(0, [newRow]);
-                self.gridOptions.api.setFocusedCell(0, self.gridOptions.columnDefs[0].field);
-                self.gridOptions.api.startEditingCell({
-                    rowIndex: 0,
-                    colKey: self.gridOptions.columnDefs[0].field,
-                    charPress: self.gridOptions.columnDefs[0].field
+                var self = this;
+                var modalInstance= $uibModal.open({
+                    animation: true,
+                    component: 'formOverlay',
+                    size: 'lg',
+                    scope: $scope,
+                    resolve: {
+                        widget: function() {
+                            return formWidget;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (wdgModel) {
+                    if(wdgModel != 'cancel') {
+                        console.log('Model Data', wdgModel);
+                        var successHandler = function(data) {
+                            self._createNewDatasource();
+                            self.showAlert("success", "Successfully saved "+self.gridEventsId);
+                        }
+                        var failureHandler = function(err) {
+                            self.showAlert("danger", "Could not save "+self.gridEventsId+", please try again later");
+                            console.log('Error when saving '+self.gridEventsId, err);
+                        }
+                        self.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler);
+                    }
+                }, function () {
+                    console.info('modal-component for widget update dismissed at: ' + new Date());
                 });
             }
+            
+            this.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
+                console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
+                self._callBackendApi(apiId, parameters, 'P', successHandler, failureHandler);
+            }
+
+            this._callBackendApi = function(apiId, parameters, method, successHandler, failureHandler) {
+                var httpMeth = httpClient.post;
+                if (method == 'G') {
+                    httpMeth = httpClient.get;
+                }
+
+                httpMeth(apiId, parameters)
+                    .then(
+                    function(data, response) {
+                        console.log(data);
+                        if (data && data.status && data.status == 'failure') {
+                            if (typeof failureHandler === 'function') failureHandler(data);
+                        } else {
+                            if (typeof successHandler === 'function') successHandler(data);
+                        }
+                    },
+                    function(err) {
+                        console.log(err);
+                        if (typeof failureHandler === 'function') failureHandler(err);
+                    });
+            }
+            
+            
 
             this.openConfirmationPopUp = function(){
                 if(self.gridOptions.api.getSelectedNodes().length > 0){
