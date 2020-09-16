@@ -1,0 +1,86 @@
+var _ = require("/modules/underscore/underscore.js")._;
+var paramsEvaluator = require("../../entities/ParamsEvaluator");
+var errorHandler = require("../../entities/ErrorHandler");
+var devices= require("device");
+var log = require("log")
+log.setLevel("INFO");
+var errorHandler = new errorHandler.ErrorHandler();
+
+var requiredParams = ["id"];
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("Request normalized params: " + JSON.stringify(params));
+var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
+if(!hasAllRequiredParams.success) {
+  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+}
+
+var deviceIdParam = params["id"];
+var action = "";
+if(params["action"] !== undefined && params["action"] !== null ) {
+    action = params["action"];
+}
+var deviceArr = [];
+if(deviceIdParam instanceof Array){
+    deviceArr = deviceIdParam;
+}else{
+    deviceArr = [deviceIdParam];
+}
+
+var ts = apsdb.beginTransaction();
+try{
+    var regenerate = true;
+    var responseObj = {};
+    deviceArr.forEach(function(deviceId) {
+        /*
+        * if action is not empty then we have a single device id coming from viewDevice (so we know its either generate or regenerate)
+        * if action is empty it means its coming from refreshTokens and we do not know if this device id already has a token or not
+        * so first the regenerate is called, if it failed with a code of TOKEN_NOT_FOUND then this device has no token 
+        * and we move on to generate one
+        */
+        if(action != "" && action != "regenerate"){
+            regenerate = false;
+        }
+        if(regenerate){
+            var response = devices.regenerateToken(deviceId);
+            if(response.metadata.status == "failure") {
+                responseObj = response.metadata;
+                //if action is empty and the error was not TOKEN_NOT_FOUND, then something else happened and an error should be thrown
+                if(action != "" || (action == "" && responseObj.errorCode != "TOKEN_NOT_FOUND")){
+                    throw {
+                        errorCode: response.metadata.errorCode,
+                        errorDetail: response.metadata.errorDetail
+                    };
+                }
+            } else {
+                if(action != "")
+					responseObj = response.result;                   
+                else
+            		responseObj = {"status": "success"};
+                //if regenerate succeeds no need to continue to generate
+                return;
+            }
+    	}
+        var response = devices.generateToken(deviceId);
+        if(response.metadata.status == "failure") {
+            responseObj = response.metadata;
+            throw {
+                errorCode: response.metadata.errorCode,
+                errorDetail: response.metadata.errorDetail
+            };
+        } else {
+            if(action != "")
+                responseObj = response.result;                   
+            else
+            	responseObj = {"status": "success"};
+        }
+    })
+    
+	ts.commit();
+} catch(e){
+    ts.rollback();
+    log.error("Failure when generating token\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+}      
+
+return responseObj;

@@ -17,6 +17,7 @@
         
         <button ng-click="$ctrl.exportData()" class="btn btn-default mt4" tooltip-placement="left" uib-tooltip="Export to CSV"><i class="glyphicon glyphicon-export" aria-hidden="true"></i></button>
     </div>
+      <button ng-if= "$ctrl.gridEventsId == 'device'" ng-click="$ctrl.refreshTokens()" class="btn btn-default mt4" tooltip-placement="right" uib-tooltip="Generate/Regenerate token(s)">Refresh Tokens</i></button>
    </form>  
     </div>
 </div>

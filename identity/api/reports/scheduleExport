@@ -41,9 +41,8 @@ switch (request.method) {
             "apsdb.scriptName": buildCsvSciptPath,
             "params": JSON.stringify(params)
         };
-        log.info("the path is "+buildCsvSciptPath);
         var result = apsdb.callApi("QueueScript", data, null);
-		log.info("the result is "+ JSON.stringify(result));
+
         if (result.status == "failure") {
             var errorMsg = "[scheduleExport] An error occurred while queueing job [" + JSON.stringify(result) + "]";
             return { "status": "failure", "errorDetail": errorMsg };

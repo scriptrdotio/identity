@@ -243,10 +243,11 @@ angular
                     paginationPageSize : (this.paginationPageSize) ? this.paginationPageSize : 50,
                     overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Please wait while your rows are loading</span>',
                     defaultColDef : {
+                        filter: false,
                         filterParams : {
-                            apply : true
+                            apply : false
                         },
-                        suppressFilter: (typeof this.suppressFilter != 'undefined')? this.suppressFilter : false,
+                        suppressFilter: (typeof this.suppressFilter != 'undefined')? this.suppressFilter : true,
                         editable : (typeof this.cellEditable != 'undefined')? this.cellEditable : true,
                         cellRenderer : (typeof this.defaultCellRenderer() == 'function')? this.defaultCellRenderer() : null  
                     },
@@ -509,23 +510,52 @@ angular
                 }
             }
             
+            this.refreshTokens = function(){
+                var selectedNodes = self.gridOptions.api.getSelectedNodes();
+                var selectedKeys = [];
+                for(var i = 0; i < selectedNodes.length; i++){
+                    selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
+                }
+                if(selectedKeys.length > 0){
+                    var params = {"id": selectedKeys};
+                    httpClient.post("identity/api/devices/generateTokens", params).then(
+                        function(data, response) {
+                            if(data.status == "failure") {
+                                self.showAlert("danger", "Unable to refresh token(s), please try again");
+                            } else {
+                                self._createNewDatasource();
+                                self.showAlert("success", "Token(s) refreshed successfuly");
+                            } 
+                        }, function(err) {
+                            console.log("failure", err);
+                            self.showAlert("danger", "Unable to refresh token(s), please try again");
+                        }
+                    );
+                } else {
+                    self.showAlert("danger", "No device(s) selected");
+                }
+            }
+            
             this.exportData = function(){
                 var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
                 console.log("params" + JSON.stringify(params));
                 httpClient.post("identity/api/reports/scheduleExport", params).then(
                     function(data, response) {
                         if(data.status == "failure") {
-                            console.log("failure");
+                            self.showAlert("danger", "Unable to export, please try again");
                         } else {
                              self.getJobStatus("identity/api/reports/scheduleExport", {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                 self.showAlert("success", "Data exported successfuly");
                                  var win = window.open(res, '_blank');
                                  win.focus();
                             },function(err){
-                                 console.log("failure", err); 
+                                 console.log("failure", err);
+                                 self.showAlert("danger", "Unable to export, please try again");
                             })
                         } 
                     }, function(err) {
-                        console.log("reject", err);
+                        console.log("failure", err);
+                        self.showAlert("danger", "Unable to export, please try again");
                     }
                 );
             }
