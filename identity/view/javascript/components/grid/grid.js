@@ -546,14 +546,22 @@ angular
                             self.showAlert("danger", "Unable to export, please try again");
                         } else {
                              self.getJobStatus("identity/api/reports/scheduleExport", {scriptHandleId:  data.scriptHandleId }, 30, function (res){
-                                 self.showAlert("success", "Data exported successfuly");
-                                 var element = document.createElement('a');
-                                 element.setAttribute('href', res);
-                                 element.setAttribute('download', 'exportedFile');
-                                 element.style.display = 'none';
-                                 document.body.appendChild(element);
-                                 element.click();
-                                 document.body.removeChild(element);
+                                 params.docKey = res;
+                                 httpClient.get("identity/api/reports/getCSVFile", params).then(
+                                    function(data, response) {
+                                        self.showAlert("success", "Data exported successfuly");
+                                        var element = document.createElement('a');
+                                        element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
+                                        element.setAttribute('download', self.gridEventsId + 's.csv');
+                                        element.style.display = 'none';
+                                        document.body.appendChild(element);
+                                        element.click();
+                                        document.body.removeChild(element);
+                                        console.log("CSV file response: " + data.data);
+                                },function(err){
+                                    console.log("failure", err);
+                                	self.showAlert("danger", "Unable to export, please try again");
+                                });
                             },function(err){
                                  console.log("failure", err);
                                  self.showAlert("danger", "Unable to export, please try again");

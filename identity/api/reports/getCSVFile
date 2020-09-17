@@ -1,0 +1,30 @@
+var paramsEvaluator = require("identity/entities/ParamsEvaluator");
+var errorHandler = require("identity/entities/ErrorHandler");
+var config = require ("identity/config/config");
+var errorHandler = new errorHandler.ErrorHandler();
+var log = require("log")
+log.setLevel("INFO");
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+var requiredParams = ["docKey", "gridType"];
+var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
+if(!hasAllRequiredParams.success) {
+    return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+}
+
+var defaultStore = require('document').getInstance('DefaultStore');
+var attachmentResult = defaultStore.getAttachment(params.docKey, params.gridType+"s.csv", {"versionNumber": "1"});
+var content = attachmentResult.content;
+if(content != null && content != ""){
+    response.setHeader("content-disposition", "attachment;filename="+params.gridType+"s.csv");
+    response.setHeader("content-type","text/csv");
+    response.addHeaders(configuration.crossDomainHeaders);
+    response.setStatus(200);
+    response.write(content);
+    response.flush();
+    response.close();
+    return; 
+}else{
+    return errorHandler.buildError("server_error", "Error while getting attachment");
+}

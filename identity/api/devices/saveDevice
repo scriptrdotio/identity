@@ -19,7 +19,6 @@ if(!hasAllRequiredParams.success) {
 log.info(JSON.stringify(request.body))
 var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
 
-
 var deviceAttrs = params.deviceAttrs;
 if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
         return Object.keys(el).length !== 0;

@@ -44,10 +44,10 @@
                                         <p>{{vm.token}}</p>
                                     </div>
                                     <div class="col-xs-12 mb15">
-                                        <button ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
-                                        <button ng-if="vm.token == 'N/A'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
+                                        <button ng-if="vm.token == 'N/A' && vm.status != 'Suspended'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-default mgr5">Regenerate</button>
-                                        <button ng-click="vm.revokeToken()" class="btn btn-default mgr5">Delete</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.revokeToken()" class="btn btn-default mgr5">Delete</button>
                                     </div>
                                     <div ng-if="vm.hasAttrs" class="col-xs-12">
                                         <label>Device Attributes</label>
