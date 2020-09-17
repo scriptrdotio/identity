@@ -3,145 +3,231 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.deviceTitle = "Device Manager";
     vm.renderGrid = true;
     vm.infoWindowActions = infoWindowActions;
+    vm.gridId =  "device";
+    vm.gridAPI = "identity/api/devices/listDevices";
+    vm.init = function() {
+        
+    }
+
     
-    vm.devicesColDef = [
-        {	checkboxSelection: true,
-            headerName: "Device Name", 
-            field: "name", 
-            width: 180,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                return params.value? params.value.split("_")[0]: 'N/A';
-            }
-        },
-        {
-            headerName: "Device ID", 
-            field: "id", 
-            width: 180,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                return params.value? params.value.split("_")[0]: 'N/A';
-            }
-        },
-        {
-            headerName: "Description", 
-            field: "description", 
-            width: 180,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                return params.value? params.value.split("_")[0]: 'N/A';
-            }
-        },
-        {
-            headerName: "Token", 
-            field: "auth_token", 
-            width: 620,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                return params.value? params.value.split("_")[0]: 'N/A';
-            }
-        },
-        {
-            headerName: "Last Modified", 
-            field: "lastModifiedDate", 
-            width: 280,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                return params.value? params.value.split("_")[0]: 'N/A';
-            }
-        },
-        {
-            headerName: "Status", 
-            field: "isSuspended", 
-            width: 180,
-            cellClass: "textWrap", 
-            editable : false,
-            cellRenderer: function(params) {
-                var status = "";
-                if(params.value != null){
-                   	var isSuspended = params.value;
-                    if(isSuspended == "true")
-                   		status = "Suspended";
-                    else if(isSuspended == "false")
-                        status = "Active"
-                }
-                return status != "" ? status : 'N/A';
-            }
-        },
-        {
-            headerName: ' ',
-            field: 'value',
-            cellRenderer: function(params){
-                var eDiv = document.createElement('div');
-                var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-view">View</button>';
+    vm.changeTab = function(value){
+        vm.gridId = value;
+        if(vm.gridId ==  "group")
+            vm.gridAPI = "identity/api/groups/listGroups";
+        else if (vm.gridId ==  "device")
+            vm.gridAPI = "identity/api/devices/listDevices";
+    }
 
-                vButton = eDiv.querySelectorAll('.btn-view')[0];
-                vButton.addEventListener('click', function() {
-                    vm.showViewDeviceDialog(params);
-                });
-                return eDiv;
-                },
-            width: 65,
-          },
-        {
-            headerName: ' ',
-            field: 'value',
-            cellRenderer: function(params){
-                    var eDiv = document.createElement('div');
-                    var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-default btn-edit">Edit</button>';
-
-                    vButton = eDiv.querySelectorAll('.btn-edit')[0];
-                    vButton.addEventListener('click', function(clickParams) {
-                         vm.loadEditOverlay(params, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
-                    });
-                    return eDiv;
-                },
-            width: 60,
-          },
-        {
-            headerName: ' ',
-            field: 'value',
-            cellRenderer: function(params){
-                	var eDiv = document.createElement('div');
-                    var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-default btn-delete">Delete</button>';
-
-                    vButton = eDiv.querySelectorAll('.btn-delete')[0];
-                    vButton.addEventListener('click', function() {
-                        vm.showConfirmDialog(params);
-                    });
-                    return eDiv;
-                },
-            width: 80,
-          },
-        {
-            headerName: ' ',
-            field: 'value',
-            cellRenderer: function(params){
-                	var eDiv = document.createElement('div');
-                    var vButton;
-                    eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
-
-                    vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
-                    vButton.addEventListener('click', function() {
-                        vm.copyToClipboard(params.data.auth_token);
-                    });
-                    return eDiv;
-                },
-            width: 100,
-          }
-        ];
+                        vm.groupsColDef = [{
+                            checkboxSelection: true,
+                            headerName: "Group Name", 
+                            field: "groups", 
+                            width: 180,
+                            cellClass: "textWrap", 
+                            editable : false,
+                            cellRenderer: function(params) {
+                                return params.value? params.value.split("_")[0]: 'N/A';
+                            }
+                       },
+                       {
+                           headerName: "Number of Devices", 
+                           field: "count", 
+                           width: 180,
+                           cellClass: "textWrap", 
+                           editable : false,
+                           cellRenderer: function(params) {
+                               return params.value? params.value.split("_")[0]: 'N/A';
+                           }
+                       },
+                       {
+                           headerName: "", 
+                           width: 80,
+                           cellClass: "textWrap", 
+                           editable : false,
+                           cellRenderer: function(params) {
+                               var eDiv = document.createElement('div');
+                               var btn = '<button class="btn btn-default btn-block" type="button">View</button>';
+                               eDiv.innerHTML = btn;
+                               var viewBtn = eDiv.querySelectorAll('.btn')[0];
+                               viewBtn.addEventListener('click', function(clickParams) { 
+                                    vm.showViewDialog(params)
+                               });
+                               return eDiv;
+                           }
+                       },
+                       {
+                           headerName: "", 
+                           width: 80,
+                           cellClass: "textWrap", 
+                           editable : false,
+                           cellRenderer: function(params) {
+                               var eDiv = document.createElement('div');
+                               var btn = '<button class="btn btn-default btn-block" type="button">Edit</button>';
+                               eDiv.innerHTML = btn;
+                               var editBtn = eDiv.querySelectorAll('.btn')[0];
+                               editBtn.addEventListener('click', function(clickParams) { 
+                                   vm.loadEditGroupOverlay(params, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
+                               });
+                               return eDiv;
+                           }
+                       },
+                       {
+                           headerName: "", 
+                           width: 80,
+                           cellClass: "textWrap", 
+                           editable : false,
+                           cellRenderer: function(params) {
+                               var eDiv = document.createElement('div');
+                               var btn = '<button class="btn btn-default btn-block" type="button">Delete</button>';
+                               eDiv.innerHTML = btn;
+                               var deleteBtn = eDiv.querySelectorAll('.btn')[0];
+                               deleteBtn.addEventListener('click', function(clickParams) { 
+                                  //var gridInstance =  params.api;
+                                  vm.showConfirmDialog(params);
+                                  
+                               });
+                               return eDiv;
+                           }
+                       },
+                      ];
     
-    vm.closeAlert = function() {
-        this.showError = false;
-    };
+    
+    
+                    vm.devicesColDef = [
+                    {	checkboxSelection: true,
+                        headerName: "Device Name", 
+                        field: "name", 
+                        width: 180,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            return params.value? params.value.split("_")[0]: 'N/A';
+                        }
+                    },
+                    {
+                        headerName: "Device ID", 
+                        field: "id", 
+                        width: 180,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            return params.value? params.value.split("_")[0]: 'N/A';
+                        }
+                    },
+                    {
+                        headerName: "Description", 
+                        field: "description", 
+                        width: 180,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            return params.value? params.value.split("_")[0]: 'N/A';
+                        }
+                    },
+                    {
+                        headerName: "Token", 
+                        field: "auth_token", 
+                        width: 620,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            return params.value? params.value.split("_")[0]: 'N/A';
+                        }
+                    },
+                    {
+                        headerName: "Last Modified", 
+                        field: "lastModifiedDate", 
+                        width: 280,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            return params.value? params.value.split("_")[0]: 'N/A';
+                        }
+                    },
+                    {
+                        headerName: "Status", 
+                        field: "isSuspended", 
+                        width: 180,
+                        cellClass: "textWrap", 
+                        editable : false,
+                        cellRenderer: function(params) {
+                            var status = "";
+                            if(params.value != null){
+                                var isSuspended = params.value;
+                                if(isSuspended == "true")
+                                    status = "Suspended";
+                                else if(isSuspended == "false")
+                                    status = "Active"
+                            }
+                            return status != "" ? status : 'N/A';
+                        }
+                    },
+                    {
+                        headerName: ' ',
+                        field: 'value',
+                        cellRenderer: function(params){
+                            var eDiv = document.createElement('div');
+                            var vButton;
+                            eDiv.innerHTML = '<button class="btn btn-default btn-view">View</button>';
+
+                            vButton = eDiv.querySelectorAll('.btn-view')[0];
+                            vButton.addEventListener('click', function() {
+                                vm.showViewDialog(params);
+                            });
+                            return eDiv;
+                            },
+                        width: 65,
+                      },
+                    {
+                        headerName: ' ',
+                        field: 'value',
+                        cellRenderer: function(params){
+                                var eDiv = document.createElement('div');
+                                var vButton;
+                                eDiv.innerHTML = '<button class="btn btn-default btn-edit">Edit</button>';
+
+                                vButton = eDiv.querySelectorAll('.btn-edit')[0];
+                                vButton.addEventListener('click', function(clickParams) {
+                                     vm.loadEditDeviceOverlay(params, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
+                                });
+                                return eDiv;
+                            },
+                        width: 60,
+                      },
+                    {
+                        headerName: ' ',
+                        field: 'value',
+                        cellRenderer: function(params){
+                                var eDiv = document.createElement('div');
+                                var vButton;
+                                eDiv.innerHTML = '<button class="btn btn-default btn-delete">Delete</button>';
+
+                                vButton = eDiv.querySelectorAll('.btn-delete')[0];
+                                vButton.addEventListener('click', function() {
+                                    vm.showConfirmDialog(params);
+                                });
+                                return eDiv;
+                            },
+                        width: 80,
+                      },
+                    {
+                        headerName: ' ',
+                        field: 'value',
+                        cellRenderer: function(params){
+                                var eDiv = document.createElement('div');
+                                var vButton;
+                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
+
+                                vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
+                                vButton.addEventListener('click', function() {
+                                    vm.copyToClipboard(params.data.auth_token);
+                                });
+                                return eDiv;
+                            },
+                        width: 100,
+                      }
+                    ];
+    
 
     vm.showAlert = function(type, content) {
         vm.message = {
@@ -153,46 +239,113 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             vm.showError = false;
         }, 5000);
     }
+
+    vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
+        console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
+        vm._callBackendApi(apiId, parameters, 'P', successHandler, failureHandler);
+    };
     
-    vm.copyToClipboard = function(text) {
-        navigator.clipboard.writeText(text).then(function() {
-          console.log('Copying to clipboard was successful');
-        }, function(err) {
-          console.error('Could not copy text: ', err);
-        });
-    }
-    
-    vm.gridAPI = "identity/api/devices/listDevices";
+    vm._callBackendApi = function(apiId, parameters, method, successHandler, failureHandler) {
+        var httpMeth = httpClient.post;
+        if (method == 'G') {
+            httpMeth = httpClient.get;
+        }
         
-    vm.showConfirmDialog = function(params) {
-        console.log("params.data >>>> " + JSON.stringify(params.data));
-        $mdDialog.show({
-            controller: 'confirmDialogCtrl',
-            controllerAs: 'vm',
-            templateUrl: 'html/views/devices/confirmationDialog.html',
-            clickOutsideToClose:true,
-            escapeToClose: true,
-            locals: {deviceData: params.data, grid: params.api, parent: vm},
-            ok: 'Close'
+    	httpMeth(apiId, parameters)
+        .then(
+        function(data, response) {
+            console.log(data);
+            if (data && data.status && data.status == 'failure') {
+            	if (typeof failureHandler === 'function') failureHandler(data);
+            } else {
+	            if (typeof successHandler === 'function') successHandler(data);
+            }
+        },
+        function(err) {
+            console.log(err);
+            if (typeof failureHandler === 'function') failureHandler(err);
         });
     }
+
     
+        vm.loadEditGroupOverlay = function(marker, overlayForm, backendApi) {
+            httpClient.post("identity/api/groups/getGroupDevices", marker.data).then(
+                function(data, response) {
+                    if(data.status && data.status == "failure"){
+                        console.log("getGroupDevices response", data);
+                        return;
+                    }
+                    vm.closeAlert();
+                    var of = angular.copy(overlayForm);
+                    of.title = "Edit "+of.title;
+                    var formWidget = {
+                        'label': of.title,
+                        'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                        'schema': angular.copy(of.schema),
+                        'form': angular.copy(of.form),
+                        'model': {"name": marker.data.groups, "devices": data.devices, "originalName":marker.data.groups, "originalDevices":data.devices}
+                    }
+                    
+                    var self = this;
+                    var modalInstance= $uibModal.open({
+                        animation: true,
+                        component: 'formOverlay',
+                        size: 'lg',
+                        scope: $scope,
+                        resolve: {
+                            widget: function() {
+                                return formWidget;
+                            }
+                        }
+                    });
+
+                    modalInstance.result.then(function (wdgModel) {
+                        console.log('Model Data', wdgModel);
+                        if(wdgModel != 'cancel') {
+                            console.log('Model Data', wdgModel);
+                            var successHandler = function(data) {
+                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                    			vm.showAlert("success", "Successfully saved group");
+                            }
+                            var failureHandler = function(err) {
+                                vm.showAlert("danger", "Could not save group, please try again later");
+                                console.log('Error when saving group', err);
+                            }
+                            
+                            wdgModel.update = true;
+                            wdgModel.originalDevices = formWidget.model.originalDevices;
+                            if(wdgModel.originalName != wdgModel.name){
+                                wdgModel.newName = wdgModel.name;
+                                wdgModel.name = wdgModel.originalName;
+                            }
+                            if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
+                                wdgModel.updateDevices = false;
+                            vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+                        }
+                    }, function () {
+                        console.info('modal-component for widget update dismissed at: ' + new Date());
+                    });
+                },
+                function(err) {
+                    console.dir(err);
+                    if(err.status == "success"){
+                        //refresh grid
+                        console.log("getGroupDevices response", err);
+                        return;
+                    }
+
+                    var errDesc = 'Unknown error';
+                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                        errDesc = err.data.metadata.description.en;
+                    } else if (err.errorDetail) {
+                        errDesc = err.errorDetail;
+                    }
+                    console.log("getGroupDevices response", err);
+                }
+                );
+    };
     
-    vm.gridId =  "device";
-  
-    vm.showViewDeviceDialog = function(params) {
-        $mdDialog.show({
-            controller: 'viewDeviceDialogCtrl',
-            controllerAs: 'vm',
-            templateUrl: 'html/views/devices/viewDevice.html',
-            clickOutsideToClose:true,
-            escapeToClose: true,
-            locals: {deviceData: params.data},
-            ok: 'Close'
-        });
-    }
-    
-            vm.loadEditOverlay = function(marker, overlayForm, backendApi) {
+    vm.loadEditDeviceOverlay = function(marker, overlayForm, backendApi) {
             httpClient.post("identity/api/devices/getDevice", marker.data).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
@@ -283,73 +436,83 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     };
     
     
-    vm.init = function() {
-    }
-
-    vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
-        console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
-        vm._callBackendApi(apiId, parameters, 'P', successHandler, failureHandler);
+    vm.closeAlert = function() {
+        this.showError = false;
     };
+
+
     
-    vm._callBackendApi = function(apiId, parameters, method, successHandler, failureHandler) {
-        var httpMeth = httpClient.post;
-        if (method == 'G') {
-            httpMeth = httpClient.get;
-        }
-        
-    	httpMeth(apiId, parameters)
-        .then(
-        function(data, response) {
-            console.log(data);
-            if (data && data.status && data.status == 'failure') {
-            	if (typeof failureHandler === 'function') failureHandler(data);
-            } else {
-	            if (typeof successHandler === 'function') successHandler(data);
-            }
-        },
-        function(err) {
-            console.log(err);
-            if (typeof failureHandler === 'function') failureHandler(err);
+    vm.copyToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(function() {
+          console.log('Copying to clipboard was successful');
+        }, function(err) {
+          console.error('Could not copy text: ', err);
         });
     }
-
     
-    vm.showDialog = function(data) {
+    
+    vm.showConfirmDialog = function(params) {
+        console.log("params.data >>>> " + JSON.stringify(params.data));
+        var localsObj = {grid: params.api, parent: vm};
+        if(vm.gridId == "device"){
+            localsObj.deviceData = params.data;
+        } else if(vm.gridId == "group"){
+            localsObj.groupData = params.data;
+        }
         $mdDialog.show({
-            controller: 'deviceDialog',
+            controller: vm.gridId+'ConfirmDialogCtrl',
             controllerAs: 'vm',
-            templateUrl: 'html/views/dialog.html',
+            templateUrl: 'html/views/'+vm.gridId+'s/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {response: data},
+            locals: localsObj,
             ok: 'Close'
         });
     }
     
+    vm.showViewDialog = function(params) {
+        var controller = "";
+        var templateUrl = "";
+        var localsObj = {};
+        if(vm.gridId == "device"){
+            localsObj = {grid: params.api, deviceData: params.data};
+            controller = 'viewDeviceDialogCtrl';
+            templateUrl = 'html/views/devices/viewDevice.html';
+        } else if (vm.gridId == "group"){
+            localsObj = {groupData: params.data};
+            controller = 'viewGroupDialogCtrl';
+            templateUrl = 'html/views/groups/viewGroup.html';
+        }
+            $mdDialog.show({
+                controller: controller,
+                controllerAs: 'vm',
+                templateUrl: templateUrl,
+                clickOutsideToClose:true,
+                escapeToClose: true,
+                locals: localsObj,
+                ok: 'Close'
+            });
+        }
+    
+     vm.showGroupViewDialog = function(params) {
+         var localsObj = {};
+         if (vm.gridId == "group"){
+            localsObj.groupData = params.data;
+            $mdDialog.show({
+                controller: 'viewGroupDialogCtrl',
+                controllerAs: 'vm',
+                templateUrl: 'html/views/groups/viewGroup.html',
+                clickOutsideToClose:true,
+                escapeToClose: true,
+                locals: localsObj,
+                ok: 'Close'
+            });
+        }
+    }
 });
 
 
-myApp.controller('deviceDialog', function(httpClient, response, $mdDialog) {
-    var vm = this;
-    vm.response = response;
-    vm.title = "Saving Device";
-
-    vm.init = function() {
-        if(response.errorDetail != null)
-            vm.promptMessage = vm.response.status +": " +response.errorDetail;
-        else 
-            vm.promptMessage = vm.response.status;
-        if(response.status == null )
-            vm.promptMessage = "success";
-
-    } 
-
-    vm.closeDialog = function() {
-        $mdDialog.hide();
-    };
-});
-
-myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, parent, $mdDialog) {
+myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, grid, parent, $mdDialog) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting device...';
@@ -425,10 +588,11 @@ myApp.controller('confirmDialogCtrl', function(httpClient, deviceData, grid, par
     };
 });
 
-myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDialog) {
+myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, grid, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching device...';
     vm.deviceId = deviceData.id;
+    vm.grid = grid;
     vm.deviceFetched = false;
     vm.init = function() {
         vm.getDevice();
@@ -517,19 +681,19 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
     }
     
     vm.regenerateToken = function() {
-        vm.generateToken("regenerateToken");
+        vm.generateToken("regenerate");
     }
     
     vm.generateToken = function(action) {
-        var apiPath = "";
-        if(action != null && action == "regenerateToken") {
-            apiPath = "identity/api/devices/regenerateToken";
+       var apiPath = "identity/api/devices/generateTokens";
+        if(action != null && action == "regenerate") {
+            action = "regenerate";
         } else {
-            action = "generateToken";
-            apiPath = "identity/api/devices/generateToken";
+            action = "generate";
         }
         var parameters = {
-            id: vm.id
+            "id": vm.id,
+            "action": action
         }
         console.log('calling '+action+' with parameters = ' + JSON.stringify(parameters));
         httpClient.post(apiPath, parameters).then(
@@ -540,6 +704,7 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
                 }
 
                 vm.token = data.token ? data.token : "N/A";
+                vm.grid.refreshInfiniteCache();
                 console.log("Success: "+action+" response", JSON.stringify(data));
             },
             function(err) {
@@ -568,6 +733,7 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
                 }
 
                 vm.token = "N/A";
+                vm.grid.refreshInfiniteCache();
                 console.log("Success: revokeToken response", JSON.stringify(data));
             },
             function(err) {
@@ -584,6 +750,142 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, $mdDia
     }
     
     vm.closeDialog = function() {
+        $mdDialog.hide();
+    };
+});
+
+
+
+myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, parent, $mdDialog) {
+    var vm = this;
+    vm.isLoading = false;
+    vm.deleteStatus = 'Deleting group...';
+    vm.groupName = groupData.groups;
+    vm.grid = grid;
+    vm.parent = parent;
+    vm.groupDeleted = false;
+	vm.showMessage = true;
+    vm.header = "Confirmation";
+    
+    vm.init = function() {
+        vm.promptMessage = "Are you sure you want to delete '"+ vm.groupName +"'?"
+    }
+    
+	vm.deleteGroup = function() {
+        vm.showLoading();
+        var parameters = {
+            groupName: vm.groupName
+        }
+        console.log('calling delete group with parameters = ' + JSON.stringify(parameters));
+        httpClient.post("identity/api/groups/deleteGroup", parameters).then(
+            function(data, response) {
+                if(data.status && data.status == "failure"){
+                    console.log("deleteGroup response", data);
+                    vm.parent.showAlert("danger", "Could not delete group, please try again later");
+                    vm.closeDialog();
+                    return;
+                }
+
+                vm.parent.showAlert("success", "Successfully deleted group");
+                vm.groupDeleted = true;
+                //refresh grid
+                vm.grid.refreshInfiniteCache();
+                console.log("deleteGroup response", data);
+                vm.closeDialog();
+            },
+            function(err) {
+                console.dir(err);
+                if(err.status == "success"){
+                    vm.parent.showAlert("success", "Successfully deleted group");
+                    vm.groupDeleted = true;
+                    //refresh grid
+                    vm.grid.refreshInfiniteCache();
+                	console.log("deleteGroup response", err);
+                    vm.closeDialog();
+                    return;
+                }
+
+                var errDesc = 'Unknown error';
+                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                    errDesc = err.data.metadata.description.en;
+                } else if (err.errorDetail) {
+                    errDesc = err.errorDetail;
+                }
+                vm.parent.showAlert("danger", "Could not delete group, please try again later");
+                console.log("deleteGroup response", err);
+                vm.closeDialog();
+            }
+        );
+    }
+    
+    vm.showLoading = function() {
+        vm.isLoading = true;
+        vm.showMessage = false;
+    }
+    vm.hideLoading = function() {
+        vm.isLoading = false;
+        vm.showMessage = true;
+    }
+    vm.closeDialog = function() {
+        $mdDialog.hide();
+    };
+});
+
+myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialog) {
+    var vm = this;
+    vm.promptMessage = 'Fetching group...';
+    vm.groupName = groupData.groups;
+    vm.groupFetched = false;
+    vm.init = function() {
+        vm.getGroup();
+    }
+    
+	vm.getGroup = function() {
+        vm.isLoading = true;
+        var parameters = {
+            groupName: vm.groupName
+        }
+        console.log('calling getGroupToView with parameters = ' + JSON.stringify(parameters));
+        httpClient.post("identity/api/groups/getGroupDevicesToView", parameters).then(
+            function(data, response) {
+                if(data.status && data.status == "failure"){
+                    console.log("getDevice response", data);
+                    vm.promptMessage = "Could not fetch device, please try again later";
+                    vm.isLoading = false;
+                    return;
+                }
+
+                vm.name = data.groupName ? data.groupName : "N/A";
+                if(data.devices != null && data.devices.length >0){
+                    if(data.devices instanceof Array){
+                        vm.devices = data.devices;
+                    }else{
+                        vm.devices = [data.devices];
+                    }
+                } else {
+                    vm.devices = "N/A";
+                }
+                vm.promptMessage = "Success";
+                vm.deviceFetched = true;
+                vm.isLoading = false;
+                console.log("getDevice response", JSON.stringify(data));
+            },
+            function(err) {
+                console.dir(err);
+                var errDesc = 'Unknown error';
+                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                    errDesc = err.data.metadata.description.en;
+                } else if (err.errorDetail) {
+                    errDesc = err.errorDetail;
+                }
+                vm.promptMessage = "Could not fetch device, please try again later";
+                vm.isLoading = false;
+                console.log("getDevice response", JSON.stringify(err));
+            }
+        );
+    }
+    
+     vm.closeDialog = function() {
         $mdDialog.hide();
     };
 });

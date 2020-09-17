@@ -2,8 +2,7 @@ var menuItems = {
   "mainMenu": "col1",
   "col1": [
     {"id":"1", "iconClass":"fa fa-globe", "label": "Users Management", "route":"#/usermanagement", "active":"true"},
-    {"id":"2","iconClass":"fa fa-dashboard","label":"Devices Management","route":"#/devicemanagement", "active":"false"},
-    {"id":"3", "iconClass":"fa fa-bell-o", "label": "Groups Management", "route": "#/groupmanagement","active":"false"}
+    {"id":"2","iconClass":"fa fa-dashboard","label":"Devices Management","route":"#/devicemanagement", "active":"false"}
   ]
 };
 var headerItems = {
@@ -16,8 +15,7 @@ var headerItems = {
 var routingItems = {
   "params": [
       {"route": "usermanagement", "template": "/identity/view/templates/users.html"},
-      {"route": "devicemanagement", "template": "/identity/view/html/views/devices/devicesList.html", "controller": "devicesHomeCtrl as vm"},
-      {"route": "groupmanagement", "template": "/identity/view/html/views/groups/groupsList.html", "controller": "groupsHomeCtrl as vm"}
+      {"route": "devicemanagement", "template": "/identity/view/html/views/devices/devicesList.html", "controller": "devicesHomeCtrl as vm"}
   ],
   "otherwiseOption" : {"template": ""}
 };

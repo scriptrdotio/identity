@@ -30,7 +30,6 @@ if(deviceIdParam instanceof Array){
 
 var ts = apsdb.beginTransaction();
 try{
-    var regenerate = true;
     var responseObj = {};
     deviceArr.forEach(function(deviceId) {
         /*
@@ -39,10 +38,13 @@ try{
         * so first the regenerate is called, if it failed with a code of TOKEN_NOT_FOUND then this device has no token 
         * and we move on to generate one
         */
+        var regenerate = true;
         if(action != "" && action != "regenerate"){
+            log.info("action is not regenerate");
             regenerate = false;
         }
         if(regenerate){
+            log.info("action is regenerate");
             var response = devices.regenerateToken(deviceId);
             if(response.metadata.status == "failure") {
                 responseObj = response.metadata;

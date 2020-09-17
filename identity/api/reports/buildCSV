@@ -2,7 +2,7 @@ var log = require("log");
 log.setLevel("INFO");
 var utils = require("identity/entities/listUtils");
 var defaultStore = require('document').getInstance('DefaultStore');
-
+//return defaultStore.getAttachmentUrl("Rpt-1600250421321","Devices.csv", {"versionNumber": "1"});
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
@@ -69,9 +69,17 @@ if(reportResult && reportResult.metadata){
     if (reportResult.metadata.status == 'failure') {
         log.error("unable to create report document\n" + JSON.stringify(reportResult));
         throw reportResult;
+    } else{
+        var key =  reportResult.result.document.key;
+        var attachmentUrl = defaultStore.getAttachmentUrl(key, fileName, {"versionNumber": "1"});
+        if(attachmentUrl != null && attachmentUrl !="")
+            return attachmentUrl.substring(8);
+        else
+            throw attachmentUrl;
     }
 } else {
     log.error("unable to create report document\n");
     throw reportResult;
 }
-return "https://google.com";
+//getAttachmentUrl(Object key,Object fileName)
+

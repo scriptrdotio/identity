@@ -537,6 +537,7 @@ angular
             }
             
             this.exportData = function(){
+                self.showAlert("warning", "Exporting file... Please wait");
                 var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
                 console.log("params" + JSON.stringify(params));
                 httpClient.post("identity/api/reports/scheduleExport", params).then(
@@ -546,8 +547,13 @@ angular
                         } else {
                              self.getJobStatus("identity/api/reports/scheduleExport", {scriptHandleId:  data.scriptHandleId }, 30, function (res){
                                  self.showAlert("success", "Data exported successfuly");
-                                 var win = window.open(res, '_blank');
-                                 win.focus();
+                                 var element = document.createElement('a');
+                                 element.setAttribute('href', res);
+                                 element.setAttribute('download', 'exportedFile');
+                                 element.style.display = 'none';
+                                 document.body.appendChild(element);
+                                 element.click();
+                                 document.body.removeChild(element);
                             },function(err){
                                  console.log("failure", err);
                                  self.showAlert("danger", "Unable to export, please try again");
