@@ -11,11 +11,11 @@
                                 </h4>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceFetched">
+                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.hidePromptMessage">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
                                 <span>{{vm.promptMessage}}</span>
                             </div>
-                            <div ng-if="vm.deviceFetched" class="contentContainer container">
+                            <div ng-if="vm.groupFetched" class="contentContainer container">
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <label>Device Name</label>

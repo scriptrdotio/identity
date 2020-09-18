@@ -336,6 +336,10 @@ angular
                     self._createNewDatasource();
                 });
                 
+                $scope.$on("showGridAlert-"+self.gridEventsId, function(event, broadcastData) {
+                    self.broadcastData = broadcastData;
+                    self.showAlert(self.broadcastData.type, self.broadcastData.content);
+                });
             }
 
             this.closeAlert = function() {

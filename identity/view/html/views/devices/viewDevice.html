@@ -11,7 +11,7 @@
                                 </h4>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.deviceFetched">
+                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.hidePromptMessage">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
                                 <span>{{vm.promptMessage}}</span>
                             </div>
@@ -43,11 +43,16 @@
                                         <label>Token</label>
                                         <p>{{vm.token}}</p>
                                     </div>
-                                    <div class="col-xs-12 mb15">
+                                    <div ng-if="vm.showTokenButtons" class="col-xs-12 mb15">
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
                                         <button ng-if="vm.token == 'N/A' && vm.status != 'Suspended'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-default mgr5">Regenerate</button>
-                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.revokeToken()" class="btn btn-default mgr5">Delete</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmDeleteToken()" class="btn btn-default mgr5">Delete</button>
+                                    </div>
+                                    <div ng-if="!vm.showTokenButtons" class="col-xs-12 mb15">
+                                        <span>Are you sure you want to delete this token?</span>
+                                        <button ng-click="vm.cancelDeleteToken()" class="btn btn-default mgr5">No</button>
+                                        <button ng-click="vm.revokeToken()" class="btn btn-default mgr5">Yes</button>
                                     </div>
                                     <div ng-if="vm.hasAttrs" class="col-xs-12">
                                         <label>Device Attributes</label>

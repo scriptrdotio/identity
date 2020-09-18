@@ -135,6 +135,22 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         }
                     },
                     {
+                        headerName: ' ',
+                        field: 'value',
+                        cellRenderer: function(params){
+                                var eDiv = document.createElement('div');
+                                var vButton;
+                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
+
+                                vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
+                                vButton.addEventListener('click', function() {
+                                    vm.copyToClipboard(params.data.auth_token);
+                                });
+                                return eDiv;
+                            },
+                        width: 100,
+                      },
+                    {
                         headerName: "Last Modified", 
                         field: "lastModifiedDate", 
                         width: 280,
@@ -209,27 +225,13 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                                 return eDiv;
                             },
                         width: 80,
-                      },
-                    {
-                        headerName: ' ',
-                        field: 'value',
-                        cellRenderer: function(params){
-                                var eDiv = document.createElement('div');
-                                var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
-
-                                vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
-                                vButton.addEventListener('click', function() {
-                                    vm.copyToClipboard(params.data.auth_token);
-                                });
-                                return eDiv;
-                            },
-                        width: 100,
                       }
                     ];
     
 
     vm.showAlert = function(type, content) {
+        $scope.$broadcast("showGridAlert-"+vm.gridId, {"type" : type, "content" : content});
+        /*
         vm.message = {
             "type" : type,
             "content" : content
@@ -238,6 +240,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         $timeout(function(){
             vm.showError = false;
         }, 5000);
+        */
     }
 
     vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
@@ -521,7 +524,7 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
     vm.parent = parent;
     vm.deviceDeleted = false;
 	vm.showMessage = true;
-    vm.header = "Confirmation";
+    vm.header = "Delete";
     
     vm.init = function() {
         vm.promptMessage = "Are you sure you want to delete '"+ vm.deviceId +"'?"
@@ -588,12 +591,14 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
     };
 });
 
-myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, grid, $mdDialog) {
+myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching device...';
     vm.deviceId = deviceData.id;
     vm.grid = grid;
     vm.deviceFetched = false;
+    vm.hidePromptMessage = false;
+    vm.showTokenButtons = true;
     vm.init = function() {
         vm.getDevice();
     }
@@ -654,6 +659,7 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, grid, 
                 
                 vm.promptMessage = "Success";
                 vm.deviceFetched = true;
+                vm.hidePromptMessage = true;
                 vm.isLoading = false;
                 console.log("getDevice response", JSON.stringify(data));
             },
@@ -727,16 +733,18 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, grid, 
         console.log('calling revokeToken with parameters = ' + JSON.stringify(parameters));
         httpClient.post("identity/api/devices/revokeToken", parameters).then(
             function(data, response) {
+                vm.showTokenButtons = true;
                 if(data.status && data.status == "failure"){
                     console.log("Failed: revokeToken response", data);
                     return;
                 }
-
                 vm.token = "N/A";
                 vm.grid.refreshInfiniteCache();
+                vm.showPromptMessage(false, "Successfully deleted token");
                 console.log("Success: revokeToken response", JSON.stringify(data));
             },
             function(err) {
+                vm.showTokenButtons = true;
                 console.dir(err);
                 var errDesc = 'Unknown error';
                 if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
@@ -747,6 +755,24 @@ myApp.controller('viewDeviceDialogCtrl', function(httpClient, deviceData, grid, 
                 console.log("Failed: revokeToken response", JSON.stringify(err));
             }
     	);
+    }
+    
+    vm.confirmDeleteToken = function(){
+        vm.showTokenButtons = false;
+        
+    }
+    
+    vm.cancelDeleteToken = function(){
+        vm.showTokenButtons = true;
+    }
+    
+    vm.showPromptMessage = function(loading, message){
+        vm.promptMessage = message;
+        vm.isLoading = loading;
+        vm.hidePromptMessage = false;
+        $timeout(function(){
+            vm.hidePromptMessage = true;
+        }, 5000);
     }
     
     vm.closeDialog = function() {
@@ -765,7 +791,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
     vm.parent = parent;
     vm.groupDeleted = false;
 	vm.showMessage = true;
-    vm.header = "Confirmation";
+    vm.header = "Delete";
     
     vm.init = function() {
         vm.promptMessage = "Are you sure you want to delete '"+ vm.groupName +"'?"
@@ -831,7 +857,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
     };
 });
 
-myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialog) {
+myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, groupData, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching group...';
     vm.groupName = groupData.groups;
@@ -849,7 +875,7 @@ myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialo
         httpClient.post("identity/api/groups/getGroupDevicesToView", parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    console.log("getDevice response", data);
+                    console.log("getGroupDevicesToView response", data);
                     vm.promptMessage = "Could not fetch device, please try again later";
                     vm.isLoading = false;
                     return;
@@ -866,9 +892,10 @@ myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialo
                     vm.devices = "N/A";
                 }
                 vm.promptMessage = "Success";
-                vm.deviceFetched = true;
+                vm.groupFetched = true;
+                vm.hidePromptMessage = true;
                 vm.isLoading = false;
-                console.log("getDevice response", JSON.stringify(data));
+                console.log("getGroupDevicesToView response", JSON.stringify(data));
             },
             function(err) {
                 console.dir(err);
@@ -883,6 +910,15 @@ myApp.controller('viewGroupDialogCtrl', function(httpClient, groupData, $mdDialo
                 console.log("getDevice response", JSON.stringify(err));
             }
         );
+    }
+    
+    vm.showPromptMessage = function(loading, message){
+        vm.promptMessage = message;
+        vm.isLoading = loading;
+        vm.hidePromptMessage = false;
+        $timeout(function(){
+            vm.hidePromptMessage = true;
+        }, 5000);
     }
     
      vm.closeDialog = function() {
