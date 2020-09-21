@@ -116,6 +116,8 @@ myApp.constant(
                         'items': [{
                                     "key" : "confirmPassword",
                                     "type": "password",
+                            		"condition":"model.password",
+                            		"required":true,
                                     "ngModelOptions": { allowInvalid: true },
                                     "onChange": function(modelValue, form, model, scope) {
                                         console.log(model)
@@ -126,7 +128,22 @@ myApp.constant(
                                              scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                          }
                                      }
-                                }]
+                                },
+                                 {
+                                    "key" : "confirmPassword",
+                                    "type": "password",
+                            		"condition":"!model.password",
+                                    "ngModelOptions": { allowInvalid: true },
+                                   /* "onChange": function(modelValue, form, model, scope) {
+                                        console.log(model)
+                                         if(modelValue != model["password"])
+                                            scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
+                                         else {
+                                             scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                             scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
+                                         }
+                                     }*/
+                                } ]
 
                         }
                 ]

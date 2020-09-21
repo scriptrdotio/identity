@@ -371,10 +371,13 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                     of.title = "Edit "+of.title;
                     var form = angular.copy(of.form);
                     form[0].items[1].readonly = true;
+                    var required = ["name","id"];
+                    var schema = angular.copy(of.schema);
+                    schema.required = required;
                     var formWidget = {
                         'label': of.title,
                         'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-                        'schema': angular.copy(of.schema),
+                        'schema': schema,
                         'form': form,
                         'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
                     }
