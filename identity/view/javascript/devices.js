@@ -66,7 +66,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                                eDiv.innerHTML = btn;
                                var editBtn = eDiv.querySelectorAll('.btn')[0];
                                editBtn.addEventListener('click', function(clickParams) { 
-                                   vm.loadEditGroupOverlay(params, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
+                                   vm.loadEditGroupOverlay(params.data, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
                                });
                                return eDiv;
                            }
@@ -204,7 +204,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
 
                                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                                 vButton.addEventListener('click', function(clickParams) {
-                                     vm.loadEditDeviceOverlay(params, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
+                                     vm.loadEditDeviceOverlay(params.data, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
                                 });
                                 return eDiv;
                             },
@@ -231,16 +231,6 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
 
     vm.showAlert = function(type, content) {
         $scope.$broadcast("showGridAlert-"+vm.gridId, {"type" : type, "content" : content});
-        /*
-        vm.message = {
-            "type" : type,
-            "content" : content
-        }
-        vm.showError = true;
-        $timeout(function(){
-            vm.showError = false;
-        }, 5000);
-        */
     }
 
     vm.callBackendApiPost = function(apiId, parameters, successHandler, failureHandler) {
@@ -271,8 +261,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     }
 
     
-        vm.loadEditGroupOverlay = function(marker, overlayForm, backendApi) {
-            httpClient.post("identity/api/groups/getGroupDevices", marker.data).then(
+        vm.loadEditGroupOverlay = function(groupData, overlayForm, backendApi) {
+            httpClient.post("identity/api/groups/getGroupDevices", groupData).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
                         console.log("getGroupDevices response", data);
@@ -286,7 +276,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
                         'schema': angular.copy(of.schema),
                         'form': angular.copy(of.form),
-                        'model': {"name": marker.data.groups, "devices": data.devices, "originalName":marker.data.groups, "originalDevices":data.devices}
+                        'model': {"name": groupData.groups, "devices": data.devices, "originalName":groupData.groups, "originalDevices":data.devices}
                     }
                     
                     var self = this;
@@ -348,8 +338,8 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                 );
     };
     
-    vm.loadEditDeviceOverlay = function(marker, overlayForm, backendApi) {
-            httpClient.post("identity/api/devices/getDevice", marker.data).then(
+    vm.loadEditDeviceOverlay = function(deviceData, overlayForm, backendApi) {
+            httpClient.post("identity/api/devices/getDevice", deviceData).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
                         console.log("getGroupDevices response", data);
@@ -386,7 +376,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
                         'schema': angular.copy(of.schema),
                         'form': form,
-                        'model': {"name": marker.data.name, "id": marker.data.id, "description": marker.data.description, "isSuspended": marker.data.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
+                        'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
                     }
                     
                     var self = this;
@@ -478,11 +468,11 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         var templateUrl = "";
         var localsObj = {};
         if(vm.gridId == "device"){
-            localsObj = {grid: params.api, deviceData: params.data};
+            localsObj = {grid: params.api, deviceData: params.data, parent: vm};
             controller = 'viewDeviceDialogCtrl';
             templateUrl = 'html/views/devices/viewDevice.html';
         } else if (vm.gridId == "group"){
-            localsObj = {groupData: params.data};
+            localsObj = {groupData: params.data, parent: vm};
             controller = 'viewGroupDialogCtrl';
             templateUrl = 'html/views/groups/viewGroup.html';
         }
@@ -497,21 +487,6 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             });
         }
     
-     vm.showGroupViewDialog = function(params) {
-         var localsObj = {};
-         if (vm.gridId == "group"){
-            localsObj.groupData = params.data;
-            $mdDialog.show({
-                controller: 'viewGroupDialogCtrl',
-                controllerAs: 'vm',
-                templateUrl: 'html/views/groups/viewGroup.html',
-                clickOutsideToClose:true,
-                escapeToClose: true,
-                locals: localsObj,
-                ok: 'Close'
-            });
-        }
-    }
 });
 
 
@@ -591,10 +566,12 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
     };
 });
 
-myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, $mdDialog) {
+myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, parent, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching device...';
+    vm.deviceData = deviceData;
     vm.deviceId = deviceData.id;
+    vm.parent = parent;
     vm.grid = grid;
     vm.deviceFetched = false;
     vm.hidePromptMessage = false;
@@ -676,6 +653,12 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 console.log("getDevice response", JSON.stringify(err));
             }
         );
+    }
+    
+    vm.EditDevice = function(){
+        vm.closeDialog();
+        var infoWindowActions = vm.parent.infoWindowActions.device;
+        vm.parent.loadEditDeviceOverlay(vm.deviceData, infoWindowActions, 'identity/api/devices/saveDevice')
     }
     
     vm.copyToken = function() {
@@ -857,10 +840,12 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
     };
 });
 
-myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, groupData, $mdDialog) {
+myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, parent, groupData, $mdDialog) {
     var vm = this;
     vm.promptMessage = 'Fetching group...';
+    vm.groupData = groupData;
     vm.groupName = groupData.groups;
+    vm.parent = parent;
     vm.groupFetched = false;
     vm.init = function() {
         vm.getGroup();
@@ -910,6 +895,12 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, groupData
                 console.log("getDevice response", JSON.stringify(err));
             }
         );
+    } 
+    
+    vm.EditGroup = function(){
+        vm.closeDialog();
+        var infoWindowActions = vm.parent.infoWindowActions.group;
+        vm.parent.loadEditGroupOverlay(vm.groupData, infoWindowActions, 'identity/api/groups/saveGroup')
     }
     
     vm.showPromptMessage = function(loading, message){
