@@ -18,16 +18,21 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             vm.gridAPI = "identity/api/devices/listDevices";
     }
 
-                        vm.groupsColDef = [{
-                            checkboxSelection: true,
-                            headerName: "Group Name", 
-                            field: "groups", 
-                            width: 180,
-                            cellClass: "textWrap", 
-                            editable : false,
-                            cellRenderer: function(params) {
-                                return params.value? params.value.split("_")[0]: 'N/A';
-                            }
+                        vm.groupsColDef = [
+                            {   headerName: '',
+                                checkboxSelection: true,
+                                width: 100
+                            },
+                       {
+                                //checkboxSelection: true,
+                                headerName: "Group Name", 
+                                field: "groups", 
+                                width: 180,
+                                cellClass: "textWrap", 
+                                editable : false,
+                                cellRenderer: function(params) {
+                                    return params.value? params.value.split("_")[0]: 'N/A';
+                                }
                        },
                        {
                            headerName: "Number of Devices", 
@@ -94,7 +99,12 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     
     
                     vm.devicesColDef = [
-                    {	checkboxSelection: true,
+                        {   headerName: '',
+                         	checkboxSelection: true,
+                         	width: 100
+                        },
+                    {	
+                       // checkboxSelection: true,
                         headerName: "Device Name", 
                         field: "name", 
                         width: 180,
@@ -406,6 +416,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                                 vm.showAlert("danger", "Could not save device, please try again later");
                                 console.log('Error when saving device', err);
                             }
+                            wdgModel.update = true;
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
                         }
                     }, function () {
