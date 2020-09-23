@@ -9,7 +9,12 @@
                                 <h4 class="mrgb20"> 
                                     View Group
                                 </h4>
+                                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                                    <md-icon class="glyphicon glyphicon-remove" aria-hidden="true">
+                                    </md-icon>
+                                </md-button>
                             </div>
+                                 </md-toolbar>
                             <div class="clearfix"></div>
                             <div class="data-notification center mt20 mrgb20" ng-hide="vm.hidePromptMessage">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
@@ -39,7 +44,7 @@
         </div>
     </md-dialog-content>
     <md-dialog-actions class="col-md-12  pb15 pt15">
-        <md-button ng-click="vm.EditGroup()" class="btn btn-default">Edit</md-button>
-        <md-button ng-click="vm.closeDialog()" class="btn btn-default">Close</md-button>
+        <md-button ng-click="vm.editGroup()" class="btn btn-default">Edit</md-button>
+        <md-button ng-click="vm.deleteGroup()" class="btn btn-default">Delete</md-button>
     </md-dialog-actions>
 </md-dialog> 
