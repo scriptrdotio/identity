@@ -4,240 +4,243 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
     vm.renderGrid = true;
     vm.infoWindowActions = infoWindowActions;
     vm.gridId =  "device";
+    vm.deviceTabClass = "btnSelected";
     vm.gridAPI = "identity/api/devices/listDevices";
     vm.init = function() {
-        
+
     }
 
-    
     vm.changeTab = function(value){
         vm.gridId = value;
-        if(vm.gridId ==  "group")
+        if(vm.gridId ==  "group"){
+            vm.deviceTabClass = "";
+            vm.groupTabClass = "btnSelected";
             vm.gridAPI = "identity/api/groups/listGroups";
-        else if (vm.gridId ==  "device")
+        } else if (vm.gridId ==  "device"){
+            vm.deviceTabClass = "btnSelected";
+            vm.groupTabClass = "";
             vm.gridAPI = "identity/api/devices/listDevices";
+        }
     }
 
-                        vm.groupsColDef = [
-                            {   headerName: '',
-                                checkboxSelection: true,
-                                width: 100
-                            },
-                       {
-                                //checkboxSelection: true,
-                                headerName: "Group Name", 
-                                field: "groups", 
-                                width: 180,
-                                cellClass: "textWrap", 
-                                editable : false,
-                                cellRenderer: function(params) {
-                                    return params.value? params.value.split("_")[0]: 'N/A';
-                                }
-                       },
-                       {
-                           headerName: "Number of Devices", 
-                           field: "count", 
-                           width: 180,
-                           cellClass: "textWrap", 
-                           editable : false,
-                           cellRenderer: function(params) {
-                               return params.value? params.value.split("_")[0]: 'N/A';
-                           }
-                       },
-                       {
-                           headerName: "", 
-                           width: 80,
-                           cellClass: "textWrap", 
-                           editable : false,
-                           cellRenderer: function(params) {
-                               var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
-                               eDiv.innerHTML = btn;
-                               var viewBtn = eDiv.querySelectorAll('.btn')[0];
-                               viewBtn.addEventListener('click', function(clickParams) { 
-                                    vm.showViewDialog(params)
-                               });
-                               return eDiv;
-                           }
-                       },
-                       {
-                           headerName: "", 
-                           width: 80,
-                           cellClass: "textWrap", 
-                           editable : false,
-                           cellRenderer: function(params) {
-                               var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
-                               eDiv.innerHTML = btn;
-                               var editBtn = eDiv.querySelectorAll('.btn')[0];
-                               editBtn.addEventListener('click', function(clickParams) { 
-                                   vm.loadEditGroupOverlay(params.data, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
-                               });
-                               return eDiv;
-                           }
-                       },
-                       {
-                           headerName: "", 
-                           width: 80,
-                           cellClass: "textWrap", 
-                           editable : false,
-                           cellRenderer: function(params) {
-                               var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
-                               eDiv.innerHTML = btn;
-                               var deleteBtn = eDiv.querySelectorAll('.btn')[0];
-                               deleteBtn.addEventListener('click', function(clickParams) { 
-                                  vm.showConfirmDialog(params);
-                                  
-                               });
-                               return eDiv;
-                           }
-                       },
-                      ];
-    
-    
-    
-                    vm.devicesColDef = [
-                        {   headerName: '',
-                         	checkboxSelection: true,
-                         	width: 100
-                        },
-                    {	
-                       // checkboxSelection: true,
-                        headerName: "Device Name", 
-                        field: "name", 
-                        width: 180,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        cellRenderer: function(params) {
-                            return params.value? params.value.split("_")[0]: 'N/A';
-                        }
-                    },
-                    {
-                        headerName: "Device ID", 
-                        field: "id", 
-                        width: 180,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        cellRenderer: function(params) {
-                            return params.value? params.value.split("_")[0]: 'N/A';
-                        }
-                    },
-                    {
-                        headerName: "Description", 
-                        field: "description", 
-                        width: 180,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        cellRenderer: function(params) {
-                            return params.value? params.value.split("_")[0]: 'N/A';
-                        }
-                    },
-                    {
-                        headerName: "Token", 
-                        field: "auth_token", 
-                        width: 180,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        tooltipField: 'auth_token',
-                        cellRenderer: function(params) {
-                            return params.value ? params.value.substr(0,8)+"..." : 'N/A';
-                        }
-                    },
-                    {
-                        headerName: ' ',
-                        field: 'value',
-                        cellRenderer: function(params){
-                                var eDiv = document.createElement('div');
-                                var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken" tooltip-placement="left" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></button>';
+    vm.groupsColDef = [
+        {   headerName: '',
+         checkboxSelection: true,
+         width: 50
+        },
+        {
+            headerName: "Group Name", 
+            field: "groups", 
+            width: 180,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+        {
+            headerName: "Number of Devices", 
+            field: "count", 
+            width: 180,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+        {
+            headerName: "", 
+            width: 80,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var viewBtn = eDiv.querySelectorAll('.btn')[0];
+                viewBtn.addEventListener('click', function(clickParams) { 
+                    vm.showViewDialog(params)
+                });
+                return eDiv;
+            }
+        },
+        {
+            headerName: "", 
+            width: 80,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var editBtn = eDiv.querySelectorAll('.btn')[0];
+                editBtn.addEventListener('click', function(clickParams) { 
+                    vm.loadEditGroupOverlay(params.data, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
+                });
+                return eDiv;
+            }
+        },
+        {
+            headerName: "", 
+            width: 80,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
+                deleteBtn.addEventListener('click', function(clickParams) { 
+                    vm.showConfirmDialog(params);
 
-                                vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
-                                vButton.addEventListener('click', function() {
-                                    vm.copyToClipboard(params.data.auth_token);
-                                });
-                                return eDiv;
-                            },
-                        width: 100,
-                      },
-                    {
-                        headerName: "Last Modified", 
-                        field: "lastModifiedDate", 
-                        width: 280,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        cellRenderer: function(params) {
-                            return params.value? params.value.split("_")[0]: 'N/A';
+                });
+                return eDiv;
+            }
+        },
+    ];
+
+
+
+    vm.devicesColDef = [
+        {   headerName: '',
+         checkboxSelection: true,
+         width: 50
+        },
+        {	
+            headerName: "Device Name", 
+            field: "name", 
+            width: 180,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+        {
+            headerName: "Device ID", 
+            field: "id", 
+            width: 180,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+        {
+            headerName: "Description", 
+            field: "description", 
+            width: 180,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+        {
+            headerName: "Token", 
+            field: "auth_token", 
+            width: 100,
+            cellClass: "textWrap", 
+            editable : false,
+            tooltipField: 'auth_token',
+            cellRenderer: function(params) {
+                return params.value ? params.value.substr(0,8)+"..." : 'N/A';
+            }
+        },
+        {
+            headerName: ' ',
+            field: 'value',
+            cellRenderer: function(params){
+                var eDiv = document.createElement('div');
+                var vButton;
+                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken" tooltip-placement="left" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></button>';
+
+                vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
+                vButton.addEventListener('click', function() {
+                    vm.copyToClipboard(params.data.auth_token);
+                });
+                return eDiv;
+            },
+            width: 100,
+        },
+        {
+            headerName: "Status", 
+            field: "isSuspended", 
+            width: 140,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var status = "";
+                if(params.value != null){
+                    var isSuspended = params.value;
+                    if(isSuspended == "true")
+                        status = "Suspended";
+                    else if(isSuspended == "false")
+                        status = "Active"
                         }
-                    },
-                    {
-                        headerName: "Status", 
-                        field: "isSuspended", 
-                        width: 180,
-                        cellClass: "textWrap", 
-                        editable : false,
-                        cellRenderer: function(params) {
-                            var status = "";
-                            if(params.value != null){
-                                var isSuspended = params.value;
-                                if(isSuspended == "true")
-                                    status = "Suspended";
-                                else if(isSuspended == "false")
-                                    status = "Active"
-                            }
-                            return status != "" ? status : 'N/A';
-                        }
-                    },
-                    {
-                        headerName: ' ',
-                        field: 'value',
-                        cellRenderer: function(params){
-                            var eDiv = document.createElement('div');
-                            var vButton;
-                            eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="left" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                return status != "" ? status : 'N/A';
+            }
+        },
+        {
+            headerName: ' ',
+            field: 'value',
+            cellRenderer: function(params){
+                var eDiv = document.createElement('div');
+                var vButton;
+                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="left" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
 
-                            vButton = eDiv.querySelectorAll('.btn-view')[0];
-                            vButton.addEventListener('click', function() {
-                                vm.showViewDialog(params);
-                            });
-                            return eDiv;
-                            },
-                        width: 65,
-                      },
-                    {
-                        headerName: ' ',
-                        field: 'value',
-                        cellRenderer: function(params){
-                                var eDiv = document.createElement('div');
-                                var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="left" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                vButton = eDiv.querySelectorAll('.btn-view')[0];
+                vButton.addEventListener('click', function() {
+                    vm.showViewDialog(params);
+                });
+                return eDiv;
+            },
+            width: 65,
+        },
+        {
+            headerName: ' ',
+            field: 'value',
+            cellRenderer: function(params){
+                var eDiv = document.createElement('div');
+                var vButton;
+                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="left" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
 
-                                vButton = eDiv.querySelectorAll('.btn-edit')[0];
-                                vButton.addEventListener('click', function(clickParams) {
-                                     vm.loadEditDeviceOverlay(params.data, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
-                                });
-                                return eDiv;
-                            },
-                        width: 60,
-                      },
-                    {
-                        headerName: ' ',
-                        field: 'value',
-                        cellRenderer: function(params){
-                                var eDiv = document.createElement('div');
-                                var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="left" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                vButton = eDiv.querySelectorAll('.btn-edit')[0];
+                vButton.addEventListener('click', function(clickParams) {
+                    vm.loadEditDeviceOverlay(params.data, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
+                });
+                return eDiv;
+            },
+            width: 60,
+        },
+        {
+            headerName: ' ',
+            field: 'value',
+            cellRenderer: function(params){
+                var eDiv = document.createElement('div');
+                var vButton;
+                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="left" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
 
-                                vButton = eDiv.querySelectorAll('.btn-delete')[0];
-                                vButton.addEventListener('click', function() {
-                                    vm.showConfirmDialog(params);
-                                });
-                                return eDiv;
-                            },
-                        width: 80,
-                      }
-                    ];
-    
+                vButton = eDiv.querySelectorAll('.btn-delete')[0];
+                vButton.addEventListener('click', function() {
+                    vm.showConfirmDialog(params);
+                });
+                return eDiv;
+            },
+            width: 80,
+        },
+        {
+            headerName: "Last Modified", 
+            field: "lastModifiedDate", 
+            width: 280,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        }
+    ];
+
 
     vm.showAlert = function(type, content) {
         $scope.$broadcast("showGridAlert-"+vm.gridId, {"type" : type, "content" : content});
@@ -247,217 +250,217 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
         console.log	('POST calling backend api <' + apiId + '> with params ' + JSON.stringify(parameters));
         vm._callBackendApi(apiId, parameters, 'P', successHandler, failureHandler);
     };
-    
+
     vm._callBackendApi = function(apiId, parameters, method, successHandler, failureHandler) {
         var httpMeth = httpClient.post;
         if (method == 'G') {
             httpMeth = httpClient.get;
         }
-        
-    	httpMeth(apiId, parameters)
-        .then(
-        function(data, response) {
-            console.log(data);
-            if (data && data.status && data.status == 'failure') {
-            	if (typeof failureHandler === 'function') failureHandler(data);
-            } else {
-	            if (typeof successHandler === 'function') successHandler(data);
-            }
-        },
-        function(err) {
-            console.log(err);
-            if (typeof failureHandler === 'function') failureHandler(err);
-        });
+
+        httpMeth(apiId, parameters)
+            .then(
+            function(data, response) {
+                console.log(data);
+                if (data && data.status && data.status == 'failure') {
+                    if (typeof failureHandler === 'function') failureHandler(data);
+                } else {
+                    if (typeof successHandler === 'function') successHandler(data);
+                }
+            },
+            function(err) {
+                console.log(err);
+                if (typeof failureHandler === 'function') failureHandler(err);
+            });
     }
 
-    
-        vm.loadEditGroupOverlay = function(groupData, overlayForm, backendApi) {
-            httpClient.post("identity/api/groups/getGroupDevices", groupData).then(
-                function(data, response) {
-                    if(data.status && data.status == "failure"){
-                        console.log("getGroupDevices response", data);
-                        return;
-                    }
-                    vm.closeAlert();
-                    var of = angular.copy(overlayForm);
-                    of.title = "Edit "+of.title;
-                    var formWidget = {
-                        'label': of.title,
-                        'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-                        'schema': angular.copy(of.schema),
-                        'form': angular.copy(of.form),
-                        'model': {"name": groupData.groups, "devices": data.devices, "originalName":groupData.groups, "originalDevices":data.devices}
-                    }
-                    
-                    var self = this;
-                    var modalInstance= $uibModal.open({
-                        animation: true,
-                        component: 'formOverlay',
-                        size: 'lg',
-                        scope: $scope,
-                        resolve: {
-                            widget: function() {
-                                return formWidget;
-                            }
-                        }
-                    });
 
-                    modalInstance.result.then(function (wdgModel) {
-                        console.log('Model Data', wdgModel);
-                        if(wdgModel != 'cancel') {
-                            console.log('Model Data', wdgModel);
-                            var successHandler = function(data) {
-                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
-                    			vm.showAlert("success", "Successfully saved group");
-                            }
-                            var failureHandler = function(err) {
-                                vm.showAlert("danger", "Could not save group, please try again later");
-                                console.log('Error when saving group', err);
-                            }
-                            
-                            wdgModel.update = true;
-                            wdgModel.originalDevices = formWidget.model.originalDevices;
-                            if(wdgModel.originalName != wdgModel.name){
-                                wdgModel.newName = wdgModel.name;
-                                wdgModel.name = wdgModel.originalName;
-                            }
-                            if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
-                                wdgModel.updateDevices = false;
-                            vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
-                        }
-                    }, function () {
-                        console.info('modal-component for widget update dismissed at: ' + new Date());
-                    });
-                },
-                function(err) {
-                    console.dir(err);
-                    if(err.status == "success"){
-                        //refresh grid
-                        console.log("getGroupDevices response", err);
-                        return;
-                    }
-
-                    var errDesc = 'Unknown error';
-                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
-                        errDesc = err.data.metadata.description.en;
-                    } else if (err.errorDetail) {
-                        errDesc = err.errorDetail;
-                    }
-                    console.log("getGroupDevices response", err);
+    vm.loadEditGroupOverlay = function(groupData, overlayForm, backendApi) {
+        httpClient.post("identity/api/groups/getGroupDevices", groupData).then(
+            function(data, response) {
+                if(data.status && data.status == "failure"){
+                    console.log("getGroupDevices response", data);
+                    return;
                 }
-                );
+                vm.closeAlert();
+                var of = angular.copy(overlayForm);
+                of.title = "Edit "+of.title;
+                var formWidget = {
+                    'label': of.title,
+                    'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                    'schema': angular.copy(of.schema),
+                    'form': angular.copy(of.form),
+                    'model': {"name": groupData.groups, "devices": data.devices, "originalName":groupData.groups, "originalDevices":data.devices}
+                }
+
+                var self = this;
+                var modalInstance= $uibModal.open({
+                    animation: true,
+                    component: 'formOverlay',
+                    size: 'lg',
+                    scope: $scope,
+                    resolve: {
+                        widget: function() {
+                            return formWidget;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (wdgModel) {
+                    console.log('Model Data', wdgModel);
+                    if(wdgModel != 'cancel') {
+                        console.log('Model Data', wdgModel);
+                        var successHandler = function(data) {
+                            $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                            vm.showAlert("success", "Successfully saved group");
+                        }
+                        var failureHandler = function(err) {
+                            vm.showAlert("danger", "Could not save group, please try again later");
+                            console.log('Error when saving group', err);
+                        }
+
+                        wdgModel.update = true;
+                        wdgModel.originalDevices = formWidget.model.originalDevices;
+                        if(wdgModel.originalName != wdgModel.name){
+                            wdgModel.newName = wdgModel.name;
+                            wdgModel.name = wdgModel.originalName;
+                        }
+                        if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
+                            wdgModel.updateDevices = false;
+                        vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+                    }
+                }, function () {
+                    console.info('modal-component for widget update dismissed at: ' + new Date());
+                });
+            },
+            function(err) {
+                console.dir(err);
+                if(err.status == "success"){
+                    //refresh grid
+                    console.log("getGroupDevices response", err);
+                    return;
+                }
+
+                var errDesc = 'Unknown error';
+                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                    errDesc = err.data.metadata.description.en;
+                } else if (err.errorDetail) {
+                    errDesc = err.errorDetail;
+                }
+                console.log("getGroupDevices response", err);
+            }
+        );
     };
-    
+
     vm.loadEditDeviceOverlay = function(deviceData, overlayForm, backendApi) {
-            httpClient.post("identity/api/devices/getDevice", deviceData).then(
-                function(data, response) {
-                    if(data.status && data.status == "failure"){
-                        console.log("getGroupDevices response", data);
-                        return;
-                    }
-                    var groupsArr = [];
-                    if(data.groups instanceof Array){
-                        groupsArr = data.groups;
-                    }else{
-                        groupsArr = [data.groups];
-                    };
-                    var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
-                    var deviceAttrsArray = [];
-                    var metaTypes = data["meta.types"];
-                    Object.keys(data).forEach(function(key) {
-                        if(defaultAttrs.indexOf(key)<0){
-                            vm.hasAttrs = true;
-                            var deviceAttrsObj = {};
-                            deviceAttrsObj.name = key;
-                            deviceAttrsObj.type = metaTypes[key];
-                            deviceAttrsObj.value = data[key];
-                            deviceAttrsArray.push(deviceAttrsObj);
-                        }
-                    });
-                    
-                    
-                    vm.closeAlert();
-                    var of = angular.copy(overlayForm);
-                    of.title = "Edit "+of.title;
-                    var form = angular.copy(of.form);
-                    form[0].items[1].readonly = true;
-                    var required = ["name","id"];
-                    var schema = angular.copy(of.schema);
-                    schema.required = required;
-                    var formWidget = {
-                        'label': of.title,
-                        'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
-                        'schema': schema,
-                        'form': form,
-                        'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
-                    }
-                    
-                    var self = this;
-                    var modalInstance= $uibModal.open({
-                        animation: true,
-                        component: 'formOverlay',
-                        size: 'lg',
-                        scope: $scope,
-                        resolve: {
-                            widget: function() {
-                                return formWidget;
-                            }
-                        }
-                    });
-
-                    modalInstance.result.then(function (wdgModel) {
-                        console.log('Model Data', wdgModel);
-                        if(wdgModel != 'cancel') {
-                            var successHandler = function(data) {
-                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
-                                vm.showAlert("success", "Successfully saved device");
-                            }
-                            var failureHandler = function(err) {
-                                vm.showAlert("danger", "Could not save device, please try again later");
-                                console.log('Error when saving device', err);
-                            }
-                            wdgModel.update = true;
-                            vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
-                        }
-                    }, function () {
-                        console.info('modal-component for widget update dismissed at: ' + new Date());
-                    });
-                },
-                function(err) {
-                    console.dir(err);
-                    if(err.status == "success"){
-                        //refresh grid
-                        console.log("getGroupDevices response", err);
-                        return;
-                    }
-
-                    var errDesc = 'Unknown error';
-                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
-                        errDesc = err.data.metadata.description.en;
-                    } else if (err.errorDetail) {
-                        errDesc = err.errorDetail;
-                    }
-                    console.log("getGroupDevices response", err);
+        httpClient.post("identity/api/devices/getDevice", deviceData).then(
+            function(data, response) {
+                if(data.status && data.status == "failure"){
+                    console.log("getGroupDevices response", data);
+                    return;
                 }
-                );
+                var groupsArr = [];
+                if(data.groups instanceof Array){
+                    groupsArr = data.groups;
+                }else{
+                    groupsArr = [data.groups];
+                };
+                var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
+                var deviceAttrsArray = [];
+                var metaTypes = data["meta.types"];
+                Object.keys(data).forEach(function(key) {
+                    if(defaultAttrs.indexOf(key)<0){
+                        vm.hasAttrs = true;
+                        var deviceAttrsObj = {};
+                        deviceAttrsObj.name = key;
+                        deviceAttrsObj.type = metaTypes[key];
+                        deviceAttrsObj.value = data[key];
+                        deviceAttrsArray.push(deviceAttrsObj);
+                    }
+                });
+
+
+                vm.closeAlert();
+                var of = angular.copy(overlayForm);
+                of.title = "Edit "+of.title;
+                var form = angular.copy(of.form);
+                form[0].items[1].readonly = true;
+                var required = ["name","id"];
+                var schema = angular.copy(of.schema);
+                schema.required = required;
+                var formWidget = {
+                    'label': of.title,
+                    'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                    'schema': schema,
+                    'form': form,
+                    'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
+                }
+
+                var self = this;
+                var modalInstance= $uibModal.open({
+                    animation: true,
+                    component: 'formOverlay',
+                    size: 'lg',
+                    scope: $scope,
+                    resolve: {
+                        widget: function() {
+                            return formWidget;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (wdgModel) {
+                    console.log('Model Data', wdgModel);
+                    if(wdgModel != 'cancel') {
+                        var successHandler = function(data) {
+                            $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                            vm.showAlert("success", "Successfully saved device");
+                        }
+                        var failureHandler = function(err) {
+                            vm.showAlert("danger", "Could not save device, please try again later");
+                            console.log('Error when saving device', err);
+                        }
+                        wdgModel.update = true;
+                        vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
+                    }
+                }, function () {
+                    console.info('modal-component for widget update dismissed at: ' + new Date());
+                });
+            },
+            function(err) {
+                console.dir(err);
+                if(err.status == "success"){
+                    //refresh grid
+                    console.log("getGroupDevices response", err);
+                    return;
+                }
+
+                var errDesc = 'Unknown error';
+                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                    errDesc = err.data.metadata.description.en;
+                } else if (err.errorDetail) {
+                    errDesc = err.errorDetail;
+                }
+                console.log("getGroupDevices response", err);
+            }
+        );
     };
-    
-    
+
+
     vm.closeAlert = function() {
         this.showError = false;
     };
 
 
-    
+
     vm.copyToClipboard = function(text) {
         navigator.clipboard.writeText(text).then(function() {
-          console.log('Copying to clipboard was successful');
+            console.log('Copying to clipboard was successful');
         }, function(err) {
-          console.error('Could not copy text: ', err);
+            console.error('Could not copy text: ', err);
         });
     }
-    
-    
+
+
     vm.showConfirmDialog = function(params) {
         console.log("params.data >>>> " + JSON.stringify(params.data));
         var localsObj = {grid: params.api, parent: vm};
@@ -477,7 +480,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             ok: 'Close'
         });
     }
-    
+
     vm.showViewDialog = function(params) {
         var controller = "";
         var templateUrl = "";
@@ -491,17 +494,17 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             controller = 'viewGroupDialogCtrl';
             templateUrl = 'html/views/groups/viewGroup.html';
         }
-            $mdDialog.show({
-                controller: controller,
-                controllerAs: 'vm',
-                templateUrl: templateUrl,
-                clickOutsideToClose:true,
-                escapeToClose: true,
-                locals: localsObj,
-                ok: 'Close'
-            });
-        }
-    
+        $mdDialog.show({
+            controller: controller,
+            controllerAs: 'vm',
+            templateUrl: templateUrl,
+            clickOutsideToClose:true,
+            escapeToClose: true,
+            locals: localsObj,
+            ok: 'Close'
+        });
+    }
+
 });
 
 
@@ -513,14 +516,14 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
     vm.grid = grid;
     vm.parent = parent;
     vm.deviceDeleted = false;
-	vm.showMessage = true;
+    vm.showMessage = true;
     vm.header = "Delete";
-    
+
     vm.init = function() {
         vm.promptMessage = "Are you sure you want to delete '"+ vm.deviceId +"'?"
     }
-    
-	vm.deleteDevice = function() {
+
+    vm.deleteDevice = function() {
         vm.showLoading();
         var parameters = {
             id: vm.deviceId
@@ -534,11 +537,11 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
                     vm.closeDialog();
                     return;
                 }
-				
+
                 vm.parent.showAlert("success", "Successfully deleted device");
-                
+
                 vm.deviceDeleted = true;
-                
+
                 //refresh grid
                 vm.grid.refreshInfiniteCache();
                 console.log("deleteDevice response", data);
@@ -552,7 +555,7 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
                     vm.deviceDeleted = true;
                     //refresh grid
                     vm.grid.refreshInfiniteCache();
-                	console.log("deleteDevice response", err);
+                    console.log("deleteDevice response", err);
                     vm.closeDialog();
                     return;
                 }
@@ -569,7 +572,7 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
             }
         );
     }
-    
+
     vm.showLoading = function() {
         vm.isLoading = true;
         vm.showMessage = false;
@@ -596,8 +599,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
     vm.init = function() {
         vm.getDevice();
     }
-    
-	vm.getDevice = function() {
+
+    vm.getDevice = function() {
         vm.isLoading = true;
         var parameters = {
             id: vm.deviceId
@@ -617,9 +620,9 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 vm.description = data.description ? data.description : "N/A";
                 if(data.groups != null){
                     if(data.groups instanceof Array){
-                       vm.groups = data.groups;
+                        vm.groups = data.groups;
                     }else{
-                       vm.groups = [data.groups];
+                        vm.groups = [data.groups];
                     }
                 } else {
                     vm.groups = ["N/A"];
@@ -627,13 +630,13 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 var devStatus = "";
                 if(data.isSuspended != null){
                     if(data.isSuspended == "true")
-                   		devStatus = "Suspended";
+                        devStatus = "Suspended";
                     else if(data.isSuspended == "false")
                         devStatus = "Active"
-                }
+                        }
                 vm.status = devStatus != "" ? devStatus : 'N/A';
                 vm.token = data.auth_token ? data.auth_token : "N/A";
-                
+
                 vm.hasAttrs = false;
                 var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
                 var deviceAttrsArray = [];
@@ -649,8 +652,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                     }
                 })
                 vm.deviceAttrs = deviceAttrsArray;
-                
-                
+
+
                 vm.promptMessage = "Success";
                 vm.deviceFetched = true;
                 vm.hidePromptMessage = true;
@@ -671,31 +674,31 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             }
         );
     }
-    
+
     vm.deleteDevice = function(){
         vm.parent.showConfirmDialog({"data":vm.deviceData,"api":vm.grid});
     }
-    
+
     vm.editDevice = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.device;
         vm.parent.loadEditDeviceOverlay(vm.deviceData, infoWindowActions, 'identity/api/devices/saveDevice')
     }
-    
+
     vm.copyToken = function() {
         navigator.clipboard.writeText(vm.token).then(function() {
-          console.log('Copying to clipboard was successful');
+            console.log('Copying to clipboard was successful');
         }, function(err) {
-          console.error('Could not copy text: ', err);
+            console.error('Could not copy text: ', err);
         });
     }
-    
+
     vm.regenerateToken = function() {
         vm.generateToken("regenerate");
     }
-    
+
     vm.generateToken = function(action) {
-       var apiPath = "identity/api/devices/generateTokens";
+        var apiPath = "identity/api/devices/generateTokens";
         if(action != null && action == "regenerate") {
             action = "regenerate";
         } else {
@@ -727,9 +730,9 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 }
                 console.log("Failed: "+action+" response", JSON.stringify(err));
             }
-    	);
+        );
     }
-    
+
     vm.revokeToken = function() {
         var parameters = {
             id: vm.id
@@ -758,18 +761,18 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 }
                 console.log("Failed: revokeToken response", JSON.stringify(err));
             }
-    	);
+        );
     }
-    
+
     vm.confirmDeleteToken = function(){
         vm.showTokenButtons = false;
-        
+
     }
-    
+
     vm.cancelDeleteToken = function(){
         vm.showTokenButtons = true;
     }
-    
+
     vm.showPromptMessage = function(loading, message){
         vm.promptMessage = message;
         vm.isLoading = loading;
@@ -778,7 +781,7 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             vm.hidePromptMessage = true;
         }, 5000);
     }
-    
+
     vm.closeDialog = function() {
         $mdDialog.hide();
     };
@@ -794,14 +797,14 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
     vm.grid = grid;
     vm.parent = parent;
     vm.groupDeleted = false;
-	vm.showMessage = true;
+    vm.showMessage = true;
     vm.header = "Delete";
-    
+
     vm.init = function() {
         vm.promptMessage = "Are you sure you want to delete '"+ vm.groupName +"'?"
     }
-    
-	vm.deleteGroup = function() {
+
+    vm.deleteGroup = function() {
         vm.showLoading();
         var parameters = {
             groupName: vm.groupName
@@ -830,7 +833,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                     vm.groupDeleted = true;
                     //refresh grid
                     vm.grid.refreshInfiniteCache();
-                	console.log("deleteGroup response", err);
+                    console.log("deleteGroup response", err);
                     vm.closeDialog();
                     $scope.$broadcast("closeDialog", {});
                     return;
@@ -848,7 +851,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
             }
         );
     }
-    
+
     vm.showLoading = function() {
         vm.isLoading = true;
         vm.showMessage = false;
@@ -872,10 +875,10 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
     vm.groupFetched = false;
     vm.init = function() {
         vm.getGroup();
-        
+
     }
-    
-	vm.getGroup = function() {
+
+    vm.getGroup = function() {
         vm.isLoading = true;
         var parameters = {
             groupName: vm.groupName
@@ -920,17 +923,17 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
             }
         );
     } 
-    
+
     vm.deleteGroup = function(){
         vm.parent.showConfirmDialog({"data":vm.groupData,"api":vm.grid});
     }
-    
+
     vm.editGroup = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.group;
         vm.parent.loadEditGroupOverlay(vm.groupData, infoWindowActions, 'identity/api/groups/saveGroup')
     }
-    
+
     vm.showPromptMessage = function(loading, message){
         vm.promptMessage = message;
         vm.isLoading = loading;
@@ -939,8 +942,8 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
             vm.hidePromptMessage = true;
         }, 5000);
     }
-    
-     vm.closeDialog = function() {
+
+    vm.closeDialog = function() {
         $mdDialog.hide();
     };
 });

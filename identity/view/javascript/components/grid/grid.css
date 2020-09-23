@@ -39,7 +39,7 @@
 .ag-bootstrap .ag-filter-apply-panel button {display: block; background: #e6e6e6; border: 1px solid #bbb; width: 100%;}
 .ag-bootstrap .ag-filter-apply-panel button:hover {background: #eee;}
 .ag-bootstrap .ag-cell-focus .ag-cell-edit-input {color: #000;}
-.ag-bootstrap .ag-row-selected {background-color:rgba(166, 203, 208, 0.44)!important;}
+.ag-bootstrap .ag-row-selected {background-color: #ffc278!important;}
 .ag-bootstrap .ag-paging-button {}
 .ag-bootstrap .ag-header-icon {fill: #5477a0!important;}
 

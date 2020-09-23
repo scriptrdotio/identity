@@ -3,4 +3,5 @@ var config = {
 }
 
 const queryDocsPerPage = 50;
-const buildCsvSciptPath = 'identity/api/reports/buildCSV';
+const buildCsvScriptPath = 'identity/api/reports/buildCSV';
+const importCsvScriptPath = 'identity/api/reports/importCSV';

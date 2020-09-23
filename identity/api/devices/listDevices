@@ -27,7 +27,7 @@ var documents = [];
 var pageNumber = 1;
 var continueLoop = true;
 while(continueLoop){
-    var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count,"query":'id !="scriptr"'};
+    var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count, "query":'id !="scriptr"'};
     if(queryFilter!="")
         queryObj.query = 'id !="scriptr" and id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
     queryObj.pageNumber = pageNumber;

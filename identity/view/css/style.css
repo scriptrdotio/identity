@@ -29,6 +29,7 @@
   border: none;
   color: #fff;
   text-shadow: none;
+  border-radius: 6px;
 }
 
 .btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover  {
@@ -37,7 +38,9 @@
   border: none;
   outline: 0;
 }
-
+.md-button.md-default-theme:not([disabled]).md-focused, .md-button:not([disabled]).md-focused, .md-button.md-default-theme:not([disabled]):hover, .md-button:not([disabled]):hover {
+    background-color: #374f6b!important;
+}
 
 .device-details {font-family: 'Josefin Sans', sans-serif;}
 .fntmontessart {font-family: 'Montserrat', sans-serif;}
@@ -141,6 +144,10 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
     color: #FFF;
     border-color: #5477A0!important;
 }
+.btn-group .btnContent.btnSelected {
+    background-color: #5477a0;
+    color: #FFF;
+}
 .btn-group {
     margin-right: 10px;
 }
@@ -161,4 +168,24 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 }
 .ag-bootstrap .ag-header-icon {
     fill: #5477a0!important;
+}
+
+.adminHome .btn-primary i{
+    padding-right: 5px;
+}
+
+.adminHome .default-image {
+    display: flex;
+}
+.adminHome img {
+    cursor: pointer;
+}
+/* device manager*/
+.btnToggle .ng-valid-parse {
+  background-color: #5477a0; 
+}
+.ag-bootstrap .ag-row-selected {background-color: #5477a06b!important;}
+/* modal view*/
+.dialogContainer {
+    overflow: hidden;
 }

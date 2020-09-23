@@ -1,0 +1,51 @@
+var log = require("log");
+log.setLevel("INFO");
+var utils = require("identity/entities/listUtils");
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+params = typeof(params.params) == "string" ? JSON.parse(params.params) : params.params;
+log.info("params: " + JSON.stringify(params[0]));
+
+var content = params[0].content;
+var lines = content.split(/\r\n|\n/);
+
+var idsArr = [];
+var nameArr = [];
+var descriptionArr = [];
+var statusArr = [];
+var devicesArr = [];
+var headings = lines[0].split(','); // Splice up the first row to get the headings
+log.info("headings: " + headings.length);
+for (var i=1; i<lines.length; i++) {
+    var values = lines[i].split(','); // Split up the comma seperated values
+    var device = {};
+    device.id = values[0];
+    device.name = values[1];
+    device.description = values[2];
+    var status = values[3] != null ? values[3].toLowerCase() : "";
+    device.isSuspended = (status == "active" ? "false" : (status == "suspended" ? "true" : ""));
+    if(headings.length > 4){
+        var deviceAttrs = [];
+        for(j=4; j<headings.length; j++){
+            if(values[j] != null && values[j] != ""){
+                var attrObj = {};
+                attrObj.name = headings[j];
+                attrObj.value = values[j];
+                attrObj.type = "string";
+                deviceAttrs.push(attrObj);
+            }
+        }
+        if(deviceAttrs.length > 0)
+            device.deviceAttrs = deviceAttrs;
+    }
+
+    devicesArr.push(device);
+}
+
+log.info("devicesArr: " + JSON.stringify(devicesArr));
+
+var importResult = utils.importDevices(devicesArr);
+log.info("importResult: " + JSON.stringify(importResult));
+return importResult.status;
+
+

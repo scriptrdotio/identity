@@ -1,4 +1,3 @@
-var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();

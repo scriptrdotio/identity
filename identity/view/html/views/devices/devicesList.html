@@ -2,12 +2,12 @@
     <h1>{{vm.deviceTitle}}</h1>
 <div class="col-xs-12" ng-if="vm.showError"><div class="alert" ng-class="'alert-' + ( vm.message.type || 'warning')">{{vm.message.content}}</div></div>
 <div>
-      <div class="btn-group" data-toggle="buttons">
-            <label class="btn btnContent">
-           		 <input type="radio" name="device" id="device" class="devices" ng-model="vm.gridId" value="device" ng-change="vm.changeTab(vm.gridId)"> Devices
+      <div class="btn-group btnToggle" data-toggle="buttons">
+            <label class="btn btnContent {{vm.deviceTabClass}}">
+           		 <input type="radio" name="device" id="device" class="device" ng-model="vm.gridId" value="device" ng-change="vm.changeTab(vm.gridId)"> Devices
           	</label>
-          	<label class="btn btnContent">
-            	<input id="group" type="radio" class="group " ng-model="vm.gridId" value="group" ng-change="vm.changeTab(vm.gridId)"> Groups
+          	<label class="btn btnContent {{vm.groupTabClass}}">
+            	<input id="group" type="radio" class="group" ng-model="vm.gridId" value="group" ng-change="vm.changeTab(vm.gridId)"> Groups
           	</label>
         </div>
     

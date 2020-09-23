@@ -113,7 +113,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout) {
+        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q) {
 
             var self = this;
 
@@ -601,6 +601,41 @@ angular
                 }else{
                     onFailure("TIME_OUT");
                 }
+            }
+            
+            this.loadImportOverlay = function(){
+                var of = angular.copy(this.infoWindowActions.uploaderForm);
+                var form = angular.copy(of.form);
+                var formWidget = {
+                    'label': of.title,
+                    'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
+                    'schema': angular.copy(of.schema),
+                    'form': form,
+                    'model': {}
+                }
+
+                var self = this;
+                var modalInstance= $uibModal.open({
+                    animation: true,
+                    component: 'uploadFileComponent',
+                    size: 'lg',
+                    scope: $scope,
+                    
+                    resolve: {
+                        widget: function() {
+                            return formWidget;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (wdgModel) {
+                    console.log('Model Data', wdgModel);
+                    if(wdgModel != 'cancel') {
+                        
+                    }
+                }, function () {
+                    console.info('modal-component for widget update dismissed at: ' + new Date());
+                });
             }
 
             this.onRemoveRow = function(key) {

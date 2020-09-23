@@ -5,9 +5,6 @@ var config = require ("identity/config/config");
 var queryDocsPerPage = config.queryDocsPerPage;
 var buildCsvSciptPath = config.buildCsvSciptPath;
 
-var errorHandler = require("./ErrorHandler");
-var errorHandler = new errorHandler.ErrorHandler();
-
 function getDevices(params){
     log.info("Request normalized params: " + JSON.stringify(params));
 
@@ -126,4 +123,71 @@ function getGroups(params){
             return  result;
         }
     }
+}
+
+function importDevices(devicesArr){
+    //loop on all devices, save them one by one
+    //after successful save, generate token
+    //if one fails, rollback everything and return failure
+
+    log.info(JSON.stringify(devicesArr));
+
+    var ts = apsdb.beginTransaction();
+    try{
+        var responseObj = {};
+        devicesArr.forEach(function(params) {
+            if(params.id != null && params.id != ""){
+                var deviceAttrs = params.deviceAttrs;
+                if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
+                    return Object.keys(el).length !== 0;
+                }).length === 0)){
+                    var jsonObj = {};
+                    params['meta.types'] = {};
+                    if(deviceAttrs !=null && deviceAttrs.length > 0){
+                        for(var i=0; i<deviceAttrs.length; i++){
+                            if(deviceAttrs[i] != null && Object.keys(deviceAttrs[i]).length > 0){
+                                var name = deviceAttrs[i].name;
+                                var value = deviceAttrs[i].value;
+                                var type = deviceAttrs[i].type;
+                                jsonObj[name]= type;
+                                params[name] = value;
+                            }
+                        }
+                        params['meta.types'] = jsonObj;
+                    }
+                }
+                delete params['deviceAttrs'];
+				params["password"] = Math.random().toString(36).substring(7);
+                var response = devices.create(params);
+                if(response.metadata.status == "failure") {
+                    log.error("Creating device failed: " + JSON.stringify(response.metadata));
+                    responseObj = response.metadata;
+                    throw {
+                        errorCode: response.metadata.errorCode,
+                        errorDetail: response.metadata.errorDetail
+                    };
+                } else {
+                    //generate token after successfull device creation
+                    //var tokenResponse = devices.generateToken(response.result.device.id);
+                    var tokenResponse = apsdb.callApi("GenerateToken", {"apsws.id": response.result.device.id}, null);
+                    if(tokenResponse.metadata.status == "failure") {
+                        log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
+                        responseObj = tokenResponse.metadata;
+                        throw {
+                            errorCode: tokenResponse.metadata.errorCode,
+                            errorDetail: tokenResponse.metadata.errorDetail
+                        };
+                    } else {
+                        responseObj = {"status": "success"};
+                    }
+                }
+            }
+        });
+        ts.commit();
+    } catch(e){
+        ts.rollback();
+        log.error("Failure when importing devices\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+    }
+
+    return responseObj;
 }
