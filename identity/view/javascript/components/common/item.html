@@ -1,9 +1,0 @@
-<li class="user-list">{{ $ctrl.item }}
-    <span class="pull-right""> 
-        <a ng-if="$ctrl.hasUpdate" ng-click="$ctrl.updateItem(item)"><i class="fa fa-pencil" aria-hidden="true"></i></a> 
-        <a ng-if="$ctrl.hasDelete" ng-click="$ctrl.deleteItem(item)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-        <a ng-if="$ctrl.hasListTokens" ng-click="$ctrl.listTokens(item)"><i class="fa fa-key" aria-hidden="true"></i></a>
-        <a ng-if="$ctrl.hasRevokeToken" ng-click="$ctrl.revokeToken(item)"><i class="fa fa-unlink" aria-hidden="true"></i></a>
-        <a ng-if="$ctrl.hasRenewToken" ng-click="$ctrl.renewToken(item)"><i class="fa fa-link" aria-hidden="true"></i></a>                                                                                                             
-    </span>
-</li>
