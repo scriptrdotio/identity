@@ -51,7 +51,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" type="button">View</button>';
+                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
                                eDiv.innerHTML = btn;
                                var viewBtn = eDiv.querySelectorAll('.btn')[0];
                                viewBtn.addEventListener('click', function(clickParams) { 
@@ -67,7 +67,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" type="button">Edit</button>';
+                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
                                eDiv.innerHTML = btn;
                                var editBtn = eDiv.querySelectorAll('.btn')[0];
                                editBtn.addEventListener('click', function(clickParams) { 
@@ -83,11 +83,10 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                            editable : false,
                            cellRenderer: function(params) {
                                var eDiv = document.createElement('div');
-                               var btn = '<button class="btn btn-default btn-block" type="button">Delete</button>';
+                               var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
                                eDiv.innerHTML = btn;
                                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
                                deleteBtn.addEventListener('click', function(clickParams) { 
-                                  //var gridInstance =  params.api;
                                   vm.showConfirmDialog(params);
                                   
                                });
@@ -137,11 +136,12 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                     {
                         headerName: "Token", 
                         field: "auth_token", 
-                        width: 620,
+                        width: 180,
                         cellClass: "textWrap", 
                         editable : false,
+                        tooltipField: 'auth_token',
                         cellRenderer: function(params) {
-                            return params.value? params.value.split("_")[0]: 'N/A';
+                            return params.value ? params.value.substr(0,8)+"..." : 'N/A';
                         }
                     },
                     {
@@ -150,7 +150,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         cellRenderer: function(params){
                                 var eDiv = document.createElement('div');
                                 var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken">Copy Token</button>';
+                                eDiv.innerHTML = '<button class="btn btn-default btn-cptoken" tooltip-placement="left" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></button>';
 
                                 vButton = eDiv.querySelectorAll('.btn-cptoken')[0];
                                 vButton.addEventListener('click', function() {
@@ -194,7 +194,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         cellRenderer: function(params){
                             var eDiv = document.createElement('div');
                             var vButton;
-                            eDiv.innerHTML = '<button class="btn btn-default btn-view">View</button>';
+                            eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="left" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
 
                             vButton = eDiv.querySelectorAll('.btn-view')[0];
                             vButton.addEventListener('click', function() {
@@ -210,7 +210,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         cellRenderer: function(params){
                                 var eDiv = document.createElement('div');
                                 var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-edit">Edit</button>';
+                                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="left" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
 
                                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                                 vButton.addEventListener('click', function(clickParams) {
@@ -226,7 +226,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
                         cellRenderer: function(params){
                                 var eDiv = document.createElement('div');
                                 var vButton;
-                                eDiv.innerHTML = '<button class="btn btn-default btn-delete">Delete</button>';
+                                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="left" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
 
                                 vButton = eDiv.querySelectorAll('.btn-delete')[0];
                                 vButton.addEventListener('click', function() {
