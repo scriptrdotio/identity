@@ -29,7 +29,7 @@ var continueLoop = true;
 while(continueLoop){
     var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count,"query":'id !="scriptr"'};
     if(queryFilter!="")
-        queryObj.query = 'id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
+        queryObj.query = 'id !="scriptr" and id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
     queryObj.pageNumber = pageNumber;
     log.info("queryObj"+pageNumber+": " + JSON.stringify(queryObj));
     var response = devices.query(queryObj);
