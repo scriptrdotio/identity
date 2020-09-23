@@ -821,7 +821,6 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                 //refresh grid
                 vm.grid.refreshInfiniteCache();
                 console.log("deleteGroup response", data);
-                 $scope.$broadcast("closeDialog", {});
                 vm.closeDialog();
             },
             function(err) {
@@ -873,9 +872,6 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
     vm.groupFetched = false;
     vm.init = function() {
         vm.getGroup();
-        $scope.$on("closeDialog", function(event, broadcastData) {
-                     vm.closeDialog();
-                });
         
     }
     
