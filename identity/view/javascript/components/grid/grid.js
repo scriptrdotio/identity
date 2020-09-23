@@ -370,7 +370,6 @@ angular
                         function(data, response) {
                             self.gridOptions.api.hideOverlay();  
                             if (data && (data.result == "success" || data.status == "success")) {
-                                //       self.showAlert("success", "Row(s) updated successfuly");
                                 if(self.refreshOnEdit){
                                      self.onServerCall(data);
                                 }
@@ -400,7 +399,6 @@ angular
                         function(data, response) {
                             self.gridOptions.api.hideOverlay();   
                             if (data && (data.result == "success" || data.status == "success")) {
-                                //	  self.showAlert("success", "Row(s) Added successfuly");
                                 if(self.refreshOnEdit){
                                      self.onServerCall(data);
                                 }
@@ -528,7 +526,7 @@ angular
                                 self.showAlert("danger", "Unable to refresh token(s), please try again");
                             } else {
                                 self._createNewDatasource();
-                                self.showAlert("success", "Token(s) refreshed successfuly");
+                                self.showAlert("success", "Token(s) refreshed successfully");
                             } 
                         }, function(err) {
                             console.log("failure", err);
@@ -553,7 +551,7 @@ angular
                                  params.docKey = res;
                                  httpClient.get("identity/api/reports/getCSVFile", params).then(
                                     function(data, response) {
-                                        self.showAlert("success", "Data exported successfuly");
+                                        self.showAlert("success", "Data exported successfully");
                                         var element = document.createElement('a');
                                         element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
                                         element.setAttribute('download', self.gridEventsId + 's.csv');
@@ -631,7 +629,7 @@ angular
                                 function(data, response) {
                                     self.gridOptions.api.hideOverlay();     
                                     if (data && (data.result == "success" || data.status == "success")) {
-                                        self.showAlert("success", "Row(s) deleted successfuly");
+                                        self.showAlert("success", "Row(s) deleted successfully");
                                         self.onServerCall(data);
                                     } else {
                                         if(data && data.errorDetail){
