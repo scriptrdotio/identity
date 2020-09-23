@@ -467,6 +467,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             localsObj.groupData = params.data;
         }
         $mdDialog.show({
+            //multiple: true,
             controller: vm.gridId+'ConfirmDialogCtrl',
             controllerAs: 'vm',
             templateUrl: 'html/views/'+vm.gridId+'s/confirmationDialog.html',
@@ -486,7 +487,7 @@ myApp.controller('devicesHomeCtrl', function($location,$scope,$rootScope,httpCli
             controller = 'viewDeviceDialogCtrl';
             templateUrl = 'html/views/devices/viewDevice.html';
         } else if (vm.gridId == "group"){
-            localsObj = {groupData: params.data, parent: vm};
+            localsObj = {grid: params.api, groupData: params.data, parent: vm};
             controller = 'viewGroupDialogCtrl';
             templateUrl = 'html/views/groups/viewGroup.html';
         }
@@ -535,6 +536,7 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
                 }
 				
                 vm.parent.showAlert("success", "Successfully deleted device");
+                
                 vm.deviceDeleted = true;
                 
                 //refresh grid
@@ -545,6 +547,7 @@ myApp.controller('deviceConfirmDialogCtrl', function(httpClient, deviceData, gri
             function(err) {
                 console.dir(err);
                 if(err.status == "success"){
+                    vm.parent.closeDialog();
                     vm.parent.showAlert("success", "Successfully deleted device");
                     vm.deviceDeleted = true;
                     //refresh grid
@@ -669,7 +672,11 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         );
     }
     
-    vm.EditDevice = function(){
+    vm.deleteDevice = function(){
+        vm.parent.showConfirmDialog({"data":vm.deviceData,"api":vm.grid});
+    }
+    
+    vm.editDevice = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.device;
         vm.parent.loadEditDeviceOverlay(vm.deviceData, infoWindowActions, 'identity/api/devices/saveDevice')
@@ -779,7 +786,7 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
 
 
 
-myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, parent, $mdDialog) {
+myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid, parent, $mdDialog, $scope) {
     var vm = this;
     vm.isLoading = false;
     vm.deleteStatus = 'Deleting group...';
@@ -814,6 +821,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                 //refresh grid
                 vm.grid.refreshInfiniteCache();
                 console.log("deleteGroup response", data);
+                 $scope.$broadcast("closeDialog", {});
                 vm.closeDialog();
             },
             function(err) {
@@ -825,6 +833,7 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
                     vm.grid.refreshInfiniteCache();
                 	console.log("deleteGroup response", err);
                     vm.closeDialog();
+                    $scope.$broadcast("closeDialog", {});
                     return;
                 }
 
@@ -854,15 +863,20 @@ myApp.controller('groupConfirmDialogCtrl', function(httpClient, groupData, grid,
     };
 });
 
-myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, parent, groupData, $mdDialog) {
+myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope) {
     var vm = this;
     vm.promptMessage = 'Fetching group...';
     vm.groupData = groupData;
+    vm.grid = grid;
     vm.groupName = groupData.groups;
     vm.parent = parent;
     vm.groupFetched = false;
     vm.init = function() {
         vm.getGroup();
+        $scope.$on("closeDialog", function(event, broadcastData) {
+                     vm.closeDialog();
+                });
+        
     }
     
 	vm.getGroup = function() {
@@ -911,7 +925,11 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, httpClient, parent, g
         );
     } 
     
-    vm.EditGroup = function(){
+    vm.deleteGroup = function(){
+        vm.parent.showConfirmDialog({"data":vm.groupData,"api":vm.grid});
+    }
+    
+    vm.editGroup = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.group;
         vm.parent.loadEditGroupOverlay(vm.groupData, infoWindowActions, 'identity/api/groups/saveGroup')
