@@ -1,5 +1,6 @@
 var log = require("log");
 log.setLevel("INFO");
+var moment = require("modules/momentjs/moment.min.js").moment;
 var utils = require("identity/entities/listUtils");
 var defaultStore = require('document').getInstance('DefaultStore');
 //return defaultStore.getAttachmentUrl("Rpt-1600250421321","Devices.csv", {"versionNumber": "1"});
@@ -31,17 +32,30 @@ function ConvertToCSV(params) {
     if(gridType == "device"){
         var fileName = "devices";
         var object  = utils.getDevices({"queryFilter" : params.queryFilter});
-        str += "Device Name,Device ID,Description,Token,Last Modified,Status\r\n";
+        log.info('getDevices' + JSON.stringify(object));
+        var headerStr = "";
         var array = typeof object != 'object' ? JSON.parse(object) : object;
         array = array.documents;
         if(array!= null && array.length >0){
+            var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
+            var deviceAttrsObj = {};
             for (var i = 0; i < array.length; i++) {
+                var data = array[i];
+                var metaTypes = data["meta.types"];
+                Object.keys(data).forEach(function(key) {
+                    if(defaultAttrs.indexOf(key) < 0 && deviceAttrsObj[key] == null){
+                        deviceAttrsObj[key] = metaTypes[key];
+                    }
+                });
+            }
+            for (var i = 0; i < array.length; i++) {
+                var data = array[i];
+                
                 var line = '';
                 line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "N/A") + ","; 
                 line += ((array[i].id != undefined && array[i].id!=null) ? array[i].id : "N/A") + ","; 
                 line += ((array[i].description != undefined && array[i].description!=null) ? array[i].description : "N/A") + ","; 
                 line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ","; 
-                line += ((array[i].lastModifiedDate != undefined && array[i].lastModifiedDate!=null) ? array[i].lastModifiedDate : "N/A") + ",";
                 var devStatus = "";
                 if(array[i].isSuspended != undefined && array[i].isSuspended != null){
                     if(array[i].isSuspended == "true")
@@ -50,9 +64,18 @@ function ConvertToCSV(params) {
                         devStatus = "Active"
                 }
                 line += (devStatus != "" ? devStatus : "N/A") + ","; 
-
-                str += line + '\r\n';            
+				line += ((array[i].lastModifiedDate != undefined && array[i].lastModifiedDate!=null) ? moment(array[i].lastModifiedDate).format("DD-MMM-YYYY hh:mm A") : "N/A") + ",";
+                
+                Object.keys(deviceAttrsObj).forEach(function(key) {
+                    line += ((data[key] != undefined && data[key] != null) ? data[key] : "N/A") + ",";
+                    if(i == array.length-1)
+                        headerStr += "," + key + ":" + deviceAttrsObj[key];
+                });
+                str += line;
+                if(i != array.length-1)
+                    str += '\r\n';
             }
+            str = "name,id,description,token,status,lastModified" + headerStr + "\r\n" + str;
         }
     }
     log.info('end converting document to CSV');
@@ -84,5 +107,3 @@ if(reportResult && reportResult.metadata){
     log.error("unable to create report document\n");
     throw reportResult;
 }
-//getAttachmentUrl(Object key,Object fileName)
-

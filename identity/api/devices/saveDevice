@@ -12,7 +12,7 @@ var optionalParams = ["update", "description", "groups", "password", "isSuspende
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
 hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
 if(!hasAllRequiredParams.success) {
-  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+    return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
 log.info(JSON.stringify(request.body))
@@ -26,8 +26,8 @@ log.info(JSON.stringify(params));
 
 var deviceAttrs = params.deviceAttrs;
 if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
-        return Object.keys(el).length !== 0;
-    }).length === 0)){
+    return Object.keys(el).length !== 0;
+}).length === 0)){
     var jsonObj = {};
     params['meta.types'] = {};
     if(deviceAttrs !=null && deviceAttrs.length > 0){
@@ -41,13 +41,13 @@ if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
             }
         }
         params['meta.types'] = jsonObj;
+        if(params.description != null && params.description != "")
+            params['meta.types'].description = "text";
     }
 }
 delete params['deviceAttrs'];
 delete confirmPassword;
-
-log.info(JSON.stringify(params))
-
+log.info("Request normalized params: " + JSON.stringify(params));
 
 var response;
 if(update)
@@ -55,7 +55,7 @@ if(update)
 else
     response = devices.create(params);
 if(response.metadata.status == "failure") {
-   return response.metadata;
+    return response.metadata;
 } else {
-      return response.result.device;
+    return response.result.device;
 }

@@ -1,6 +1,6 @@
 <div class="modal-header">
-    <h4 class="modal-title col-xs-12" id="modal-title">{{$ctrl.widget.label}}</h4>
-    <md-button class="md-icon-button" ng-click="$ctrl.onCancel()">
+    <h4 class="modal-title" id="modal-title">{{$ctrl.widget.label}}</h4>
+    <md-button class="closeHeaderBtn" ng-click="$ctrl.onCancel()">
         <md-icon class="glyphicon glyphicon-remove" tooltip-placement="left" uib-tooltip="Cancel" aria-hidden="true">
         </md-icon>
     </md-button>
@@ -12,9 +12,7 @@
         <div html-class="bls" sf-options="$ctrl.frmGlobalOptions" sf-schema="$ctrl.schema" sf-form="$ctrl.form" sf-model="$ctrl.model" ></div>
     </div>
     <div class="modal-footer">
-        <div class="col-xs-12">
             <button type="reset" class="btn btn-default" ng-click="$ctrl.onCancel()">{{$ctrl.widget.buttons.cancel.label}}</button>
-                <button type="submit" class="btn btn-primary"   >{{$ctrl.widget.buttons.save.label}}</button>
-        </div>
+                <button type="submit" class="btn btn-default">{{$ctrl.widget.buttons.save.label}}</button>
     </div>
 </form>

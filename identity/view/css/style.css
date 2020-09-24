@@ -127,6 +127,9 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
     padding: 6px 10px;
     margin-right: 15px;
 }
+.closeHeaderBtn.md-button.md-ink-ripple:hover {
+    background-color: #FFF!important;
+}
 .md-button.md-default-theme:not([disabled]).md-focused, .md-button:not([disabled]).md-focused, .md-button.md-default-theme:not([disabled]):hover, .md-button:not([disabled]):hover {
     background-color: rgb(84 119 160);
 }
@@ -185,7 +188,31 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
   background-color: #5477a0; 
 }
 .ag-bootstrap .ag-row-selected {background-color: #5477a06b!important;}
-/* modal view*/
+/* modal view and edit*/
+.closeHeaderBtn {
+    position: absolute;
+    right: 0;
+    top: 7px;
+    border-radius: 0;
+    min-width: 30px;
+    color: #FFF;
+}
+
+.closeHeaderBtn:hover .material-icons {
+    opacity: 1;
+}
+.closeHeaderBtn .tooltip.left {
+    display: none;
+}
+.closeHeaderBtn .material-icons {
+     float: right;
+    opacity: 0.5;
+    color: #5477a0;
+}
 .dialogContainer {
-    overflow: hidden;
+    overflow: auto;
+}
+.modal-header {
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
 }
