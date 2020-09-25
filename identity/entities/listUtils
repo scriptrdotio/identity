@@ -130,8 +130,6 @@ function importDevices(devicesArr){
     //after successful save, generate token
     //if one fails, rollback everything and return failure
 
-    log.info(JSON.stringify(devicesArr));
-
     var ts = apsdb.beginTransaction();
     try{
         var responseObj = {};
@@ -196,3 +194,30 @@ function importDevices(devicesArr){
 
     return responseObj;
 }
+
+function deleteDevices(deviceArr){
+    var ts = apsdb.beginTransaction();
+    try{
+        var responseObj = {};
+        deviceArr.forEach(function(deviceId) {
+            var response = devices.delete(deviceId);
+            if(response.metadata.status == "failure") {
+                responseObj = response.metadata;
+                throw {
+                    errorCode: response.metadata.errorCode,
+                    errorDetail: response.metadata.errorDetail
+                };
+            } else {
+              responseObj = {"status": "success"};
+            }
+        })
+
+        ts.commit();
+    } catch(e){
+        ts.rollback();
+        log.error("Failure when deleting devices\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+    }      
+
+    return responseObj;
+}
+

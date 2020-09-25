@@ -509,6 +509,8 @@ angular
                             }
                         }
                     }); 
+                }else {
+                    self.showAlert("danger", "No row(s) selected");
                 }
             }
             
@@ -668,30 +670,59 @@ angular
                            	selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
                         }
                         if(selectedKeys.length > 0){
-                            var params;
                             self.gridOptions.api.showLoadingOverlay();
-                            if(self._dataIdentifierProperty == "groups")
-                                params = {"groupName" : selectedKeys}
-                            if(self._dataIdentifierProperty == "id")
-                                    params = {"id" : selectedKeys}
+                            var params;
+                            var api;
+                            if(self._dataIdentifierProperty == "groups"){
+                                api = "identity/api/groups/deleteGroup";
+                                params = {"groupName" : selectedKeys};
+                            }else if(self._dataIdentifierProperty == "id"){
+                                api = "identity/api/devices/deleteDevice";
+                                params = {"id" : selectedKeys};
+                            }
                             if(this.deleteParams){
                                 for(var key in this.deleteParams){
                                     params[key] = this.deleteParams[key]
                                 }
                             }  
                             
-                            dataStore.postGridHelper(params, self._dataIdentifierProperty).then(
+                            dataStore.postGridHelper(api, params).then(
                                 function(data, response) {
-                                    self.gridOptions.api.hideOverlay();     
-                                    if (data && (data.result == "success" || data.status == "success")) {
-                                        self.showAlert("success", "Row(s) deleted successfully");
-                                        self.onServerCall(data);
-                                        self.gridOptions.api.deselectAll();
-                                    } else {
-                                        if(data && data.errorDetail){
-                                            self.showAlert("danger", data.errorDetail);
-                                        }else{
-                                            self.showAlert("danger", "An error has occured");
+                                    if(selectedKeys.length > 1){
+                                        if(data.status == "failure") {
+                                            self.showAlert("danger", "Unable to delete row(s), please try again");
+                                        } else {
+                                            self.getJobStatus(api, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                                self.gridOptions.api.hideOverlay();     
+                                                if (res && (res.result == "success" || res.status == "success")) {
+                                                    self.showAlert("success", "Row(s) deleted successfully");
+                                                    self.onServerCall();
+                                                    self.gridOptions.api.deselectAll();
+                                                } else {
+                                                    if(res && res.errorDetail){
+                                                        self.showAlert("danger", res.errorDetail);
+                                                    }else{
+                                                        self.showAlert("danger", "Unable to delete row(s), please try again");
+                                                    }
+                                                }
+                                            },function(err){
+                                                self.gridOptions.api.hideOverlay();
+                                                console.log("failure", err);
+                                                self.showAlert("danger", "Unable to delete row(s), please try again");
+                                            })
+                                        }
+                                    }else{
+                                        self.gridOptions.api.hideOverlay();     
+                                        if (data && (data.result == "success" || data.status == "success")) {
+                                            self.showAlert("success", "Row(s) deleted successfully");
+                                            self.onServerCall();
+                                            self.gridOptions.api.deselectAll();
+                                        } else {
+                                            if(data && data.errorDetail){
+                                                self.showAlert("danger", data.errorDetail);
+                                            }else{
+                                                self.showAlert("danger", "Unable to delete row(s), please try again");
+                                            }
                                         }
                                     }
                                 },
@@ -819,13 +850,8 @@ angular
     }
     
     
-    this.postGridHelper = function(params, dataIdentifierProperty){
+    this.postGridHelper = function(api, params){
         var d = $q.defer(); 
-        var api;
-        if(dataIdentifierProperty == "id")
-            api = "identity/api/devices/deleteDevice";
-        else if(dataIdentifierProperty == "groups")
-            api = "identity/api/groups/deleteGroup";
       httpClient.post(api, params)
         .then(
         function(data, response) {
