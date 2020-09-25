@@ -47,7 +47,9 @@ myApp.constant(
                 'properties': {
                     "name": {
                         'title': 'Group Name',
-                        'type': 'string'
+                        'type': 'string',
+                        'maxLength': 116,
+                        "validationMessage": "Maximum permitted value is 116 characters"
                     },
                     "devices": {
                         "type": "array",
@@ -282,10 +284,16 @@ myApp.constant(
                     'name': {
                         'title': 'Device Name',
                         'type': 'string',
+                        'minLength': 1,
+                        'maxLength': 1024,
+                        "validationMessage": "Maximum permitted value is 1024 characters"
                     },
                     'id': {
                         'title': 'Device ID',
                         'type': 'string',
+                        'minLength': 1,
+                        'maxLength': 117,
+                        "validationMessage": "Maximum permitted value is 117 characters"
                     },
                     'password': {
                         'title': 'Password',
@@ -310,6 +318,8 @@ myApp.constant(
                     'description': {
                         'title': 'Description',
                         'type': 'string',
+                        'maxLength': 1024,
+                        "validationMessage": "Maximum permitted value is 1024 characters",
                         'x-schema-form': {
                             'type': 'textarea',
                             'placeholder': 'Description for this device'
