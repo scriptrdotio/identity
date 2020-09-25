@@ -512,6 +512,25 @@ angular
                 }
             }
             
+            this.confirmRefreshTokensPopUp = function(){
+                if(self.gridOptions.api.getSelectedNodes().length > 0){
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        component: 'confirmRefreshTokenPopup',
+                        size: 'lg',
+                        scope: $scope,
+                        resolve: {
+                            grid: function () {
+                                return self;
+                            }
+                        }
+                    }); 
+                }
+                else {
+                    self.showAlert("danger", "No device(s) selected");
+                }
+            }
+            
             this.refreshTokens = function(){
                 var selectedNodes = self.gridOptions.api.getSelectedNodes();
                 var selectedKeys = [];
@@ -526,6 +545,7 @@ angular
                                 self.showAlert("danger", "Unable to refresh token(s), please try again");
                             } else {
                                 self._createNewDatasource();
+                                self.gridOptions.api.deselectAll();
                                 self.showAlert("success", "Token(s) refreshed successfully");
                             } 
                         }, function(err) {
@@ -666,6 +686,7 @@ angular
                                     if (data && (data.result == "success" || data.status == "success")) {
                                         self.showAlert("success", "Row(s) deleted successfully");
                                         self.onServerCall(data);
+                                        self.gridOptions.api.deselectAll();
                                     } else {
                                         if(data && data.errorDetail){
                                             self.showAlert("danger", data.errorDetail);
@@ -895,8 +916,35 @@ angular
     templateUrl:  '/identity/view/javascript/components/grid/popup.html',
     controller: function ($scope) {
   this.$onInit = function () {
+       this.title = "Delete";
+      this.bodyMessage = "Are you sure you want to delete the selected row(s)?"
         this.onSubmit = function() {
             this.resolve.grid.onRemoveRow();
+            this.close({$value: true});
+        };
+        this.onCancel = function () {
+            this.dismiss({$value: false});
+        };
+    }
+    }
+});
+
+angular
+    .module('Identity')
+    .component('confirmRefreshTokenPopup', 
+               {
+    bindings: {
+        resolve: '<',
+        close: '&',
+        dismiss: '&'
+    },
+    templateUrl:  '/identity/view/javascript/components/grid/popup.html',
+    controller: function ($scope) {
+  this.$onInit = function () {
+       this.title = "Generate/Regenerate Token(s)";
+      this.bodyMessage = "Are you sure you want to generate/regenerate the tokens of the selected row(s)?"
+        this.onSubmit = function() {
+            this.resolve.grid.refreshTokens();
             this.close({$value: true});
         };
         this.onCancel = function () {
