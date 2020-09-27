@@ -72,9 +72,3 @@ switch (request.method) {
     default:
         return errorHandler.buildError("invalid_method", "Invalid HTTP method"); 
 }
-
-
-
-
-
-

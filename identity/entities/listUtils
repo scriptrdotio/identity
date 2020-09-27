@@ -221,3 +221,29 @@ function deleteDevices(deviceArr){
     return responseObj;
 }
 
+function deleteGroups(groupArr){
+    var groups = require("group");
+    var ts = apsdb.beginTransaction();
+    try{
+        var responseObj = {};
+        groupArr.forEach(function(groupName) {
+            var response = groups.delete(groupName);
+            if(response.metadata.status == "failure") {
+                responseObj = response.metadata;
+                throw {
+                    errorCode: response.metadata.errorCode,
+                    errorDetail: response.metadata.errorDetail
+                };
+            } else {
+              responseObj = {"status": "success"};
+            }
+        })
+
+        ts.commit();
+    } catch(e){
+        ts.rollback();
+        log.error("Failure when deleting groups\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+    }      
+
+    return responseObj;
+}

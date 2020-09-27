@@ -1,52 +1,74 @@
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var groups = require("group");
+var config = require ("identity/config/config");
 var log = require("log")
 log.setLevel("INFO");
-
 var errorHandler = new errorHandler.ErrorHandler();
-
-//Check if required params
-var requiredParams = ["groupName"];
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info("Request normalized params: " + JSON.stringify(params));
-var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
-if(!hasAllRequiredParams.success) {
-  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
-}
-
-var groupIdParam = params["groupName"];
-var groupArr = [];
-if(groupIdParam instanceof Array){
-    groupArr = groupIdParam;
-}else{
-    groupArr = [groupIdParam];
-}
-
-var ts = apsdb.beginTransaction();
-try{
-    var responseObj = {};
-    groupArr.forEach(function(groupName) {
-        var response = groups.delete(groupName);
-        if(response.metadata.status == "failure") {
-            responseObj = response.metadata;
-            throw {
-                errorCode: response.metadata.errorCode,
-                errorDetail: response.metadata.errorDetail
-            };
-        } else {
-          responseObj = {"status": "success"};
+switch (request.method) {
+    case "GET":
+        var requiredParams = ["scriptHandleId"];
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
+        if(!hasAllRequiredParams.success) {
+            return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
         }
-    })
-    
-	ts.commit();
-} catch(e){
-    ts.rollback();
-    log.error("Failure when deleting groups\n" + typeof(e) == "string" ? e : JSON.stringify(e));
-}      
+        var getJobStatusParams = {
+            "apsdb.handle": params.scriptHandleId
+        };
+        var result = apsdb.callApi("GetJobStatus", getJobStatusParams, null);
+        log.info("the result is"+JSON.stringify(result));
+        if (result.status == "failure") {
+            var errorMsg = "[deleteGroup] An error occurred while fetching job status [" + JSON.stringify(result) + "]";
+            return { "status": "failure", "errorDetail": errorMsg };
+        } else {
+            return result.result;
+        }
+        break;
+    case "POST":
+        //Check required params
+        var requiredParams = ["groupName"];
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
+        if(!hasAllRequiredParams.success) {
+            return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+        }
+        
+        var groupIdParam = params["groupName"];
+        var groupArr = [];
+        if(groupIdParam instanceof Array){
+            groupArr = groupIdParam;
+        }else{
+            groupArr = [groupIdParam];
+        }
 
-return responseObj;
+        if(groupArr.length == 1){
+            var response = groups.delete(groupArr[0]);
+            if(response.metadata.status == "failure") {
+                return response.metadata;
+            } else {
+                return {"status": "success"};
+            }
+        }else{
+            //schedule job if the devices are multiple
+            var data = {
+                "apsdb.scriptName": config.deleteGroupsScriptPath,
+                "params": JSON.stringify(groupArr)
+            };
+            var result = apsdb.callApi("QueueScript", data, null);
 
-//var response = apsdb.callApi("DeleteGroup", params, null);
+            if (result.status == "failure") {
+                var errorMsg = "[deleteGroup] An error occurred while queueing job [" + JSON.stringify(result) + "]";
+                return { "status": "failure", "errorDetail": errorMsg };
+            } else {
+                return {"status":"success", "scriptHandleId": result.result.script.scriptHandle};
+            }
+        }
+
+        break;
+    default:
+        return errorHandler.buildError("invalid_method", "Invalid HTTP method"); 
+}
