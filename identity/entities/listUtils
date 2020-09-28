@@ -157,7 +157,7 @@ function importDevices(devicesArr){
                     }
                 }
                 delete params['deviceAttrs'];
-				params["password"] = Math.random().toString(36).substring(7);
+                params["password"] = Math.random().toString(36).substring(7);
                 var response = devices.create(params);
                 if(response.metadata.status == "failure") {
                     log.error("Creating device failed: " + JSON.stringify(response.metadata));
@@ -171,18 +171,18 @@ function importDevices(devicesArr){
                     //generate token after successfull device creation
                     //var tokenResponse = devices.generateToken(response.result.device.id);
                     /*
-                    var tokenResponse = apsdb.callApi("GenerateToken", {"apsws.id": response.result.device.id}, null);
-                    if(tokenResponse.metadata.status == "failure") {
-                        log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
-                        responseObj = tokenResponse.metadata;
-                        throw {
-                            errorCode: tokenResponse.metadata.errorCode,
-                            errorDetail: tokenResponse.metadata.errorDetail
-                        };
-                    } else {
-                        responseObj = {"status": "success"};
-                    }
-                    */
+                        var tokenResponse = apsdb.callApi("GenerateToken", {"apsws.id": response.result.device.id}, null);
+                        if(tokenResponse.metadata.status == "failure") {
+                            log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
+                            responseObj = tokenResponse.metadata;
+                            throw {
+                                errorCode: tokenResponse.metadata.errorCode,
+                                errorDetail: tokenResponse.metadata.errorDetail
+                            };
+                        } else {
+                            responseObj = {"status": "success"};
+                        }
+                        */
                 }
             }
         });
@@ -208,7 +208,7 @@ function deleteDevices(deviceArr){
                     errorDetail: response.metadata.errorDetail
                 };
             } else {
-              responseObj = {"status": "success"};
+                responseObj = {"status": "success"};
             }
         })
 
@@ -235,7 +235,7 @@ function deleteGroups(groupArr){
                     errorDetail: response.metadata.errorDetail
                 };
             } else {
-              responseObj = {"status": "success"};
+                responseObj = {"status": "success"};
             }
         })
 
