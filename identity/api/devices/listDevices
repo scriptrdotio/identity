@@ -23,9 +23,30 @@ if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
     queryFilter = params["queryFilter"];
 }
 
+/**
+var resultsPerPage = params.resultsPerPage; //Grid size
+var pageNumber = params.pageNumber; 
+var sort = params.sort;
+var sortType = params.sortType;
+var sortingColumnName = params.sortingColumnName;
+
+
+ var sortString = (sortingColumnName && sortingColumnName != "" && sortingColumnName != "undefined") ? sortingColumnName+"<"+sortType+":"+sort+">" : null;
+if(sortString){
+    queryParams["sort"] = sortString;
+  }
+  if(resultsPerPage){
+    queryParams["resultsPerPage"] = resultsPerPage;
+  }
+  if(pageNumber){
+    queryParams["pageNumber"] = pageNumber;
+  }
+**/
+
 var documents = [];
 var pageNumber = 1;
 var continueLoop = true;
+
 while(continueLoop){
     var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count, "query":'id !="scriptr"'};
     if(queryFilter!="")

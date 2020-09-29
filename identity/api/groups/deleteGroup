@@ -30,14 +30,14 @@ switch (request.method) {
         break;
     case "POST":
         //Check required params
-        var requiredParams = ["groupName"];
+        var requiredParams = ["name"];
         var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
         hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
         if(!hasAllRequiredParams.success) {
             return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
         }
 
-        var groupIdParam = params["groupName"];
+        var groupIdParam = params["name"];
         var groupArr = [];
         if(groupIdParam instanceof Array){
             groupArr = groupIdParam;

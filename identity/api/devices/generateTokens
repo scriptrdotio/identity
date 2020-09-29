@@ -78,7 +78,6 @@ try{
             	responseObj = {"status": "success"};
         }
     })
-    
 	ts.commit();
 } catch(e){
     ts.rollback();

@@ -3,6 +3,7 @@ var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 var groups = require("group");
 var errorHandler = new errorHandler.ErrorHandler();
+var _ = require('modules/underscore/underscore.js')._;
 var log = require("log")
 log.setLevel("INFO");
 
@@ -10,29 +11,20 @@ var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : 
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 //Check if required params
-var requiredParams = ["groups"];
+var requiredParams = ["name"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
 hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var response = devices.query({"query":'groups = "' +params["groups"]+ '"'});
-
-
+var response = devices.query({"query":'groups = "' +params["name"]+ '"', fields: "id"});
 
 if(response.metadata.status == "failure") {
    return response.metadata;
 } else {
     var devices = response.result.devices;
-    if(devices != null && devices.length >0){
-        var devicesArr = [];
-        for(var i=0; i<devices.length; i++){
-            var id = devices[i].id;
-            devicesArr.push(id);
-        }
-    }
-    return {"devices" :devicesArr};
+    return {"devices" :_.pluck(devices, "id")};
 }
 
 

@@ -8,9 +8,10 @@ log.setLevel("INFO");
 
 var users =[];
 var results = [];
+
 var groups = groups.list();
+
 var result = groups.result.groups;
-//return result;
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
@@ -34,13 +35,13 @@ if(result!= null && result.length >0){
                 continue;
             }
             var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
-            response.result["groups"] = name;
+            response.result["name"] = name;
             users.push(response.result);
         }
+        
         if(response.metadata.status == "failure") {
             return response.metadata;
-        }
-        else{
+        } else{
             var originalCount = users.length;
             if(users!=null && users.length>0 && params.pageNumber != null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
                 var startRow = parseInt(params.startRow);

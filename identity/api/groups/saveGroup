@@ -43,7 +43,7 @@ if(groupResponse != null && groupResponse.metadata.status == "failure") {
    	var response =  {"status": "success"};
 }
 
-if(updateDevices){
+if(updateDevices){ // TODO: Updating devices needs to be a long running job. Don't make it transactional, just report failed devices if any.
     var devices = params["devices"];
     if(devices != null && devices != ""){
         var ts = apsdb.beginTransaction();

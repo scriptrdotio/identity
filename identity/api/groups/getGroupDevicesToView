@@ -9,17 +9,19 @@ var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
 
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 //Check if required params
-var requiredParams = ["groupName"];
+var requiredParams = ["name"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-var response = devices.query({"query":'groups = "' +request.body["groupName"]+ '"'});
-response.result["groupName"] = request.body["groupName"];
+var response = devices.query({"query":'groups = "' +params["name"]+ '"'});
+response.result["name"] = params["name"];
 
 if(response.result.devices != null && response.result.devices.length>0){
     for(var i=0; i<response.result.devices.length; i++){
