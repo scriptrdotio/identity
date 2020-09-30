@@ -1,36 +1,32 @@
 myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig) {
     var vm = this;
-    vm.deviceTitle = "Device Manager"; 
+    vm.deviceTitle = "Identity Manager"; 
     vm.renderGrid = true;
     vm.infoWindowActions = infoWindowActions;
     vm.gridId =  "device";
-    vm.identifierProperty = "id";
+    vm.identifierProperty = identityConfig.device.identifierProperty;
     vm.deviceTabClass = "btnSelected";
-    vm.gridAPI = "identity/api/devices/listDevices";
+    vm.gridAPI = identityConfig.device.apis.list;
     
-    
-    vm.init = function() {
+    vm.init = function() {}
 
-    }
-
-    
     vm.removeDeviceConfig = {
-        api: "identity/api/devices/deleteDevice",
+        api: identityConfig.device.apis.delete,
         queryParam: "id"
     }
     
     vm.removeGroupConfig = {
-        api : "identity/api/groups/deleteGroup",
+        api : identityConfig.group.apis.delete,
         queryParam: "name"
     }
     
     vm.saveDeviceConfig = {
-        "api": "identity/api/devices/saveDevice",
+        "api": identityConfig.device.apis.save,
         "schemaFormDefinition": vm.infoWindowActions.device,
     }
     
     vm.saveGroupConfig = {
-        "api": "identity/api/groups/saveGroup",
+        "api": identityConfig.group.apis.save,
         "schemaFormDefinition": vm.infoWindowActions.group,
     }
     
@@ -39,11 +35,11 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         if(vm.gridId ==  "group"){
             vm.deviceTabClass = "";
             vm.groupTabClass = "btnSelected";
-            vm.identifierProperty = "name";
+            vm.identifierProperty = identityConfig.device.identifierProperty;
             vm.gridAPI = identityConfig.group.apis.list;
         } else if (vm.gridId ==  "device"){
             vm.deviceTabClass = "btnSelected";
-            vm.identifierProperty = "id";
+            vm.identifierProperty = identityConfig.device.identifierProperty;
             vm.groupTabClass = "";
             vm.gridAPI = identityConfig.device.apis.list;
         }
@@ -102,7 +98,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                 eDiv.innerHTML = btn;
                 var editBtn = eDiv.querySelectorAll('.btn')[0];
                 editBtn.addEventListener('click', function(clickParams) { 
-                    vm.loadEditGroupOverlay(params.data, vm.infoWindowActions.group, 'identity/api/groups/saveGroup');
+                    vm.loadEditGroupOverlay(params.data, vm.infoWindowActions.group, identityConfig.group.apis.save);
                 });
                 return eDiv;
             }
@@ -125,8 +121,6 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             }
         },
     ];
-
-
 
     vm.devicesColDef = [
         {
@@ -225,7 +219,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
 
                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                 vButton.addEventListener('click', function(clickParams) {
-                    vm.loadEditDeviceOverlay(params.data, vm.infoWindowActions.device, 'identity/api/devices/saveDevice');
+                    vm.loadEditDeviceOverlay(params.data, vm.infoWindowActions.device, identityConfig.device.apis.save);
                 });
                 return eDiv;
             },
@@ -267,7 +261,6 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         httpMeth(apiId, parameters)
             .then(
             function(data, response) {
-                console.log(data);
                 if (data && data.status && data.status == 'failure') {
                     if (typeof failureHandler === 'function') failureHandler(data);
                 } else {
@@ -275,17 +268,21 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                 }
             },
             function(err) {
-                console.log(err);
                 if (typeof failureHandler === 'function') failureHandler(err);
             });
     }
 
-
     vm.loadEditGroupOverlay = function(groupData, overlayForm, backendApi) {
-        httpClient.post("identity/api/groups/getGroupDevices", groupData).then(
+        httpClient.post(identityConfig.group.apis.getGroupDevices, groupData).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    console.log("getGroupDevices response", data);
+                    var errDesc = 'Unknown error';
+                    if (data.data && data.data.metadata && data.data.metadata.description && data.data.metadata.description.en) {
+                        errDesc = data.data.metadata.description.en;
+                    } else if (data.errorDetail) {
+                        errDesc = data.errorDetail;
+                    }
+                    vm.showAlert("danger", "Could not fetch group, please try again later: "+errDesc);
                     return;
                 }
                 vm.closeAlert();
@@ -321,8 +318,13 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                             vm.showAlert("success", "Successfully saved group");
                         }
                         var failureHandler = function(err) {
-                            vm.showAlert("danger", "Could not save group, please try again later");
-                            console.log('Error when saving group', err);
+                            var errDesc = 'Unknown error';
+                            if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                                errDesc = err.data.metadata.description.en;
+                            } else if (err.errorDetail) {
+                                errDesc = err.errorDetail;
+                            }
+                            vm.showAlert("danger", "Could not save group, please try again later: "+errDesc);
                         }
 
                         wdgModel.update = true;
@@ -343,8 +345,8 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             function(err) {
                 console.dir(err);
                 if(err.status == "success"){
-                    //refresh grid
-                    console.log("getGroupDevices response", err);
+                    $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                    vm.showAlert("success", "Successfully saved group");
                     return;
                 }
 
@@ -354,16 +356,22 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                console.log("getGroupDevices response", err);
+                vm.showAlert("danger", "Could not save group, please try again later: "+errDesc);
             }
         );
     };
 
     vm.loadEditDeviceOverlay = function(deviceData, overlayForm, backendApi) {
-            httpClient.post("identity/api/devices/getDevice", deviceData).then(
+            httpClient.post(identityConfig.device.apis.getDevice, deviceData).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
-                        console.log("getGroupDevices response", data);
+                        var errDesc = 'Unknown error';
+                        if (data.data && data.data.metadata && data.data.metadata.description && data.data.metadata.description.en) {
+                            errDesc = data.data.metadata.description.en;
+                        } else if (data.errorDetail) {
+                            errDesc = data.errorDetail;
+                        }
+                        vm.showAlert("danger", "Could not fetch device, please try again later: "+errDesc);
                         return;
                     }
                     var groupsArr = [];
@@ -385,7 +393,6 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                             deviceAttrsArray.push(deviceAttrsObj);
                         }
                     });
-                    
                     
                     vm.closeAlert();
                     var of = angular.copy(overlayForm);
@@ -417,15 +424,19 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     });
 
                     modalInstance.result.then(function (wdgModel) {
-                        console.log('Model Data', wdgModel);
                         if(wdgModel != 'cancel') {
                             var successHandler = function(data) {
                                 $scope.$broadcast("updateGridData-"+vm.gridId, {});
                                 vm.showAlert("success", "Successfully saved device");
                             }
                             var failureHandler = function(err) {
-                                vm.showAlert("danger", "Could not save device, please try again later");
-                                console.log('Error when saving device', err);
+                                var errDesc = 'Unknown error';
+                                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                                    errDesc = err.data.metadata.description.en;
+                                } else if (err.errorDetail) {
+                                    errDesc = err.errorDetail;
+                                }
+                                vm.showAlert("danger", "Could not save device, please try again later: "+errDesc);
                             }
                             wdgModel.update = true;
                             vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
@@ -435,10 +446,9 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     });
                 },
                 function(err) {
-                    console.dir(err);
                     if(err.status == "success"){
-                        //refresh grid
-                        console.log("getGroupDevices response", err);
+                        $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                        vm.showAlert("success", "Successfully saved device");
                         return;
                     }
 
@@ -448,7 +458,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     } else if (err.errorDetail) {
                         errDesc = err.errorDetail;
                     }
-                    console.log("getGroupDevices response", err);
+                    vm.showAlert("danger", "Could not save device, please try again later: "+errDesc);
                 }
                 );
     };
@@ -470,9 +480,9 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
     
     vm.showConfirmDialog = function(params) {
         $mdDialog.show({
-            controller: 'confirmDialogCtrl',
+            controller: 'confirmDeleteDialogCtrl',
             controllerAs: 'vm',
-            templateUrl: 'html/views/confirmationDialog.html',
+            templateUrl: identityConfig.templates.confrim,
             clickOutsideToClose:true,
             escapeToClose: true,
             locals: {dataObject: params.data, grid: params.api, parent: vm},
@@ -487,11 +497,11 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         if(vm.gridId == "device"){
             localsObj = {grid: params.api, deviceData: params.data, parent: vm};
             controller = 'viewDeviceDialogCtrl';
-            templateUrl = 'html/views/devices/viewDevice.html';
+            templateUrl = identityConfig.templates.viewDevice;
         } else if (vm.gridId == "group"){
             localsObj = {grid: params.api, groupData: params.data, parent: vm};
             controller = 'viewGroupDialogCtrl';
-            templateUrl = 'html/views/groups/viewGroup.html';
+            templateUrl = identityConfig.templates.viewGroup;
         }
             $mdDialog.show({
                 controller: controller,
@@ -506,18 +516,14 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
     
 });
 
-
-myApp.controller('confirmDialogCtrl', function(httpClient, identityConfig, identityConfig, dataObject, grid,$scope, parent, $mdDialog) {
+myApp.controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog) {
     var vm = this;
-    vm.isLoading = false;
     vm.parent = parent;
-    vm.deleteStatus = 'Deleting '+vm.parent.gridId+'...';
     vm.identifier = dataObject[vm.parent.identifierProperty];
     vm.grid = grid;
     vm.config = identityConfig;
     vm.api = vm.config[vm.parent.gridId].apis.delete;
-	vm.showMessage = true;
-    vm.header = "Delete";
+    vm.header = "Confirm Delete";
     
     vm.init = function() {
         vm.promptMessage = "Are you sure you want to delete '"+ vm.identifier +"'?"
@@ -528,33 +534,23 @@ myApp.controller('confirmDialogCtrl', function(httpClient, identityConfig, ident
         vm.grid.showLoadingOverlay();
         var parameters = {};
         parameters[vm.parent.identifierProperty] = vm.identifier;
-        console.log('calling delete '+vm.parent.gridId+' with parameters = ' + JSON.stringify(parameters));
         httpClient.post(vm.api, parameters).then(
             function(data, response) {
                 vm.grid.hideOverlay();
                 if(data.status && data.status == "failure"){
-                    vm.showActionButtons = true;
-                    console.log("response", data);
                     vm.parent.showAlert("danger", 'Could not delete '+vm.parent.gridId+', please try again later');
-                    vm.closeDialog();
                     return;
                 }
 				
                 vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
-                console.log(" response", data);
-                vm.closeDialog();
             },
             function(err) {
-                console.dir(err);
+                vm.grid.hideOverlay();
                 if(err.status == "success"){
-                    vm.showActionButtons = true;
-                    vm.closeDialog();
                     vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
                     vm.grid.refreshInfiniteCache();
-                    console.log(" response", err);
-                    vm.closeDialog();
                     return;
                 }
 
@@ -565,26 +561,16 @@ myApp.controller('confirmDialogCtrl', function(httpClient, identityConfig, ident
                     errDesc = err.errorDetail;
                 }
                 vm.parent.showAlert("danger", "Could not delete "+vm.parent.gridId+", please try again later");
-                vm.closeDialog();
-                console.log(" response", err);
             }
         );
     }
 
-    vm.showLoading = function() {
-        vm.isLoading = true;
-        vm.showMessage = false;
-    }
-    vm.hideLoading = function() {
-        vm.isLoading = false;
-        vm.showMessage = true;
-    }
     vm.closeDialog = function() {
         $mdDialog.hide();
     };
 });
 
-myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, parent, $mdDialog, $scope) {
+myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, parent, $mdDialog, $scope, identityConfig) {
    
     var vm = this;
     vm.promptMessage = {
@@ -607,11 +593,9 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         var parameters = {
             id: vm.deviceId
         }
-        console.log('calling getDevice with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/devices/getDevice", parameters).then(
+        httpClient.post(identityConfig.device.apis.getDevice, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    console.log("getDevice response", data);
                     vm.showPromptMessage("danger",false, "Could not fetch device, please try again later");
                     return;
                 }
@@ -657,10 +641,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 vm.showPromptMessage("success",false, "success");
                 vm.deviceFetched = true;
                 vm.hidePromptMessage = true;
-                console.log("getDevice response", JSON.stringify(data));
             },
             function(err) {
-                console.dir(err);
                 var errDesc = 'Unknown error';
                 if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
                     errDesc = err.data.metadata.description.en;
@@ -668,7 +650,6 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                     errDesc = err.errorDetail;
                 }
                 vm.showPromptMessage("danger",false, "Could not fetch device, please try again later!");
-                console.log("getDevice response", JSON.stringify(err));
             }
         );
     }
@@ -680,16 +661,14 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
     vm.editDevice = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.device;
-        vm.parent.loadEditDeviceOverlay(vm.deviceData, infoWindowActions, 'identity/api/devices/saveDevice')
+        vm.parent.loadEditDeviceOverlay(vm.deviceData, infoWindowActions, identityConfig.device.apis.save)
     }
     
     vm.copyToken = function() {
         navigator.clipboard.writeText(vm.token).then(function() {
             vm.showPromptMessage("success",false, "Copied!");
-          console.log('Copying to clipboard was successful');
         }, function(err) {
-            vm.showPromptMessage("danger",false, "Could not copy text:"+err);
-          console.error('Could not copy text: ', err);
+            vm.showPromptMessage("danger",false, "Could not copy text: "+err);
         });
     }
     
@@ -698,7 +677,6 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
     }
     
     vm.generateToken = function(action) {
-       var apiPath = "identity/api/devices/generateTokens";
         if(action != null && action == "regenerate") {
             action = "regenerate";
         } else {
@@ -708,24 +686,20 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             "id": vm.id,
             "action": action
         }
-        console.log('calling '+action+' with parameters = ' + JSON.stringify(parameters));
-        httpClient.post(apiPath, parameters).then(
+        httpClient.post(identityConfig.device.apis.generate, parameters).then(
             function(data, response) {
                 vm.showTokenButtons = true;
                 if(data.status && data.status == "failure"){
                     vm.showPromptMessage("danger",false, "Failed to "+action);
-                    console.log("Failed: "+action+" response", data);
                     return;
                 }
 
                 vm.token = data.token ? data.token : "N/A";
                 vm.grid.refreshInfiniteCache();
                 vm.showPromptMessage("success",false, "Successful "+action);
-                console.log("Success: "+action+" response ",data);
             },
             function(err) {
                 vm.showTokenButtons = true;
-                console.dir(err);
                 var errDesc = 'Unknown error';
                 if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
                     errDesc = err.data.metadata.description.en;
@@ -733,7 +707,6 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                     errDesc = err.errorDetail;
                 }
                 vm.showPromptMessage("danger",false, errDesc);
-                console.log("Failed: "+action+" response", JSON.stringify(err));
             }
     	);
     }
@@ -742,23 +715,19 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         var parameters = {
             id: vm.id
         }
-        console.log('calling revokeToken with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/devices/revokeToken", parameters).then(
+        httpClient.post(identityConfig.device.apis.revoke, parameters).then(
             function(data, response) {
                 vm.showTokenButtons = true;
                 if(data.status && data.status == "failure"){
                     vm.showPromptMessage("danger",false, "Failed to revokeToken");
-                    console.log("Failed: revokeToken response", data);
                     return;
                 }
                 vm.token = "N/A";
                 vm.grid.refreshInfiniteCache();
                 vm.showPromptMessage("success",false, "Successfully deleted token");
-                console.log("Success: revokeToken response", JSON.stringify(data));
             },
             function(err) {
                 vm.showTokenButtons = true;
-                console.dir(err);
                 var errDesc = 'Unknown error';
                 if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
                     errDesc = err.data.metadata.description.en;
@@ -766,7 +735,6 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                     errDesc = err.errorDetail;
                 }
                 vm.showPromptMessage("danger",false, errDesc);
-                console.log("Failed: revokeToken response", JSON.stringify(err));
             }
     	);
     }
@@ -775,12 +743,10 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         var parameters = {
             id: vm.deviceId
         }
-        console.log('calling delete device with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/devices/deleteDevice", parameters).then(
+        httpClient.post(identityConfig.device.apis.delete, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.showActionButtons = true;
-                    console.log("deleteDevice response", data);
                     vm.showPromptMessage("danger", false, "Failed to delete device")
                     return;
                 }
@@ -797,7 +763,6 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                     vm.closeDialog();
                     vm.parent.showAlert("success", "Successfully deleted device");
                     vm.grid.refreshInfiniteCache();
-                    console.log("deleteDevice response", err);
                     vm.closeDialog();
                     return;
                 }
@@ -849,7 +814,7 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
     };
 });
 
-myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope) {
+myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig) {
     var vm = this;
     vm.promptMessage = {
         content:'Fetching group...'
@@ -870,12 +835,10 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
         var parameters = {
             name: vm.groupName
         }
-        console.log('calling getGroupToView with parameters = ' + JSON.stringify(parameters));
-        httpClient.post("identity/api/groups/getGroupDevicesToView", parameters).then(
+        httpClient.post(identityConfig.group.apis.getGroupDevicesToView, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    console.log("getGroupDevicesToView response", data);
-                    vm.showPromptMessage("danger",false,"Could not fetch device, please try again later");
+                    vm.showPromptMessage("danger",false,"Could not fetch group, please try again later");
                     vm.isLoading = false;
                     return;
                 }
@@ -894,7 +857,6 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
                 vm.promptMessage = "Success";
                 vm.groupFetched = true;
                 vm.hidePromptMessage = true;
-                console.log("getGroupDevicesToView response", JSON.stringify(data));
             },
             function(err) {
                 console.dir(err);
@@ -904,8 +866,7 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger",false,"Could not fetch device, please try again later");
-                console.log("getDevice response", JSON.stringify(err));
+                vm.showPromptMessage("danger",false,"Could not fetch group, please try again later");
             }
         );
     } 
@@ -914,7 +875,7 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
         var parameters = {
             name: vm.groupName
         }
-        httpClient.post("identity/api/devices/deleteDevice", parameters).then(
+        httpClient.post(identityConfig.group.apis.delete, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.showActionButtons = true;
@@ -948,7 +909,6 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
             }
         );
     }
-    
 
     vm.confirmationDeleteGroup = function(){
         vm.showActionButtons = false
@@ -961,7 +921,7 @@ myApp.controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, par
     vm.editGroup = function(){
         vm.closeDialog();
         var infoWindowActions = vm.parent.infoWindowActions.group;
-        vm.parent.loadEditGroupOverlay(vm.groupData, infoWindowActions, 'identity/api/groups/saveGroup')
+        vm.parent.loadEditGroupOverlay(vm.groupData, infoWindowActions, identityConfig.group.apis.save)
     }
     
     vm.showPromptMessage = function(type, loading, message){
