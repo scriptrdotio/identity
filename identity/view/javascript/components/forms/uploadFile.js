@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q) {
+    controller: function ($scope, httpClient, $q, identityConfig) {
         var self = this;
         self.showLoading = false;
         this.$onInit = function(){
@@ -60,13 +60,13 @@ angular
                     fd.append(key, data[key]);
                 }
 
-                httpClient.post("identity/api/reports/scheduleImport", fd, null,true).then(
+                httpClient.post(identityConfig.reports.apis.import, fd, null,true).then(
                     function(data, response) {
                         if(data.status == "failure") {
                             self.showLoading = false;
                             self.showAlert("danger", data.errorDetail);
                         } else {
-                            self.getJobStatus("identity/api/reports/scheduleImport", {scriptHandleId: data.scriptHandleId }, 30, function (){
+                            self.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (){
                                 self.showAlert("success", "The devices have been imported successfully.");
                                 $scope.$broadcast("updateGridData-device", {});
                                 self.showLoading = false;

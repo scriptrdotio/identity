@@ -112,7 +112,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q) {
+        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q, identityConfig) {
 
             var self = this;
 
@@ -528,7 +528,7 @@ angular
                 }
                 if(selectedKeys.length > 0){
                     var params = {"id": selectedKeys};
-                    httpClient.post("identity/api/devices/generateTokens", params).then(
+                    httpClient.post(identityConfig.device.apis.generate, params).then(
                         function(data, response) {
                             if(data.status == "failure") {
                                 self.showAlert("danger", "Unable to refresh token(s), please try again");
@@ -551,14 +551,14 @@ angular
                 self.showAlert("warning", "Exporting file... Please wait");
                 var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
                 console.log("params" + JSON.stringify(params));
-                httpClient.post("identity/api/reports/scheduleExport", params).then(
+                httpClient.post(identityConfig.reports.apis.export, params).then(
                     function(data, response) {
                         if(data.status == "failure") {
                             self.showAlert("danger", "Unable to export, please try again");
                         } else {
-                             self.getJobStatus("identity/api/reports/scheduleExport", {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                             self.getJobStatus(identityConfig.reports.apis.export, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
                                  params.docKey = res;
-                                 httpClient.get("identity/api/reports/getCSVFile", params).then(
+                                 httpClient.get(identityConfig.reports.apis.getCSV, params).then(
                                     function(data, response) {
                                         self.showAlert("success", "Data exported successfully");
                                         var element = document.createElement('a');

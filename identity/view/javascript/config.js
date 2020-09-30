@@ -9,17 +9,17 @@ var httpsConfig = ["httpClientProvider",function (httpClientProvider) {
 
 var identityConfig = {
     group: {
-        apis : {
-            "list" : "identity/api/groups/listGroups",
-            "delete" :"identity/api/groups/deleteGroup",
-            "save" : "identity/api/groups/saveGroup",
-            "getGroupDevices" : "identity/api/groups/getGroupDevices",
-            "getGroupDevicesToView" : "identity/api/groups/getGroupDevicesToView"
+        apis: {
+            "list": "identity/api/groups/listGroups",
+            "delete":"identity/api/groups/deleteGroup",
+            "save": "identity/api/groups/saveGroup",
+            "getGroupDevices": "identity/api/groups/getGroupDevices",
+            "getGroupDevicesToView": "identity/api/groups/getGroupDevicesToView"
         },
         identifierProperty: "name"
     },
     device: {
-        apis:{
+        apis: {
             "list" : "identity/api/devices/listDevices",
             "delete" : "identity/api/devices/deleteDevice",
             "save" : "identity/api/devices/saveDevice",
@@ -29,9 +29,16 @@ var identityConfig = {
         },
         identifierProperty: "id"
     },
-    templates : {
-        "viewGroup" : "html/views/groups/viewGroup.html",
-        "viewDevice" : "html/views/devices/viewDevice.html",
-        "confirm" : "html/views/confirmationDialog.html"
+    reports: {
+        apis: {
+            "export": "identity/api/reports/scheduleExport",
+            "import": "identity/api/reports/scheduleImport",
+            "getCSV": "identity/api/reports/getCSVFile"
+        }
+    },
+    templates: {
+        "viewGroup": "html/views/groups/viewGroup.html",
+        "viewDevice": "html/views/devices/viewDevice.html",
+        "confirm": "html/views/confirmationDialog.html"
     }
 }
