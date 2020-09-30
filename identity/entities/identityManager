@@ -6,7 +6,7 @@ var queryDocsPerPage = config.queryDocsPerPage;
 var buildCsvSciptPath = config.buildCsvSciptPath;
 
 function getDevices(params){
-    log.info("Request normalized params: " + JSON.stringify(params));
+    log.info("getDevices params: " + JSON.stringify(params));
 
     var fields = "*";
     if(params["fields"] !== undefined && params["fields"] !== null ) {
@@ -31,9 +31,7 @@ function getDevices(params){
         if(queryFilter!="")
             queryObj.query = 'id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
         queryObj.pageNumber = pageNumber;
-        log.info("queryObj"+pageNumber+": " + JSON.stringify(queryObj));
         var response = devices.query(queryObj);
-        log.info("Response"+pageNumber+": " + JSON.stringify(response));
         if(response.metadata.status == "failure") {
             return response.metadata;
         }
@@ -45,28 +43,8 @@ function getDevices(params){
         if(response.result.devices.length > 0)
             documents = documents.concat(response.result.devices);
     }
-    log.info("documents: " + documents);
-    if(count) {
-        if(documents!=null && documents.length>0 && params.pageNumber!=null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
-            var startRow = parseInt(params.startRow);
-            var endRow = parseInt(params.endRow);
-            var pageDocuments = [];
-            var x=0;
-            for(i=startRow; i<endRow; i++){
-                if(documents[i]!=null && documents[i]!="")
-                    pageDocuments[x++] = documents[i];
-            }
-            documents = pageDocuments;
-            log.info("pageDocuments: "+JSON.stringify(pageDocuments));
-            log.info("documents: "+JSON.stringify(documents));
-        }
-        var responseObj = { "count": response.result.count, "documents": documents};
-        log.info("Response" + JSON.stringify(responseObj));
-        return responseObj;
-    } else {
-        log.info("Documents: " + documents);
-        return documents;
-    }
+    log.info("getDevices documents: " + documents);
+    return documents;
 }
 
 function getGroups(params){
