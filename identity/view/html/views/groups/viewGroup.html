@@ -16,9 +16,9 @@
                             </div>
                                  </md-toolbar>
                             <div class="clearfix"></div>
-                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.hidePromptMessage">
+                            <div ng-class="'data-notification center mt20 mrgb20 promptMessage-' + ( vm.promptMessage.type || 'default')" ng-hide="vm.hidePromptMessage">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
-                                <span>{{vm.promptMessage}}</span>
+                                <span>{{vm.promptMessage.content}}</span>
                             </div>
                             <div ng-if="vm.groupFetched" class="contentContainer container">
                                 <div class="row">
@@ -44,7 +44,14 @@
         </div>
     </md-dialog-content>
     <md-dialog-actions class="col-md-12  pb15 pt15">
-        <md-button ng-click="vm.editGroup()" class="btn btn-default">Edit</md-button>
-        <md-button ng-click="vm.deleteGroup()" class="btn btn-default">Delete</md-button>
+        <div ng-if="vm.showActionButtons">
+            <md-button ng-click="vm.editGroup()" class="btn btn-default">Edit</md-button>
+            <md-button ng-click="vm.confirmationDeleteGroup()" class="btn btn-default">Delete</md-button>
+        </div>
+        <div ng-if="!vm.showActionButtons" class="col-xs-12 mb15">
+            <span>Are you sure you want to delete this device?</span>
+            <md-button ng-click="vm.cancelActionButtons()" class="btn btn-default mgr5">No</md-button>
+            <md-button  ng-click="vm.deleteGroup()" class="btn btn-default mgr5" >Yes</md-button>
+        </div>
     </md-dialog-actions>
 </md-dialog> 

@@ -28,8 +28,6 @@ angular
 
             "enableDeleteRow" : "<?",
 
-            "fixedHeight" : "<?",  
-
             "enableAddRow" : "<?",
 
             "cellEditable" : "<?",
@@ -108,8 +106,9 @@ angular
             
             "gridEventsId": "@",
             
+            "removeRowConfig": "<?",
             
-           
+            "saveRowConfig": "<?"
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
@@ -185,7 +184,6 @@ angular
                 if(self.msgTag){
                     wsClient.unsubscribe(self.msgTag, null, $scope.$id); 
                 }
-                console.log("destory Grid")
             }
 
             this.cleanRows = function(rows){
@@ -236,12 +234,12 @@ angular
                     pagination: (typeof this.pagination != "undefined") ? this.pagination : false,  
                     cacheBlockSize: (this.paginationPageSize) ? this.paginationPageSize : 50,
                     rowData: (this.rowData)? this.rowData : null,
-                    rowModelType : (this.api) ? "infinite" : "",
+                    rowModelType : "infinite",
                     rowSelection : (this.rowModelSelection) ? this.rowModelSelection : "multiple",
                     suppressRowClickSelection : (this.suppressRowClickSelection) ? this.suppressRowClickSelection : true,
                     suppressCellSelection : (this.suppressCellSelection) ? this.suppressCellSelection : true,
                     paginationPageSize : (this.paginationPageSize) ? this.paginationPageSize : 50,
-                    overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> Please wait while your rows are loading</span>',
+                    overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>Loading...</span>',
                     defaultColDef : {
                         filter: false,
                         filterParams : {
@@ -311,16 +309,7 @@ angular
                             return self.onRowDoubleClicked()(row)  
                         }
                     }
-                this.fixedHeight = (typeof this.fixedHeight != 'undefined') ? this.fixedHeight : true;   
                 this.style = {"height": "100%", "width": "100%"};   
-                /**if(this.fixedHeight){
-                    this.gridHeight = (this.gridHeight) ? this.gridHeight : "500";
-                    this.style["height"] = this.gridHeight;
-                    this.style["clear"] = "left";
-                    this.style["width"] = "100%";
-                }else{
-                    this.style["height"] = "77%";
-                } **/
                 this.refreshOnEdit = (typeof this.refreshOnEdit != "undefined") ? this.refreshOnEdit : false;
                 this.transport = (this.transport) ? this.transport : "wss";
                 this.disableDeleteRow =  (this.enableDeleteRow == true) ? false : true;
@@ -414,18 +403,16 @@ angular
                         },
                         function(err) {
                             self.gridOptions.api.hideOverlay();   
-                            console.log("reject", err);
+                            console.log("reject", err);g
                             self.showAlert("danger", "An error has occured");
                         });
                 }
             }
 
             this.onAddRow = function(){
-                if(self.gridEventsId == "device")
-                    self.loadOverlay(null, this.infoWindowActions.device, 'identity/api/devices/saveDevice');
-                else if (self.gridEventsId == "group")
-                    self.loadOverlay(null, this.infoWindowActions.group, 'identity/api/groups/saveGroup');
+                 self.loadOverlay(null, this.saveRowConfig.schemaFormDefinition, this.saveRowConfig.api);
             }
+            
             this.loadOverlay = function(marker, overlayForm, backendApi) {
                 var of = angular.copy(overlayForm);
                 of.title = "Add "+of.title;
@@ -662,29 +649,21 @@ angular
 
             this.onRemoveRow = function(key) {
                 if(self.gridOptions.rowModelType == "infinite"){
-                    if(self.api){
+                    if(self.removeRowConfig && self.removeRowConfig.api){
+                        var api = self.removeRowConfig.api;
                         var selectedNodes = self.gridOptions.api.getSelectedNodes();
                         var selectedKeys = [];
-                       // console.log("the data is "+ data);
                         for(var i = 0; i < selectedNodes.length; i++){
-                           	selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
+                           	 selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
                         }
                         if(selectedKeys.length > 0){
                             self.gridOptions.api.showLoadingOverlay();
-                            var params;
-                            var api;
-                            if(self._dataIdentifierProperty == "groups"){
-                                api = "identity/api/groups/deleteGroup";
-                                params = {"groupName" : selectedKeys};
-                            }else if(self._dataIdentifierProperty == "id"){
-                                api = "identity/api/devices/deleteDevice";
-                                params = {"id" : selectedKeys};
+                            var params = {};
+                            if(self.removeRowConfig.queryParam) {
+                            	params[self.removeRowConfig.queryParam] =  selectedKeys;
+                            } else {
+                                params[self._dataIdentifierProperty] =  selectedKeys;
                             }
-                            if(this.deleteParams){
-                                for(var key in this.deleteParams){
-                                    params[key] = this.deleteParams[key]
-                                }
-                            }  
                             
                             dataStore.postGridHelper(api, params).then(
                                 function(data, response) {

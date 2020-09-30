@@ -32,6 +32,13 @@
   border-radius: 6px;
 }
 
+.promptMessage-danger{
+    color:#FF0000;
+}
+.promptMessage-success{
+    color:#5AB03A;
+}
+
 .btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover  {
   background: #374f6b;
   color: #fff;

@@ -12,8 +12,11 @@ myApp.constant(
                             'type': 'section',
                             'htmlClass': 'col-xs-6',
                             'items': [{
-                                'key': "name"
-
+                                'key': "name",
+ 								 "validationMessage": {
+                                    201: "Name is too long ({{viewValue.length}} chars), maximum allowed is {{schema.maxLength}}.",
+                                    302: "Name is required, cannot be empty!"
+                            	}
                             }]
                         }
                     ]
@@ -282,7 +285,7 @@ myApp.constant(
                 'title': 'deviceSchema',
                 'properties': {
                     'name': {
-                        'title': 'Device Name',
+                        'title': 'Device',
                         'type': 'string',
                         'minLength': 1,
                         'maxLength': 1024,

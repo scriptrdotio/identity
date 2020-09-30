@@ -15,9 +15,9 @@
                                 </md-button>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="data-notification center mt20 mrgb20" ng-hide="vm.hidePromptMessage">
+                            <div ng-class="'data-notification center mt20 mrgb20 promptMessage-' + ( vm.promptMessage.type || 'default')" ng-hide="vm.hidePromptMessage">
                                 <i class="fa fa-spinner fa-spin fa-1x" ng-if="vm.isLoading"></i> 
-                                <span>{{vm.promptMessage}}</span>
+                                <span>{{vm.promptMessage.content}}</span>
                             </div>
                             <div ng-if="vm.deviceFetched" class="contentContainer container">
                                 <div class="row">
@@ -50,14 +50,16 @@
                                     <div ng-if="vm.showTokenButtons" class="col-xs-12 mb15">
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
                                         <button ng-if="vm.token == 'N/A' && vm.status != 'Suspended'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
-                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.regenerateToken()" class="btn btn-default mgr5">Regenerate</button>
-                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmDeleteToken()" class="btn btn-default mgr5">Delete</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('regenerate')" class="btn btn-default mgr5">Regenerate</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('delete')" class="btn btn-default mgr5">Delete</button>
                                     </div>
                                     <div ng-if="!vm.showTokenButtons" class="col-xs-12 mb15">
-                                        <span>Are you sure you want to delete this token?</span>
-                                        <button ng-click="vm.cancelDeleteToken()" class="btn btn-default mgr5">No</button>
-                                        <button ng-click="vm.revokeToken()" class="btn btn-default mgr5">Yes</button>
+                                        <span>{{vm.tokenActionMsg}}</span>
+                                        <button ng-click="vm.cancelTokenAction()" class="btn btn-default mgr5">No</button>
+                                        <button ng-if="vm.actionDelete" ng-click="vm.revokeToken()" class="btn btn-default mgr5">Yes</button>
+                                        <button ng-if="!vm.actionDelete" ng-click="vm.regenerateToken()" class="btn btn-default mgr5">Yes</button>
                                     </div>
+                                    
                                     <div ng-if="vm.hasAttrs" class="col-xs-12">
                                         <label>Device Attributes</label>
                                         <table border="1" class="table">
@@ -86,7 +88,14 @@
         </div>
     </md-dialog-content>
     <md-dialog-actions class="col-md-12 pb15 pt15">
+        <div ng-if="vm.showActionButtons">
         <md-button ng-click="vm.editDevice()" class="btn btn-default">Edit</md-button>
-    	<md-button ng-click="vm.deleteDevice()" class="btn btn-default">Delete</md-button>
-    </md-dialog-actions>
+    	<md-button ng-click="vm.confirmationDeleteDevice()" class="btn btn-default">Delete</md-button>
+        </div>
+    <div ng-if="!vm.showActionButtons" class="col-xs-12 mb15">
+            <span>Are you sure you want to delete this device?</span>
+            <md-button ng-click="vm.cancelActionButtons()" class="btn btn-default mgr5">No</md-button>
+            <md-button  ng-click="vm.deleteDevice()" class="btn btn-default mgr5">Yes</md-button>
+        </div>
+        </md-dialog-actions>
 </md-dialog> 

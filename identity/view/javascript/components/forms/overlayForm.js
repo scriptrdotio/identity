@@ -19,7 +19,8 @@ angular
        
         this.frmGlobalOptions = {
           "destroyStrategy" : "remove",
-          "formDefaults": {"feedback": false}
+          "formDefaults": {"feedback": false},
+          "validationMessage": {"302": "Required"}
         }
 
         if(this.widget) {
