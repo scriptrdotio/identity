@@ -15,7 +15,7 @@ myApp.constant(
                                 'key': "name",
  								 "validationMessage": {
                                     201: "Name is too long ({{viewValue.length}} chars), maximum allowed is {{schema.maxLength}}.",
-                                    302: "Name is required, cannot be empty!"
+                                    //302: "Name is required, cannot be empty!"
                             	}
                             }]
                         }
@@ -51,8 +51,7 @@ myApp.constant(
                     "name": {
                         'title': 'Group Name',
                         'type': 'string',
-                        'maxLength': 116,
-                        "validationMessage": "Maximum permitted value is 116 characters"
+                        'maxLength': 116
                     },
                     "devices": {
                         "type": "array",
@@ -79,7 +78,10 @@ myApp.constant(
                             'htmlClass': 'col-xs-12 col-sm-6',
                             'items': [{
                                 'key': 'name',
-                            }]
+                                "validationMessage": {
+                                    201: "Name is too long ({{viewValue.length}} chars), maximum allowed is {{schema.maxLength}}."
+                                }
+                              }]
                         },
                         {
                             "type": "section",
@@ -87,6 +89,9 @@ myApp.constant(
                             "htmlClass": "col-xs-12 col-sm-6",
                             'items': [{
                                 'key': 'id',
+                                "validationMessage": {
+                                    201: "ID is too long ({{viewValue.length}} chars), maximum allowed is {{schema.maxLength}}."
+                                }
                             }]
 
                         }
@@ -162,6 +167,9 @@ myApp.constant(
                             "htmlClass": "col-xs-12",
                             'items': [{
                                 'key': 'description',
+                                "validationMessage": {
+                                    201: "Description is too long ({{viewValue.length}} chars), maximum allowed is {{schema.maxLength}}."
+                                }
                             }]
                         }
                     ]
@@ -287,16 +295,12 @@ myApp.constant(
                     'name': {
                         'title': 'Device',
                         'type': 'string',
-                        'minLength': 1,
                         'maxLength': 1024,
-                        "validationMessage": "Maximum permitted value is 1024 characters"
                     },
                     'id': {
                         'title': 'Device ID',
                         'type': 'string',
-                        'minLength': 1,
                         'maxLength': 117,
-                        "validationMessage": "Maximum permitted value is 117 characters"
                     },
                     'password': {
                         'title': 'Password',
@@ -322,7 +326,6 @@ myApp.constant(
                         'title': 'Description',
                         'type': 'string',
                         'maxLength': 1024,
-                        "validationMessage": "Maximum permitted value is 1024 characters",
                         'x-schema-form': {
                             'type': 'textarea',
                             'placeholder': 'Description for this device'
