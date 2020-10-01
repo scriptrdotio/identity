@@ -1,4 +1,5 @@
 <md-dialog class="dialog">
+    <div ng-if="vm.hasAlert" uib-alert ng-class="'alert-' + ( vm.message.type || 'warning')  + ' m10'" close="vm.closeAlert()" dismiss-on-timeout="5000">{{vm.message.content}}</div>
     <md-dialog-content class="dialogContainer">
         <div ng-init="vm.init()">
             <div class="dashboard-template dashboardTheme viewDeviceContainer">

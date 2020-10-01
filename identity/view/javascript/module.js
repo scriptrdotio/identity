@@ -57,6 +57,7 @@ var myApp = angular.module('myApp', ["underscore",
     "Layout",   
     "ngTagsInput",  
     "List",
+    "ngLoadingOverlay",
     "Identity"]);
 
 myApp

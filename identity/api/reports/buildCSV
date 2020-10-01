@@ -3,7 +3,6 @@ log.setLevel("INFO");
 var moment = require("modules/momentjs/moment.min.js").moment;
 var identityManager = require("identity/entities/identityManager");
 var defaultStore = require('document').getInstance('DefaultStore');
-//return defaultStore.getAttachmentUrl("Rpt-1600250421321","Devices.csv", {"versionNumber": "1"});
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;

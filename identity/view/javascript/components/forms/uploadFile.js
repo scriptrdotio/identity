@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q, identityConfig) {
+    controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay) {
         var self = this;
         self.showLoading = false;
         this.$onInit = function(){
@@ -49,6 +49,7 @@ angular
             // Then we check if the form is valid
             if (form.$valid) {
                 self.showLoading = true;
+                $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Uploading CSV, please wait...</b>');
                 var d = $q.defer();  
                 var data = angular.copy(this.model);
                 if(form.uploadForm.file.$dirty) {
@@ -82,7 +83,6 @@ angular
                     }, function(err) {
                         self.showAlert("danger", err.data.response.metadata.errorDetail);
                         self.showLoading = false;
-                        console.log("reject", err.data.response.metadata.errorDetail);
                         d.reject(err); 
 
                     });
@@ -90,7 +90,7 @@ angular
             }
         }
 
-        this.getJobStatus = function(api,params,timeout,successFnc, failureFnc){
+        this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
             var checkInterval = 1;
             if(timeout > 0 ){
                 timeout = timeout - checkInterval;
@@ -100,24 +100,25 @@ angular
                         if(data.jobStatus == "complete"){
                             var jobResult = JSON.parse(data.jobResult);
                             if(jobResult.resultJSON.response.result == "success"){
-                                successFnc(jobResult.resultJSON.response.result);
+                                onSuccess(jobResult.resultJSON.response.result);
                                 return;
                             }else{
-                                failureFnc("An error occurred, please try again later.");
+                                onFailure("An error occurred, please try again later.");
                                 return;
                             }
                         }
                         var nextFireTime = checkInterval * 1000;
-                        setTimeout(self.getJobStatus, nextFireTime,api,params,timeout,successFnc, failureFnc);
+                        setTimeout(self.getJobStatus, nextFireTime,api,params,timeout,onSuccess, onFailure);
                     },function(ex){
-                        failureFnc(ex);
+                        onFailure(ex);
                     });
             }else{
-                failureFnc("TIME_OUT");
+                onFailure("TIME_OUT");
             }
         }
 
         this.showAlert = function(type, content) {
+            $loadingOverlay.hide();
             this.message = {
                 "type" : type,
                 "content" : content

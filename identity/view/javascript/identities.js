@@ -1,4 +1,4 @@
-myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig) {
+myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay) {
     var vm = this;
     vm.deviceTitle = "Identity Manager"; 
     vm.renderGrid = true;
@@ -78,7 +78,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var viewBtn = eDiv.querySelectorAll('.btn')[0];
                 viewBtn.addEventListener('click', function(clickParams) { 
@@ -94,7 +94,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var editBtn = eDiv.querySelectorAll('.btn')[0];
                 editBtn.addEventListener('click', function(clickParams) { 
@@ -110,7 +110,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="left" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var deleteBtn = eDiv.querySelectorAll('.btn')[0];
                 deleteBtn.addEventListener('click', function(clickParams) { 
@@ -157,7 +157,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             editable : false,
             tooltipField: 'auth_token',
             cellRenderer: function(params) {
-                var copyHtml = '<span tooltip-placement="left" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
+                var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
                 if(params.value) {
                    var token = "..." + params.value.substr((params.value.length - 8),8);
                    return token + "&nbsp;" + copyHtml;
@@ -273,6 +273,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
     }
 
     vm.loadEditGroupOverlay = function(groupData, overlayForm, backendApi) {
+        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching group...</b>');
         httpClient.post(identityConfig.group.apis.getGroupDevices, groupData).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
@@ -295,7 +296,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     'form': angular.copy(of.form),
                     'model': {"name": groupData.name, "devices": data.devices, "originalName":groupData.name, "originalDevices":data.devices}
                 }
-
+				$loadingOverlay.hide();
                 var self = this;
                 var modalInstance= $uibModal.open({
                     animation: true,
@@ -362,6 +363,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
     };
 
     vm.loadEditDeviceOverlay = function(deviceData, overlayForm, backendApi) {
+        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching device...</b>');
             httpClient.post(identityConfig.device.apis.getDevice, deviceData).then(
                 function(data, response) {
                     if(data.status && data.status == "failure"){
@@ -409,7 +411,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                         'form': form,
                         'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
                     }
-                    
+                    $loadingOverlay.hide();
                     var self = this;
                     var modalInstance= $uibModal.open({
                         animation: true,
@@ -482,7 +484,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         $mdDialog.show({
             controller: 'confirmDeleteDialogCtrl',
             controllerAs: 'vm',
-            templateUrl: identityConfig.templates.confrim,
+            templateUrl: identityConfig.templates.confirm,
             clickOutsideToClose:true,
             escapeToClose: true,
             locals: {dataObject: params.data, grid: params.api, parent: vm},
@@ -516,7 +518,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
     
 });
 
-myApp.controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog) {
+myApp.controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
     var vm = this;
     vm.parent = parent;
     vm.identifier = dataObject[vm.parent.identifierProperty];
@@ -531,12 +533,11 @@ myApp.controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig,
     
     vm.deleteIdentity = function(){
         vm.closeDialog();
-        vm.grid.showLoadingOverlay();
+        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting '+vm.parent.gridId+'...</b>');
         var parameters = {};
         parameters[vm.parent.identifierProperty] = vm.identifier;
         httpClient.post(vm.api, parameters).then(
             function(data, response) {
-                vm.grid.hideOverlay();
                 if(data.status && data.status == "failure"){
                     vm.parent.showAlert("danger", 'Could not delete '+vm.parent.gridId+', please try again later');
                     return;
@@ -596,7 +597,13 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         httpClient.post(identityConfig.device.apis.getDevice, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    vm.showPromptMessage("danger",false, "Could not fetch device, please try again later");
+                    vm.hidePromptMessage = true;
+                    var errDesc = 'Unknown error';
+                    if (data.errorDetail) {
+                        errDesc = data.errorDetail;
+                    }
+                    vm.showAlert("danger", "Could not fetch device: "+errDesc);
+                    //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later");
                     return;
                 }
 
@@ -638,7 +645,7 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 })
                 vm.deviceAttrs = deviceAttrsArray;
                 
-                vm.showPromptMessage("success",false, "success");
+                //vm.showPromptMessage("success",false, "success");
                 vm.deviceFetched = true;
                 vm.hidePromptMessage = true;
             },
@@ -649,7 +656,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger",false, "Could not fetch device, please try again later!");
+                vm.showAlert("danger", "Could not fetch device: "+errDesc);
+                //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later!");
             }
         );
     }
@@ -668,7 +676,12 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
         navigator.clipboard.writeText(vm.token).then(function() {
             vm.showPromptMessage("success",false, "Copied!");
         }, function(err) {
-            vm.showPromptMessage("danger",false, "Could not copy text: "+err);
+            var errDesc = 'Unknown error';
+            if (err.errorDetail) {
+                errDesc = err.errorDetail;
+            }
+            vm.showAlert("danger", "Could not copy token: "+errDesc);
+            //vm.showPromptMessage("danger",false, "Could not copy text: "+err);
         });
     }
     
@@ -690,13 +703,18 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             function(data, response) {
                 vm.showTokenButtons = true;
                 if(data.status && data.status == "failure"){
-                    vm.showPromptMessage("danger",false, "Failed to "+action);
+                    var errDesc = 'Unknown error';
+                    if (data.errorDetail) {
+                        errDesc = data.errorDetail;
+                    }
+                    vm.showAlert("danger", "Failed to "+action+": "+errDesc);
+                    //vm.showPromptMessage("danger",false, "Failed to "+action);
                     return;
                 }
 
                 vm.token = data.token ? data.token : "N/A";
                 vm.grid.refreshInfiniteCache();
-                vm.showPromptMessage("success",false, "Successful "+action);
+                //vm.showPromptMessage("success",false, "Successful "+action);
             },
             function(err) {
                 vm.showTokenButtons = true;
@@ -706,7 +724,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger",false, errDesc);
+                vm.showAlert("danger", "Failed to "+action+": "+errDesc);
+                //vm.showPromptMessage("danger",false, errDesc);
             }
     	);
     }
@@ -719,12 +738,17 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             function(data, response) {
                 vm.showTokenButtons = true;
                 if(data.status && data.status == "failure"){
-                    vm.showPromptMessage("danger",false, "Failed to revokeToken");
+                    var errDesc = 'Unknown error';
+                    if (data.errorDetail) {
+                        errDesc = data.errorDetail;
+                    }
+                    vm.showAlert("danger", "Could not delete token: "+errDesc);
+                    //vm.showPromptMessage("danger",false, "Failed to revokeToken");
                     return;
                 }
                 vm.token = "N/A";
                 vm.grid.refreshInfiniteCache();
-                vm.showPromptMessage("success",false, "Successfully deleted token");
+                //vm.showPromptMessage("success",false, "Successfully deleted token");
             },
             function(err) {
                 vm.showTokenButtons = true;
@@ -734,7 +758,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger",false, errDesc);
+                vm.showAlert("danger", "Could not delete token: "+errDesc);
+                //vm.showPromptMessage("danger",false, errDesc);
             }
     	);
     }
@@ -747,7 +772,12 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.showActionButtons = true;
-                    vm.showPromptMessage("danger", false, "Failed to delete device")
+                    var errDesc = 'Unknown error';
+                    if (data.errorDetail) {
+                        errDesc = data.errorDetail;
+                    }
+                    vm.showAlert("danger", "Could not delete device: "+errDesc);
+                    //vm.showPromptMessage("danger", false, "Failed to delete device")
                     return;
                 }
 
@@ -773,7 +803,8 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger", false,"Could not delete device, please try again later")
+                vm.showAlert("danger", "Could not delete device: "+errDesc);
+                //vm.showPromptMessage("danger", false, "Could not delete device: "+errDesc)
             }
         );
     }
@@ -808,6 +839,18 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
             vm.hidePromptMessage = true;
         }, 5000);
     }
+    
+    vm.showAlert = function(type, content) {
+        this.message = {
+            "type" : type,
+            "content" : content
+        }
+        vm.hasAlert = true;
+    };
+
+    vm.closeAlert = function() {
+        vm.hasAlert = false;
+    };
 
     vm.closeDialog = function() {
         $mdDialog.hide();

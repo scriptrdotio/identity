@@ -112,7 +112,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q, identityConfig) {
+        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
 
             var self = this;
 
@@ -336,6 +336,7 @@ angular
             };
 
             this.showAlert = function(type, content) {
+                $loadingOverlay.hide();
                 self.message = {
                     "type" : type,
                     "content" : content
@@ -521,6 +522,7 @@ angular
             }
             
             this.refreshTokens = function(){
+                $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Refreshing token(s), please wait...</b>');
                 var selectedNodes = self.gridOptions.api.getSelectedNodes();
                 var selectedKeys = [];
                 for(var i = 0; i < selectedNodes.length; i++){
@@ -548,7 +550,7 @@ angular
             }
             
             this.exportData = function(){
-                self.showAlert("warning", "Exporting file... Please wait");
+                $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Exporting file, please wait...</b>');
                 var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
                 console.log("params" + JSON.stringify(params));
                 httpClient.post(identityConfig.reports.apis.export, params).then(
@@ -650,6 +652,7 @@ angular
             this.onRemoveRow = function(key) {
                 if(self.gridOptions.rowModelType == "infinite"){
                     if(self.removeRowConfig && self.removeRowConfig.api){
+                        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting row(s)...</b>');
                         var api = self.removeRowConfig.api;
                         var selectedNodes = self.gridOptions.api.getSelectedNodes();
                         var selectedKeys = [];
@@ -657,7 +660,6 @@ angular
                            	 selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
                         }
                         if(selectedKeys.length > 0){
-                            self.gridOptions.api.showLoadingOverlay();
                             var params = {};
                             if(self.removeRowConfig.queryParam) {
                             	params[self.removeRowConfig.queryParam] =  selectedKeys;
