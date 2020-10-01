@@ -335,7 +335,13 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                             wdgModel.name = wdgModel.originalName;
                         }
                         //This is not optimal, maybe sort and compare
-                        if(JSON.stringify(wdgModel.originalDevices)==JSON.stringify(wdgModel.devices))
+                        var originalDevices = wdgModel.originalDevices.sort();
+                        var devices = wdgModel.devices.sort();
+                        // compare the sorted arrays of originalDevices and devices 
+                        var resultOfcomparison = (originalDevices.length == devices.length) && originalDevices.every(function(element, index) {
+                            return element === devices[index];
+                        });
+                        if(resultOfcomparison)
                             wdgModel.updateDevices = false;
                         vm.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
                     }

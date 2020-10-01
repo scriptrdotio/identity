@@ -3,6 +3,7 @@ var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 var groups = require("group");
 
+//this api is used to get the group and  the devices found in this group and view them 
 
 var errorHandler = new errorHandler.ErrorHandler();
 

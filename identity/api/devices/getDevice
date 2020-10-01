@@ -2,7 +2,6 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 
-//return devices.get("mobile",{"includeFieldType" : true});
 
 var errorHandler = new errorHandler.ErrorHandler();
 
