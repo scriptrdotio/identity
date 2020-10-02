@@ -112,7 +112,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
+        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
 
             var self = this;
 
@@ -552,13 +552,12 @@ angular
             this.exportData = function(){
                 $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Exporting file, please wait...</b>');
                 var params = {"gridType": self.gridEventsId, "queryFilter": self.serverFilterText};
-                console.log("params" + JSON.stringify(params));
                 httpClient.post(identityConfig.reports.apis.export, params).then(
                     function(data, response) {
                         if(data.status == "failure") {
                             self.showAlert("danger", "Unable to export, please try again");
                         } else {
-                             self.getJobStatus(identityConfig.reports.apis.export, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                             identityFactory.getJobStatus(identityConfig.reports.apis.export, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
                                  params.docKey = res;
                                  httpClient.get(identityConfig.reports.apis.getCSV, params).then(
                                     function(data, response) {
@@ -570,24 +569,23 @@ angular
                                         document.body.appendChild(element);
                                         element.click();
                                         document.body.removeChild(element);
-                                        console.log("CSV file response: " + data.data);
                                 },function(err){
-                                    console.log("failure", err);
                                 	self.showAlert("danger", "Unable to export, please try again");
                                 });
                             },function(err){
-                                 console.log("failure", err);
                                  self.showAlert("danger", "Unable to export, please try again");
                             })
                         } 
                     }, function(err) {
-                        console.log("failure", err);
                         self.showAlert("danger", "Unable to export, please try again");
                     }
                 );
             }
             
-            this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
+            
+            
+            
+            /*this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
                 var checkInterval = 1;
                 if(timeout > 0 ){
                     timeout = timeout - checkInterval;
@@ -612,7 +610,7 @@ angular
                 }else{
                     onFailure("TIME_OUT");
                 }
-            }
+            }*/
             
             this.loadImportOverlay = function(){
                 var of = angular.copy(this.infoWindowActions.uploaderForm);
@@ -673,7 +671,7 @@ angular
                                         if(data.status == "failure") {
                                             self.showAlert("danger", "Unable to delete row(s), please try again");
                                         } else {
-                                            self.getJobStatus(api, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                            identityFactory.getJobStatus(api, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
                                                 self.gridOptions.api.hideOverlay();     
                                                 if (res && (res.result == "success" || res.status == "success")) {
                                                     self.showAlert("success", "Row(s) deleted successfully");
@@ -960,3 +958,37 @@ angular
     }
     }
 });
+
+myApp.factory(
+      "identityFactory",
+      function(httpClient) {
+           var factory = {};
+          factory.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
+              var checkInterval = 1;
+              if(timeout > 0 ){
+                  timeout = timeout - checkInterval;
+                  httpClient.get(api, params).then(
+                      function(data, response) {
+                          console.dir(data);
+                          if(data.jobStatus == "complete"){
+                              var jobResult = JSON.parse(data.jobResult);
+                              if(jobResult.resultJSON.response.metadata.status == "success"){
+                                  onSuccess(jobResult.resultJSON.response.result);
+                                  return;
+                              }else{
+                                  onFailure("An error occurred, please try again later.");
+                              }
+
+                          }
+                          var nextFireTime = checkInterval * 1000;
+                          setTimeout(factory.getJobStatus, nextFireTime, api,params, timeout, onSuccess, onFailure);
+                      },function(ex){
+                          onFailure(ex);
+                      });
+              }else{
+                  onFailure("TIME_OUT");
+              }
+          }
+          return factory;
+          
+      });

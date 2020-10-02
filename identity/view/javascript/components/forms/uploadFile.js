@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay) {
+    controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
         var self = this;
         self.showLoading = false;
         this.$onInit = function(){
@@ -67,7 +67,7 @@ angular
                             self.showLoading = false;
                             self.showAlert("danger", data.errorDetail);
                         } else {
-                            self.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (){
+                            identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (){
                                 self.showAlert("success", "The devices have been imported successfully.");
                                 $scope.$broadcast("updateGridData-device", {});
                                 self.showLoading = false;
@@ -90,7 +90,7 @@ angular
             }
         }
 
-        this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
+       /* this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
             var checkInterval = 1;
             if(timeout > 0 ){
                 timeout = timeout - checkInterval;
@@ -115,7 +115,7 @@ angular
             }else{
                 onFailure("TIME_OUT");
             }
-        }
+        }*/
 
         this.showAlert = function(type, content) {
             $loadingOverlay.hide();
