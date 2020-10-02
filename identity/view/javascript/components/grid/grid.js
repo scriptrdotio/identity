@@ -439,14 +439,38 @@ angular
 
                 modalInstance.result.then(function (wdgModel) {
                     if(wdgModel != 'cancel') {
-                        console.log('Model Data', wdgModel);
                         var successHandler = function(data) {
-                            self._createNewDatasource();
-                            self.showAlert("success", "Successfully saved "+self.gridEventsId);
+                            if(self.gridEventsId == "group"){
+                                if(data.scriptHandleId != null && data.scriptHandleId != ""){
+                                    $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Saving group and updating devices...</b>');
+                                    identityFactory.getJobStatus(backendApi, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                        if (res && res == "success") {
+                                            self._createNewDatasource();
+                                            self.showAlert("success", "Successfully saved group and updated devices");
+                                        } else {
+                                            //This is in case some devices failed to update, they are returned for the user to be informed
+                                            self.showAlert("warning", res);
+                                        }
+                                    },function(err){
+                                        self.showAlert("warning", "Successfully saved group. Error when updating devices");
+                                    })
+                                }else{
+                                    self._createNewDatasource();
+                                    self.showAlert("success", "Successfully saved group");
+                                }
+                            }else{
+                                self._createNewDatasource();
+                                self.showAlert("success", "Successfully saved "+self.gridEventsId); 
+                            }
                         }
                         var failureHandler = function(err) {
-                            self.showAlert("danger", "Could not save "+self.gridEventsId+", please try again later");
-                            console.log('Error when saving '+self.gridEventsId, err);
+                            var errDesc = 'Unknown error';
+                            if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                                errDesc = err.data.metadata.description.en;
+                            } else if (err.errorDetail) {
+                                errDesc = err.errorDetail;
+                            }
+                            self.showAlert("danger", "Could not save "+self.gridEventsId+": "+errDesc);
                         }
                         self.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler);
                     }
@@ -615,15 +639,17 @@ angular
             this.loadImportOverlay = function(){
                 var of = angular.copy(this.infoWindowActions.uploaderForm);
                 var form = angular.copy(of.form);
+                var self = this;
                 var formWidget = {
                     'label': of.title,
                     'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
                     'schema': angular.copy(of.schema),
                     'form': form,
-                    'model': {}
+                    'model': {},
+                    'parent': self
                 }
 
-                var self = this;
+                
                 var modalInstance= $uibModal.open({
                     animation: true,
                     component: 'uploadFileComponent',
@@ -638,7 +664,6 @@ angular
                 });
 
                 modalInstance.result.then(function (wdgModel) {
-                    console.log('Model Data', wdgModel);
                     if(wdgModel != 'cancel') {
                         
                     }
