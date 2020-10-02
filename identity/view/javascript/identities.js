@@ -1,4 +1,4 @@
-myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay) {
+myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpClient, infoWindowActions, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay, identityFactory) {
     var vm = this;
     vm.deviceTitle = "Identity Manager"; 
     vm.renderGrid = true;
@@ -157,7 +157,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
             editable : false,
             tooltipField: 'auth_token',
             cellRenderer: function(params) {
-                var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
+                var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate icon" aria-hidden="true"></i></span>';
                 if(params.value) {
                    var token = "..." + params.value.substr((params.value.length - 8),8);
                    return token + "&nbsp;" + copyHtml;
@@ -283,7 +283,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     } else if (data.errorDetail) {
                         errDesc = data.errorDetail;
                     }
-                    vm.showAlert("danger", "Could not fetch group, please try again later: "+errDesc);
+                    vm.showAlert("danger", "Could not fetch group: "+errDesc);
                     return;
                 }
                 vm.closeAlert();
@@ -315,8 +315,23 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                     if(wdgModel != 'cancel') {
                         console.log('Model Data', wdgModel);
                         var successHandler = function(data) {
-                            $scope.$broadcast("updateGridData-"+vm.gridId, {});
-                            vm.showAlert("success", "Successfully saved group");
+                            if(data.scriptHandleId != null && data.scriptHandleId != ""){
+                                $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Saving group and updating devices...</b>');
+                                identityFactory.getJobStatus(backendApi, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                    if (res && res == "success") {
+                                        $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                                		vm.showAlert("success", "Successfully saved group and updated devices");
+                                    } else {
+                                        //This is in case some devices failed to update, they are returned for the user to be informed
+                                        vm.showAlert("warning", res);
+                                    }
+                                },function(err){
+                                    vm.showAlert("warning", "Successfully saved group. Error when updating devices");
+                                })
+                            }else{
+                                $scope.$broadcast("updateGridData-"+vm.gridId, {});
+                                vm.showAlert("success", "Successfully saved group");
+                            }
                         }
                         var failureHandler = function(err) {
                             var errDesc = 'Unknown error';
@@ -325,7 +340,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                             } else if (err.errorDetail) {
                                 errDesc = err.errorDetail;
                             }
-                            vm.showAlert("danger", "Could not save group, please try again later: "+errDesc);
+                            vm.showAlert("danger", "Could not save group: "+errDesc);
                         }
 
                         wdgModel.update = true;
@@ -625,14 +640,11 @@ myApp.controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceDa
                 } else {
                     vm.groups = ["N/A"];
                 }
-                var devStatus = "";
-                if(data.isSuspended != null){
-                    if(data.isSuspended == "true")
-                   		devStatus = "Suspended";
-                    else if(data.isSuspended == "false")
-                        devStatus = "Active"
+                var devStatus = "Active";
+                if(data.isSuspended != null && data.isSuspended == "true"){
+                    devStatus = "Suspended";
                 }
-                vm.status = devStatus != "" ? devStatus : 'N/A';
+                vm.status = devStatus;
                 vm.token = data.auth_token ? data.auth_token : "N/A";
                 
                 vm.hasAttrs = false;

@@ -225,3 +225,23 @@ function deleteGroups(groupArr){
 
     return responseObj;
 }
+
+function getJobStatus(params, paramsEvaluator, errorHandler){
+    var requiredParams = ["scriptHandleId"];
+    paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+    var hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
+    if(!hasAllRequiredParams.success) {
+        return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
+    }
+    var getJobStatusParams = {
+        "apsdb.handle": params.scriptHandleId
+    };
+    var result = apsdb.callApi("GetJobStatus", getJobStatusParams, null);
+    log.info("the result is"+JSON.stringify(result));
+    if (result.status == "failure") {
+        var errorMsg = "An error occurred while fetching job status [" + JSON.stringify(result) + "]";
+        return { "status": "failure", "errorDetail": errorMsg };
+    } else {
+        return result.result;
+    }
+}

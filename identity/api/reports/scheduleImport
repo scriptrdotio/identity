@@ -6,28 +6,12 @@ var log = require("log")
 log.setLevel("INFO");
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
-log.info("params: " + JSON.stringify(params));
+log.info("Request params: " + JSON.stringify(params));
 var importCsvScriptPath = config.importCsvScriptPath;
-log.info("method: " + request.method);
 switch (request.method) {
   case "GET":
-        var requiredParams = ["scriptHandleId"];
-        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
-        if(!hasAllRequiredParams.success) {
-          return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
-        }
-        var getJobStatusParams = {
-            "apsdb.handle": params.scriptHandleId
-        };
-        var result = apsdb.callApi("GetJobStatus", getJobStatusParams, null);
-        log.info("the result is"+JSON.stringify(result));
-        if (result.status == "failure") {
-            var errorMsg = "[scheduleImport] An error occurred while fetching job status [" + JSON.stringify(result) + "]";
-            return { "status": "failure", "errorDetail": errorMsg };
-        } else {
-            return result.result;
-        }
+        var identityManager = require("identity/entities/identityManager");
+        return identityManager.getJobStatus(params, paramsEvaluator, errorHandler);
         break;
   case "POST":
         if(request.files != null && request.files.file != null) {

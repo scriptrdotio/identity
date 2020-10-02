@@ -79,7 +79,6 @@ angular
         this.form = {}
         this.model = angular.copy(this.widget.options);
         this.dismiss({$value: 'cancel'});
-        console.log("Dissmissed")
       };
 
     }

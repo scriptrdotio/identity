@@ -16,9 +16,11 @@ angular
             $scope.$broadcast('schemaFormRedraw')
             this.frmGlobalOptions = {
                 "destroyStrategy" : "remove",
-                "formDefaults": {"feedback": true}
+                "formDefaults": {"feedback": false}
             }
             if(this.widget) {
+                this.parent = this.widget.parent;
+                
                 if(this.widget.schema) {
                     this.schema =  angular.copy(this.widget.schema)
                 } 
@@ -40,7 +42,6 @@ angular
             this.form = {};
             this.model = angular.copy(this.widget.options);
             this.dismiss({$value: 'cancel'});
-            console.log("Dissmissed")
         }
 
         this.save = function(form){
@@ -69,7 +70,7 @@ angular
                         } else {
                             identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (){
                                 self.showAlert("success", "The devices have been imported successfully.");
-                                $scope.$broadcast("updateGridData-device", {});
+                                self.parent._createNewDatasource();
                                 self.showLoading = false;
                                 d.resolve(data, response);  
                             },function(errorCode, errorDetail){
@@ -89,33 +90,6 @@ angular
                 return d.promise;  
             }
         }
-
-       /* this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
-            var checkInterval = 1;
-            if(timeout > 0 ){
-                timeout = timeout - checkInterval;
-                httpClient.get(api, params, null,true).then(
-                    function(data) {
-
-                        if(data.jobStatus == "complete"){
-                            var jobResult = JSON.parse(data.jobResult);
-                            if(jobResult.resultJSON.response.result == "success"){
-                                onSuccess(jobResult.resultJSON.response.result);
-                                return;
-                            }else{
-                                onFailure("An error occurred, please try again later.");
-                                return;
-                            }
-                        }
-                        var nextFireTime = checkInterval * 1000;
-                        setTimeout(self.getJobStatus, nextFireTime,api,params,timeout,onSuccess, onFailure);
-                    },function(ex){
-                        onFailure(ex);
-                    });
-            }else{
-                onFailure("TIME_OUT");
-            }
-        }*/
 
         this.showAlert = function(type, content) {
             $loadingOverlay.hide();

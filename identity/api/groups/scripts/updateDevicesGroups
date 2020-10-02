@@ -1,0 +1,75 @@
+var log = require("log");
+log.setLevel("INFO");
+var utils = require("identity/entities/identityManager");
+var deviceModule = require("device");
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+
+var devices = JSON.parse(params.devices);
+var originalDevices = JSON.parse(params.originalDevices);
+var groupName = params.groupName;
+
+var response = "";
+var failedDevicesArr = [];
+var devicesArr = [];
+if(devices instanceof Array){
+    devicesArr = devices;
+}else{
+    devicesArr = [devices];
+}
+
+try{
+    //if adding new group, originalDevices is not passed
+    if(originalDevices != null && originalDevices != ""){
+        var oldDevicesArr = [];
+        if(originalDevices instanceof Array){
+            oldDevicesArr = originalDevices;
+        }else{
+            oldDevicesArr = [originalDevices];
+        }
+        //loop on old devices
+        oldDevicesArr.forEach(function(oldDeviceId) {
+            //if old device is not found in new devices array, delete group from that device
+            var indexOfOldInNewDevices = devicesArr.indexOf(oldDeviceId);
+            if(indexOfOldInNewDevices < 0){
+                var saveDeviceParams = {
+                    "id": oldDeviceId,
+                    "groups": {"delete": groupName}
+                }
+                var deviceResponse = deviceModule.save(saveDeviceParams);
+                if(deviceResponse && deviceResponse.metadata.status == "failure") {
+                    failedDevicesArr.push(oldDeviceId);
+                } else {
+                    log.info("Successfully deleted group from device ["+ oldDeviceId +"]");
+                }  
+            } else {
+                //if found, delete it from new devices array to avoid the append process below
+                devicesArr.splice(indexOfOldInNewDevices, 1);
+            }
+        })
+    }
+
+    devicesArr.forEach(function(deviceId) {
+        var saveDeviceParams = {
+            "id": deviceId,
+            "groups": {"append": groupName}
+        }
+        var deviceResponse = deviceModule.save(saveDeviceParams);
+        if(deviceResponse && deviceResponse.metadata.status == "failure") {
+            failedDevicesArr.push(deviceId);
+        } else {
+            log.info("Successfully appended group to device ["+ deviceId +"]");
+        }
+    })
+
+    //if any device failed to update group, return them to inform user
+	if(failedDevicesArr.length > 0)
+        response = "Failed to update the following devices: [" + failedDevicesArr + "]";
+    else
+        response = "success";
+} catch(e){
+    response = "Error when updating devices: " + e ;
+}
+
+return response;
+

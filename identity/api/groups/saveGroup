@@ -3,115 +3,76 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var groups = require("group");
 var errorHandler = new errorHandler.ErrorHandler();
-
+var config = require ("identity/config/config");
 var log = require("log")
 log.setLevel("INFO");
-
-var requiredParams = ["name"];
-var optionalParams = ["update", "newName", "devices", "originalDevices", "updateDevices"];
-
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
-//Check if required params
-var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(requestParams, requiredParams)
-if(!hasAllRequiredParams.success) {
-  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
-}
-
-var params = paramsEvaluator.buildParams(requestParams, requiredParams, optionalParams);
-var updateDevices = true;
-if(params["updateDevices"] != null && params["updateDevices"] != ""){
-    updateDevices = params["updateDevices"];
-}
-
-var groupName = params["name"];
-var groupResponse = null;
-if(!params["update"])
-    groupResponse = groups.create(groupName);
-else {
-    if(params["newName"] != null && params["newName"] != ""){
-        groupResponse = groups.rename(groupName, params["newName"]);
-    	groupName = params["newName"];
-    }
-}
-
-if(groupResponse != null && groupResponse.metadata.status == "failure") {
-    updateDevices = false;
-   	var response = groupResponse.metadata;
-} else {
-   	var response =  {"status": "success"};
-}
-
-if(updateDevices){ // TODO: Updating devices needs to be a long running job. Don't make it transactional, just report failed devices if any.
-    var devices = params["devices"];
-    if(devices != null && devices != ""){
-        var ts = apsdb.beginTransaction();
-        try{
-            var deviceModule = require("device");
-            
-            var devicesArr = [];
-            if(devices instanceof Array){
-                devicesArr = devices;
-            }else{
-                devicesArr = [devices];
-            }
-
-            var originalDevices = params["originalDevices"];
-            //if adding new group, originalDevices is not passed
-            if(originalDevices != null && originalDevices != ""){
-                var oldDevicesArr = [];
-                if(originalDevices instanceof Array){
-                    oldDevicesArr = originalDevices;
-                }else{
-                    oldDevicesArr = [originalDevices];
-                }
-                //loop on old devices
-                oldDevicesArr.forEach(function(oldDeviceId) {
-                    //if old device is not found in new devices array, delete group from that device
-                    var indexOfOldInNewDevices = devicesArr.indexOf(oldDeviceId);
-                    if(indexOfOldInNewDevices < 0){
-                        var saveDeviceParams = {
-                            "id": oldDeviceId,
-                            "groups": {"delete": groupName}
-                        }
-                        var deviceResponse = deviceModule.save(saveDeviceParams);
-                        if(deviceResponse && deviceResponse.metadata.status == "failure") {
-                            throw {
-                                errorCode: deviceResponse.metadata.errorCode,
-                                errorDetail: deviceResponse.metadata.errorDetail
-                            };
-                        } else {
-                            log.info("Successfully deleted group from device ["+ oldDeviceId +"]");
-                        }  
-                    } else {
-						//if found, delete it from new devices array to avoid the append process below
-                        devicesArr.splice(indexOfOldInNewDevices, 1);
-                    }
-                })
-            }
-
-            devicesArr.forEach(function(deviceId) {
-                var saveDeviceParams = {
-                    "id": deviceId,
-                    "groups": {"append": groupName}
-                }
-                var deviceResponse = deviceModule.save(saveDeviceParams);
-                if(deviceResponse && deviceResponse.metadata.status == "failure") {
-                   throw {
-                        errorCode: deviceResponse.metadata.errorCode,
-                        errorDetail: deviceResponse.metadata.errorDetail
-                    };
-                } else {
-                    log.info("Successfully appended group to device ["+ deviceId +"]");
-                }
-            })
-            ts.commit();
-        } catch(e){
-            ts.rollback();
-            log.error("Failure when updating devices' groups\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+log.info("Request params: " + JSON.stringify(requestParams));
+switch (request.method) {
+    case "GET":
+        var identityManager = require("identity/entities/identityManager");
+        return identityManager.getJobStatus(requestParams, paramsEvaluator, errorHandler);
+        break;
+    case "POST":
+        var requiredParams = ["name"];
+        var optionalParams = ["update", "newName", "devices", "originalDevices", "updateDevices"];
+        //Check if required params
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(requestParams, requiredParams)
+        if(!hasAllRequiredParams.success) {
+            return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
         }
-    }
-}
 
-return response;
+        var params = paramsEvaluator.buildParams(requestParams, requiredParams, optionalParams);
+        var updateDevices = true;
+        if(params["updateDevices"] != null && params["updateDevices"] != ""){
+            updateDevices = params["updateDevices"];
+        }
+
+        var groupName = params["name"];
+        var groupResponse = null;
+        if(!params["update"])
+            groupResponse = groups.create(groupName);
+        else {
+            if(params["newName"] != null && params["newName"] != ""){
+                groupResponse = groups.rename(groupName, params["newName"]);
+                groupName = params["newName"];
+            }
+        }
+
+        var response = {};
+        if(groupResponse != null && groupResponse.metadata.status == "failure") {
+            updateDevices = false;
+            response = groupResponse.metadata;
+        } else {
+            response =  {"status": "success"};
+        }
+
+        if(updateDevices){
+            //Updating devices using a long running job. It reports failed devices if any.
+            var originalDevices = params["originalDevices"];
+            var devices = params["devices"];
+            if(devices != null && devices != ""){
+                var data = {
+                    "apsdb.scriptName": config.updateDevicesGroups,
+                    "originalDevices": JSON.stringify(originalDevices),
+                    "devices": JSON.stringify(devices),
+                    "groupName": groupName
+                };
+                var result = apsdb.callApi("QueueScript", data, null);
+
+                if (result.status == "failure") {
+                    var errorMsg = "[saveGroup] An error occurred while queueing job [" + JSON.stringify(result) + "]";
+                    response = {"status": "failure", "errorDetail": errorMsg};
+                } else {
+                    response = {"status":"success", "scriptHandleId": result.result.script.scriptHandle};
+                }
+            }
+        }
+
+        return response;
+        break;
+    default:
+        return errorHandler.buildError("invalid_method", "Invalid HTTP method"); 
+}
