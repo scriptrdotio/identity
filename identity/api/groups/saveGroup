@@ -26,7 +26,7 @@ switch (request.method) {
 
         var params = paramsEvaluator.buildParams(requestParams, requiredParams, optionalParams);
         var updateDevices = true;
-        if(params["updateDevices"] != null && params["updateDevices"] != ""){
+        if(params["updateDevices"] != null && params["updateDevices"] !== undefined){
             updateDevices = params["updateDevices"];
         }
 

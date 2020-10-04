@@ -606,36 +606,6 @@ angular
                 );
             }
             
-            
-            
-            
-            /*this.getJobStatus = function(api, params, timeout, onSuccess, onFailure){
-                var checkInterval = 1;
-                if(timeout > 0 ){
-                    timeout = timeout - checkInterval;
-                     httpClient.get(api, params).then(
-                        function(data, response) {
-                            console.dir(data);
-                            if(data.jobStatus == "complete"){
-                                var jobResult = JSON.parse(data.jobResult);
-                                if(jobResult.resultJSON.response.metadata.status == "success"){
-                                    onSuccess(jobResult.resultJSON.response.result);
-                                    return;
-                                }else{
-                                      onFailure("An error occurred, please try again later.");
-                                }
-
-                            }
-                            var nextFireTime = checkInterval * 1000;
-                            setTimeout(self.getJobStatus, nextFireTime, api,params, timeout, onSuccess, onFailure);
-                    },function(ex){
-                         onFailure(ex);
-                    });
-                }else{
-                    onFailure("TIME_OUT");
-                }
-            }*/
-            
             this.loadImportOverlay = function(){
                 var of = angular.copy(this.infoWindowActions.uploaderForm);
                 var form = angular.copy(of.form);

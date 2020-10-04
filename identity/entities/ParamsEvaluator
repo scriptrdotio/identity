@@ -39,11 +39,11 @@ function ParamsEvaluator() {
 	this.buildParams = function(requestParams, requiredParams, optionalParams) {
 		var params = {};
 		_.each(requiredParams, function(param) {
-			if (requestParams[param])
+			if (requestParams[param] != null)
 				params[param] = requestParams[param];
 		});
 		_.each(optionalParams, function(param) {
-			if (requestParams[param])
+			if (requestParams[param] != null)
 				params[param] = requestParams[param];
 		});
 		return params;
