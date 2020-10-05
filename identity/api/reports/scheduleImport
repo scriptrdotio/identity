@@ -10,6 +10,7 @@ log.info("Request params: " + JSON.stringify(params));
 var importCsvScriptPath = config.importCsvScriptPath;
 switch (request.method) {
   case "GET":
+        // if the request method is GET, it means we are checking on jobHandleId
         var identityManager = require("identity/entities/identityManager");
         return identityManager.getJobStatus(params, paramsEvaluator, errorHandler);
         break;

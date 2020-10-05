@@ -7,7 +7,7 @@ var _ = require('modules/underscore/underscore.js')._;
 var log = require("log")
 log.setLevel("INFO");
 
-// gte the devices IDs of a certain group to show them in the selector when editing a group
+// get the devices IDs of a certain group to show them in the selector when editing a group
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;

@@ -11,6 +11,7 @@ var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info("Request params: " + JSON.stringify(requestParams));
 switch (request.method) {
     case "GET":
+        // if the request method is GET, it means we are checking on jobHandleId
         var identityManager = require("identity/entities/identityManager");
         return identityManager.getJobStatus(requestParams, paramsEvaluator, errorHandler);
         break;
