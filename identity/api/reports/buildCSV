@@ -21,7 +21,7 @@ function ConvertToCSV(params) {
         if(array!= null && array.length >0){
             for (var i = 0; i < array.length; i++) {
                 var line = '';
-                line += ((array[i].groups != undefined && array[i].groups!= null) ? array[i].groups : "N/A") + ","; 
+                line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "N/A") + ","; 
                 line += ((array[i].count != undefined && array[i].count!=null) ? array[i].count : "N/A") + ","; 
 
                 str += line + '\r\n';            

@@ -53,7 +53,6 @@ function getGroups(params){
     var results = [];
     var groups = groups.list();
     var result = groups.result.groups;
-    log.info("Request normalized params: " + JSON.stringify(params));
 
     var count = true;
     if(params["count"] !== undefined && params["count"] !== null) {
@@ -73,13 +72,12 @@ function getGroups(params){
                     continue;
                 }
                 var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
-                response.result["groups"] = name;
+                response.result["name"] = name;
                 users.push(response.result);
             }
             if(response.metadata.status == "failure") {
                 return response.metadata;
-            }
-            else{
+            } else{
                 var originalCount = users.length;
                 if(users!=null && users.length>0 && params.pageNumber != null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
                     var startRow = parseInt(params.startRow);
