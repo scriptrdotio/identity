@@ -352,7 +352,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
                             wdgModel.newName = wdgModel.name;
                             wdgModel.name = wdgModel.originalName;
                         }
-                        //This is not optimal, maybe sort and compare
+
                         var originalDevices = wdgModel.originalDevices.sort();
                         var devices = wdgModel.devices.sort();
                         // compare the sorted arrays of originalDevices and devices 
