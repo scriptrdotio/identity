@@ -2,6 +2,7 @@ var config = {
   "userManagementGroups": ["administrators"]
 }
 
+const templateKey = 'devicesTemplate';
 const queryDocsPerPage = 50;
 const buildCsvScriptPath = 'identity/api/reports/buildCSV';
 const importCsvScriptPath = 'identity/api/reports/importCSV';

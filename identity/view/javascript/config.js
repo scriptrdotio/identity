@@ -33,7 +33,8 @@ var identityConfig = {
         apis: {
             "export": "identity/api/reports/scheduleExport",
             "import": "identity/api/reports/scheduleImport",
-            "getCSV": "identity/api/reports/getCSVFile"
+            "getCSV": "identity/api/reports/getCSVFile",
+            "template": "identity/api/reports/getCSVTemplate"
         }
     },
     templates: {

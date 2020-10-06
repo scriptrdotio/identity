@@ -96,6 +96,27 @@ angular
                 return d.promise;  
             }
         }
+        
+        this.downloadTemplate = function(){
+            httpClient.post(identityConfig.reports.apis.template).then(
+                function(data, response) {
+                    if(data.status == "failure") {
+                        self.showAlert("danger", "Unable to download template, please try again");
+                    } else {
+                        self.showAlert("success", "Template downloaded successfully");
+                        var element = document.createElement('a');
+                        element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
+                        element.setAttribute('download', 'devicesTemplate.csv');
+                        element.style.display = 'none';
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
+                    } 
+                }, function(err) {
+                    self.showAlert("danger", "Unable to download template, please try again");
+                }
+            );
+        }
 
         this.showAlert = function(type, content) {
             $loadingOverlay.hide();

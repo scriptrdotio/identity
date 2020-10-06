@@ -12,6 +12,7 @@
             </div> 
             <div class="col-xs-12 col-sm-3">
                 <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block"  type="submit">Import</button>
+                <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block" ng-click="$ctrl.downloadTemplate()">Download Template</button>
                 <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block" type="reset" ng-click="$ctrl.onCancel()">Close</button>
             </div>
         </div>

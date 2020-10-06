@@ -1,0 +1,22 @@
+//This API is used to retrieve the CSV template for direct browser download
+var errorHandler = require("identity/entities/ErrorHandler");
+var config = require ("identity/config/config");
+var errorHandler = new errorHandler.ErrorHandler();
+var log = require("log")
+log.setLevel("INFO");
+
+var defaultStore = require('document').getInstance('DefaultStore');
+var attachmentResult = defaultStore.getAttachment(config.templateKey, "devicesTemplate.csv", {"versionNumber": "1"});
+var content = attachmentResult.content;
+if(content != null && content != ""){
+    response.setHeader("content-disposition", "attachment;filename=devicesTemplate.csv");
+    response.setHeader("content-type","text/csv");
+    response.addHeaders(configuration.crossDomainHeaders);
+    response.setStatus(200);
+    response.write(content);
+    response.flush();
+    response.close();
+    return; 
+}else{
+    return errorHandler.buildError("server_error", "Error while getting attachment");
+}
