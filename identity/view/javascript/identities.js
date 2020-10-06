@@ -127,7 +127,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
              headerName: '',
              checkboxSelection: true,
              width: 50,
-                headerCheckboxSelection: true
+             suppressSorting : true
         },
         {	
             headerName: "Device Name", 
@@ -196,6 +196,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         {
             headerName: ' ',
             field: 'value',
+            suppressSorting : true,
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
@@ -212,6 +213,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         {
             headerName: ' ',
             field: 'value',
+            suppressSorting : true,
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
@@ -228,6 +230,7 @@ myApp.controller('identityHomeCtrl', function($location,$scope,$rootScope,httpCl
         {
             headerName: ' ',
             field: 'value',
+            suppressSorting : true,
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
