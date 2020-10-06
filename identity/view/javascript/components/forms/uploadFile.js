@@ -79,10 +79,10 @@ angular
                                     self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import devices");
                                     d.reject(res.errorCode, res.errorDetail);
                                 }
-                            },function(errorCode, errorDetail){
+                            },function(errorDetail){
                                 self.showAlert("danger", errorDetail? errorDetail : "Failed to import devices");
                                 self.showLoading = false;
-                                d.reject(errorCode, errorDetail);  
+                                d.reject(errorDetail);  
                             })
 
                         }
