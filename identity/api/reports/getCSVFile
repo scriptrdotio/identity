@@ -1,3 +1,4 @@
+//This API is used to prepare the CSV file (that was previously built and saved in a document) for direct browser download
 var paramsEvaluator = require("identity/entities/ParamsEvaluator");
 var errorHandler = require("identity/entities/ErrorHandler");
 var config = require ("identity/config/config");

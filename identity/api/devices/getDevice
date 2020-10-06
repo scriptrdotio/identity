@@ -1,8 +1,6 @@
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
-
-
 var errorHandler = new errorHandler.ErrorHandler();
 
 var log = require("log")
@@ -18,7 +16,6 @@ if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-
 var response = devices.get(params["id"], {"includeFieldType" : true})
 
 if(response.metadata.status == "failure") {
@@ -26,10 +23,4 @@ if(response.metadata.status == "failure") {
 } else {
   return response.result;
 }
-
-
-
-
-
-
 

@@ -1,27 +1,23 @@
 var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-
+var errorHandler = new errorHandler.ErrorHandler();
 var devices= require("device");
-//return devices.revokeToken("mobile"); 
 var log = require("log")
 log.setLevel("INFO");
-
-var errorHandler = new errorHandler.ErrorHandler();
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
 var requiredParams = ["id"];
-
-
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(request.body, requiredParams)
+hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-log.info(JSON.stringify(request.body))
-
-var response = devices.revokeToken(request.body.id);
+log.info(JSON.stringify(params))
+var response = devices.revokeToken(params.id);
 
 if(response.metadata.status == "failure") {
    return response.metadata;

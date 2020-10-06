@@ -78,6 +78,6 @@ log.info("devicesArr: " + JSON.stringify(devicesArr));
 
 var importResult = utils.importDevices(devicesArr);
 log.info("importResult: " + JSON.stringify(importResult));
-return importResult.status;
+return importResult;
 
 

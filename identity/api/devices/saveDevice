@@ -25,6 +25,7 @@ if(params["update"] !== undefined && params["update"] !== null )
 log.info(JSON.stringify(params));
 
 var deviceAttrs = params.deviceAttrs;
+//if a user added empty device attributes rows and saved. We would have empty objects in an empty array. The following validation is to avoid looping multiple times on empty objects 
 if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
     return Object.keys(el).length !== 0;
 }).length === 0)){

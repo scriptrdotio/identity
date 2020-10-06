@@ -68,13 +68,19 @@ angular
                             self.showLoading = false;
                             self.showAlert("danger", data.errorDetail);
                         } else {
-                            identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (){
-                                self.showAlert("success", "The devices have been imported successfully.");
-                                self.parent._createNewDatasource();
+                            identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (res){
                                 self.showLoading = false;
-                                d.resolve(data, response);  
+                                if (res.status && res.status == "success") {
+                                    self.showAlert("success", "The devices have been imported successfully");
+                                    self.parent._createNewDatasource();
+                                    d.resolve(data, response);
+                                } else {
+                                    //This is in case some devices failed to be created
+                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import devices");
+                                    d.reject(res.errorCode, res.errorDetail);
+                                }
                             },function(errorCode, errorDetail){
-                                self.showAlert("danger", errorDetail? errorDetail : errorCode);
+                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import devices");
                                 self.showLoading = false;
                                 d.reject(errorCode, errorDetail);  
                             })
