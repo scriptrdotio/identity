@@ -1,5 +1,39 @@
 # Identity Management Component
 This component allows users to manage their devices and groups associated with a scriptr account. Users can create, edit, delete devices and groups in one place while maintaining a user friendly interface.
+
+### Integration Guide
+Below are the main guidelines to follow in order to integrate this component into an application.
+- Install Identity module:
+	- Owner:scriptrdotio
+	- Repository:identity
+	- Path:/identity
+	- Branch:master
+
+- Include the following scripts in the application's index.html:
+	- With the CSS:
+	```html
+	    <link rel="stylesheet" href="/identity/view/css/style.css">
+	```
+	- At the bottom before including layout and module scripts of the app (in that order):
+	```html
+	    <script src="/identity/view/javascript/components/main/config.js"></script>
+	    <script src="/identity/view/javascript/components/grid/grid.js"></script>
+	    <script src="/identity/view/javascript/components/main/main.js"></script>
+	    <script src="/identity/view/javascript/components/forms/overlayForm.js"></script>
+	    <script src="/identity/view/javascript/components/forms/uploadFile.js"></script>
+	    <script src="/identity/view/javascript/components/main/formDefinitions.js"></script>
+	    <script src="/identity/view/javascript/components/loadingOverlay/loadingOverlay.min.js"></script>
+	```
+- In modules.js make sure to add any missing dependencies:
+"schemaForm", "Grid", "WsClient", "HttpClient", "ngSchemaFormFile", "List","ngLoadingOverlay","Identity"
+
+- In layout.js, 
+	- place the component in the menuItems section:
+`{"id":"3","iconClass":"fa fa-dashboard","label":"Identity Management","route":"#/identitymanagement", "active":"false"}`
+
+	- and place the following in the routingItems section:
+`{"route": "identitymanagement", "template": "/identity/view/html/views/identityMain.html"}`
+
 ### Common Configuration
 There are a couple of config files that hold common static values that are used throughout the project.
 - identity/config/config (contains variables used by the backend)
