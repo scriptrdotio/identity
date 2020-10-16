@@ -2,14 +2,22 @@ var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 var groups = require("group");
-
-//this api is used to get the group and the devices found in this group to open them in view group
-
 var errorHandler = new errorHandler.ErrorHandler();
-
 var log = require("log")
 log.setLevel("INFO");
+var config = require ("identity/config/config");
+var aclEvaluator = require("../../entities/AclEvaluator");
+//Check permissions
+var identityManagementGroups = config.identityManagementGroups;
+//Check if user has rights to access this api
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+//user needs to be in the identityManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
+if(!hasPermission) {
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+}
 
+//this api is used to get the group and the devices found in this group to open them in view group
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 

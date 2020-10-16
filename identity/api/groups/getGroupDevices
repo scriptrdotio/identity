@@ -6,9 +6,19 @@ var errorHandler = new errorHandler.ErrorHandler();
 var _ = require('modules/underscore/underscore.js')._;
 var log = require("log")
 log.setLevel("INFO");
+var config = require ("identity/config/config");
+var aclEvaluator = require("../../entities/AclEvaluator");
+//Check permissions
+var identityManagementGroups = config.identityManagementGroups;
+//Check if user has rights to access this api
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+//user needs to be in the identityManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
+if(!hasPermission) {
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+}
 
 // get the devices IDs of a certain group to show them in the selector when editing a group
-
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 

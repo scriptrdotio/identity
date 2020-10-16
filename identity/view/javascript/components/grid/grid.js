@@ -1,5 +1,4 @@
 agGrid.initialiseAgGridWithAngular1(angular);
-angular.module('Identity', ['agGrid', 'ui.bootstrap', 'ngRoute']);
 
 angular
     .module("Identity")
@@ -112,12 +111,12 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, infoWindowActions, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
+        controller : function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
 
             var self = this;
 
             self.broadcastData = null;
-			this.infoWindowActions = infoWindowActions;
+			this.identityForms = identityForms;
             this.dataSource = {
                 getRows : function(params) {
                     if(self.broadcastData != null){
@@ -607,7 +606,7 @@ angular
             }
             
             this.loadImportOverlay = function(){
-                var of = angular.copy(this.infoWindowActions.uploaderForm);
+                var of = angular.copy(this.identityForms.uploaderForm);
                 var form = angular.copy(of.form);
                 var self = this;
                 var formWidget = {
@@ -804,7 +803,7 @@ angular
     });
 
 angular
-    .module('Grid')
+    .module('Identity')
     .service("dataStore", function(httpClient, wsClient, $q) {
     this.subscribe = function(callback, tag, $scope){
         wsClient.onReady.then(function() {
@@ -954,7 +953,9 @@ angular
     }
 });
 
-myApp.factory(
+angular
+    .module("Identity")
+    .factory(
       "identityFactory",
       function(httpClient) {
            var factory = {};

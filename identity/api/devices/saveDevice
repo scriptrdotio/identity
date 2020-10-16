@@ -1,12 +1,24 @@
+var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 var devices= require("device");
 var log = require("log")
 log.setLevel("INFO");
+var config = require ("identity/config/config");
+var aclEvaluator = require("../../entities/AclEvaluator");
+//Check permissions
+var identityManagementGroups = config.identityManagementGroups;
+//Check if user has rights to access this api
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+//user needs to be in the identityManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
+if(!hasPermission) {
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+}
 
 var requiredParams = ["id", "name"];
-var optionalParams = ["update", "description", "groups", "password", "isSuspended", "deviceAttrs"];
+var optionalParams = ["update", "description", "groups", "password", "isSuspended", "deviceAttrs", "_oldDeviceAttrs"];
 
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
@@ -15,15 +27,15 @@ if(!hasAllRequiredParams.success) {
     return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
 
-log.info(JSON.stringify(request.body))
 var params = paramsEvaluator.buildParams(request.body, requiredParams, optionalParams);
 
 var update = false;
 if(params["update"] !== undefined && params["update"] !== null )
     update = params["update"];
+//remove update from params so it does not get saved as a device attribute
+delete params['update'];
 
-log.info(JSON.stringify(params));
-
+var oldDeviceAttrs = params._oldDeviceAttrs;
 var deviceAttrs = params.deviceAttrs;
 //if a user added empty device attributes rows and saved. We would have empty objects in an empty array. The following validation is to avoid looping multiple times on empty objects 
 if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
@@ -47,13 +59,22 @@ if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
     }
 }
 delete params['deviceAttrs'];
+delete params['_oldDeviceAttrs'];
 delete confirmPassword;
 log.info("Request normalized params: " + JSON.stringify(params));
 
 var response;
-if(update)
+if(update){
+    //check if any attribute was removed
+    var newDeviceAttrs = _.pluck(deviceAttrs, "name");
+    var removedAttrs = _.difference(oldDeviceAttrs, newDeviceAttrs);
+    if(removedAttrs && removedAttrs.length > 0){
+        removedAttrs.forEach(function(removedAttr) {
+            params[removedAttr] = "";
+        })
+    }
     response = devices.save(params);
-else
+}else
     response = devices.create(params);
 if(response.metadata.status == "failure") {
     return response.metadata;

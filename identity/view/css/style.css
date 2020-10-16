@@ -238,7 +238,7 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 .textWrap {
     overflow: hidden!important;
 }
-.dashboardTheme .form-control {
+.form-control {
     min-height: 30px;
     height: auto;
 }
@@ -248,4 +248,62 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
     padding-left: 10px;
     padding-right: 10px;
     text-transform: capitalize;
+}
+
+
+
+.identityTheme > .ui-select-search {
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+ .identityTheme > .ui-select-bootstrap.open {
+  z-index: 10050;
+}
+ .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
+  width: auto!important;
+}
+ .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+  line-height: 1;
+}
+ .ui-select-choices-group-label {
+  font-size: 14px;
+  color: #005588;
+  font-weight: bold;
+}
+ .ui-select-choices-row div {
+  color: #000;
+  text-indent: 10px;
+  font-size: 13px;
+}
+.ui-select-choices-row:hover {
+  background: #f69d51;
+}
+.ui-select-bootstrap .ui-select-match-text span {
+  line-height: 1.1em;
+}
+.ui-select-bootstrap .ui-select-choices-row span {
+  padding: 3px;
+}
+.ui-select-bootstrap .ui-select-choices-row span:focus,
+.ui-select-bootstrap .ui-select-choices-row span:hover {
+  background: #f5f5f5;
+}
+
+.ui-select-bootstrap .ui-select-choices-row.active span {
+  background-color: #f48220;
+}
+.ui-select-multiple.ui-select-bootstrap .ui-select-match-item {
+  background: #f48220;
+  color: #FFF;
+  border-color: #FFF;
+}
+.ui-select-multiple.ui-select-bootstrap .ui-select-match-item:hover,
+.ui-select-multiple.ui-select-bootstrap .ui-select-match-item:focus,
+.ui-select-multiple.ui-select-bootstrap .ui-select-match-item:active {
+  border-color: #FFF !important;
+}
+.ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+  opacity: 1;
+  color: #FFF;
 }

@@ -1,70 +1,18 @@
-angular.module('UserValidation', []).directive('validPasswordC', function () {
-    return {
-        require: 'ngModel',
-        link: function (scope, elm, attrs, ctrl) {
-            ctrl.$parsers.unshift(function (viewValue, $scope) {
-                var noMatch = viewValue != scope.myForm.password.$viewValue
-                ctrl.$setValidity('noMatch', !noMatch)
-                return !noMatch
-            })
-        }
-    }
-})
+var wssConfig = ["wsClientProvider",function (wsClientProvider) {
+    wsClientProvider.setPublishChannel("requestChannel");
+    var subscribeChannels = ["responseChannel"]
+    wsClientProvider.setSubscribeChannel(subscribeChannels);
+}];
 
-var myApp = angular.module('myApp', ["underscore", 
-	"btford.markdown", 
-	"schemaForm", 
-	"Accelerometer", 
-	"IFrame", 
-	"Button", 
-	"Slider", 
-	"ToggleSwitch", 
-	"ACL", 
-	"Grid", 
-	"Alert", 
-	"xeditable", 
-	"ui.bootstrap", 
-	"ngRoute", 
-	"slickCarousel", 
-	"ngAnimate", 
-	"ngSanitize", 
-	"WsClient", 
-	"HttpClient", 
-	"DataService", 
-	"Chart", 
-	"gridster",
-	"Gauge",
-	"Speedometer", 
-	"Odometer",
-	"SearchBox", 
-	"ngMaterial", 
-	"ngMessages", 
-	"material.svgAssetsCache", 
-	"Thermometer", 
-	"angularSpectrumColorpicker",
-	"angular-underscore/filters", 
-	"ui.codemirror",  
-	"Dygraphs", 
-	"mgcrea.ngStrap", 
-	"mgcrea.ngStrap.modal",
-    "pascalprecht.translate",
-    'ui.select', 
-    'ui.highlight',
-    'mgcrea.ngStrap.select',
-	"Display", 
-	"Plotly",
-    "ngSchemaFormFile",
-    "Layout",   
-    "ngTagsInput",  
-    "List",
-    "ngLoadingOverlay",
-    "Identity"]);
+var httpsConfig = ["httpClientProvider",function (httpClientProvider) {
+}]
+
+var myApp = angular.module('myApp', ["underscore", "Layout", "Identity"]);
 
 myApp
     .constant("menuItemsJson",  menuItems)
     .constant("headerItemsJson", headerItems)
     .constant("routingJson", routingItems)
-    .constant("identityConfig", identityConfig)
     .config(httpsConfig)
     .config(wssConfig)
     .config(function($routeProvider, routingJson){
@@ -77,6 +25,6 @@ myApp
                         routeDef : routingJson.params[i].routeDef
                 })
         }
-    	$routeProvider.otherwise("/devicemanagement");
+    	$routeProvider.otherwise("/identitymanagement");
 	})
     

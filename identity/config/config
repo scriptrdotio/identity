@@ -1,6 +1,4 @@
-var config = {
-  "userManagementGroups": ["administrators"]
-}
+const identityManagementGroups = ["identity-managers", "administrators"];
 
 const templateKey = 'devicesTemplate';
 const queryDocsPerPage = 50;
