@@ -3,29 +3,96 @@ This component allows users to manage their devices and groups associated with a
 
 ### Integration Guide
 Below are the main guidelines to follow in order to integrate this component into an application.
-- Install Identity module:
-	- Owner:scriptrdotio
-	- Repository:identity
-	- Path:/identity
-	- Branch:master
+
+##### Install Identity module:
+- Owner:scriptrdotio
+- Repository:identity
+- Path:/identity
+- Branch:master
+
+##### Dependencies
+- Run the following scripts once:
+	- **identity/install/createDefaultManager**: This will create the "identity-managers" group that will have access to all APIs, and then it will create a default admin user that will be placed in that group. If you wish to create a different group that has access to the APIs, that group has to be placed in the "identityManagementGroups" array located in "identity/config/config".
+
+	- **identity/install/createTemplateDocument**: This will create a CSV template that the users can download from the "Import CSV" window.
+
+- Make sure to activate "**QueueScript**" for the scriptr account being used.
 
 - Include the following scripts in the application's index.html:
-	- With the CSS:
+	- CSS:
 	```html
 	    <link rel="stylesheet" href="/identity/view/css/style.css">
 	```
-	- At the bottom before including layout and module scripts of the app (in that order):
+	- Dependencies scripts:
 	```html
+	<!-- JQUERY Material  To use jQuery, simply ensure it is loaded before the angular.js file. -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+
+        <!-- Libraries -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>	
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.27.4/codemirror.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.27.4/addon/display/placeholder.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.27.4/mode/javascript/javascript.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.21/moment-timezone-with-data.min.js"></script>
+
+        <!-- NG material -->
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-cookies.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-websocket/1.0.9/angular-websocket.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/angular-underscore.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/angular-translate.min.js"></script>
+        <script src='/UIComponents/dashboardBuilder/lib/schemaForm/select.min.js'></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>      
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script> 
+        <script src="//cdn.gitcdn.link/cdn/angular/bower-material/v1.1.3/angular-material.js"></script> 
+        <script src="//s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script> 
+
+        <!-- Directives -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ag-grid/12.0.0/ag-grid.js?ignore=notused36"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/spectrum.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/angular-spectrum-colorpicker.min.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/tv4.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/objectPath.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/codemirror/js/mode/ui-codemirror.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/schemaForm.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/bootstrapDecorator.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/bootstrap-colorpicker.min.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/bootstrap-ui-select.min.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/bootstrap-ui-codemirror.min.js"></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/autorefresh.js"></script>
+        <script src='/UIComponents/dashboardBuilder/lib/schemaForm/angular-strap.js'></script>
+        <script src='/UIComponents/dashboardBuilder/lib/schemaForm/angular-strap.tpl.min.js'></script>
+        <script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js'></script>
+        <script src='/UIComponents/dashboardBuilder/lib/schemaForm/angular-schema-form-dynamic-select.js'></script>
+        <script src="/UIComponents/dashboardBuilder/lib/schemaForm/ng-file-upload.js"></script>
+        <script src='/UIComponents/dashboardBuilder/lib/schemaForm/schema-form-file.js'></script>
+
+        <!-- Components -->
+        <script src="/UIComponents/wsProvider.js"></script>
+        <script src="/UIComponents/httpProvider.js"></script>
+        <script src="/UIComponents/dataService.js"></script>
+	```
+	- At the bottom before including layout and module scripts of the app (identity.js has to be before the rest):
+	```html
+	    <script src="/identity/view/javascript/components/main/identity.js"></script>
 	    <script src="/identity/view/javascript/components/main/config.js"></script>
 	    <script src="/identity/view/javascript/components/grid/grid.js"></script>
-	    <script src="/identity/view/javascript/components/main/main.js"></script>
 	    <script src="/identity/view/javascript/components/forms/overlayForm.js"></script>
 	    <script src="/identity/view/javascript/components/forms/uploadFile.js"></script>
 	    <script src="/identity/view/javascript/components/main/formDefinitions.js"></script>
 	    <script src="/identity/view/javascript/components/loadingOverlay/loadingOverlay.min.js"></script>
 	```
-- In modules.js make sure to add any missing dependencies:
-"schemaForm", "Grid", "WsClient", "HttpClient", "ngSchemaFormFile", "List","ngLoadingOverlay","Identity"
+- In modules.js make sure to add the component dependency: "Identity"
 
 - In layout.js, 
 	- place the component in the menuItems section:
