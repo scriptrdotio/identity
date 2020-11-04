@@ -7,15 +7,12 @@
     </div>
     <form name="uploadFileForm" class="adminHome" ng-submit="$ctrl.save(uploadFileForm)">
         <div class="modal-body">
-        <div class="mrgt15">
-            <div class="col-xs-12 col-sm-9"><div sf-options="$ctrl.frmGlobalOptions" sf-schema="$ctrl.schema" sf-form="$ctrl.form" sf-model="$ctrl.model" ></div>
-            </div> 
-            <div class="col-xs-12 col-sm-3">
-                <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block"  type="submit">Import</button>
-                <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block" ng-click="$ctrl.downloadTemplate()">Download Template</button>
-                <button ng-hide="$ctrl.showLoading" class="btn btn-primary btn-sm btn-block" type="reset" ng-click="$ctrl.onCancel()">Close</button>
+            <div sf-options="$ctrl.frmGlobalOptions" sf-schema="$ctrl.schema" sf-form="$ctrl.form" sf-model="$ctrl.model" ></div>
+            <div class="modal-footer">
+                <button ng-hide="$ctrl.showLoading" class="btn btn-default"  type="submit">Import</button>
+                <button ng-hide="$ctrl.showLoading" class="btn btn-default" ng-click="$ctrl.downloadTemplate()">Download Template</button>
+                <button ng-hide="$ctrl.showLoading" class="btn btn-default" type="reset" ng-click="$ctrl.onCancel()">Close</button>
             </div>
-        </div>
         </div>
     </form>
 </div>

@@ -9,10 +9,12 @@
                                 <h4 class="mrgb20"> 
                                     View Group
                                 </h4>
-                                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-                                    <md-icon class="glyphicon glyphicon-remove" aria-hidden="true">
-                                    </md-icon>
-                                </md-button>
+                                <div class="closeBtn">
+                                    <md-button class="md-icon-button closeHeaderBtn" ng-click="vm.closeDialog()">
+                                        <md-icon class="glyphicon glyphicon-remove" aria-hidden="true">
+                                        </md-icon>
+                                    </md-button>
+                                </div>
                             </div>
                                  </md-toolbar>
                             <div class="clearfix"></div>
@@ -33,7 +35,6 @@
                                         </div>
                                         <div ng-hide="vm.devices == 'N/A'" class="mt5">
                                         	<div ng-repeat="device in vm.devices" class="blockContent">{{device.id}}</div>
-                                             <!--<div ng-repeat="device in vm.devices" class="blockContent noBorder">{{device.id}}</div>-->
                                     	</div>
                                     </div>
                                 </div>

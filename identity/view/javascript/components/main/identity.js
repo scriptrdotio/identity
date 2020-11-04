@@ -91,7 +91,6 @@ angular
         {
             headerName: "Group Name", 
             field: "name", 
-            //width: 180,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -101,7 +100,6 @@ angular
         {
             headerName: "Number of Devices", 
             field: "count", 
-            //width: 180,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -115,7 +113,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-placement="top" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var viewBtn = eDiv.querySelectorAll('.btn')[0];
                 viewBtn.addEventListener('click', function(clickParams) { 
@@ -169,7 +167,6 @@ angular
         {	
             headerName: "Device Name", 
             field: "name", 
-            //width: 180,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -179,7 +176,6 @@ angular
         {
             headerName: "Device ID", 
             field: "id", 
-            //width: 180,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -189,15 +185,20 @@ angular
         {
             headerName: "Token", 
             field: "auth_token", 
-            //width: 100,
             cellClass: "textWrap", 
             editable : false,
             tooltipField: 'auth_token',
             cellRenderer: function(params) {
-                var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token"><i class="glyphicon glyphicon-duplicate icon" aria-hidden="true"></i></span>';
                 if(params.value) {
-                   var token = "..." + params.value.substr((params.value.length - 8),8);
-                   return token + "&nbsp;" + copyHtml;
+                    var eDiv = document.createElement('div');
+                    var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
+                    var token = "..." + params.value.substr((params.value.length - 8),8);
+                    eDiv.innerHTML = token + "&nbsp;&nbsp;&nbsp;" + copyHtml;
+                    var copyBtn = eDiv.querySelectorAll('.icon')[0];
+                    copyBtn.addEventListener('click', function(clickParams) { 
+                        self.copyToClipboard(params.value);
+                    });
+                    return eDiv;
                 } else {
                     return 'N/A';
                 }
@@ -207,7 +208,6 @@ angular
         {
             headerName: "Status", 
             field: "isSuspended", 
-            //width: 100,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -223,7 +223,6 @@ angular
         {
             headerName: "Last Modified", 
             field: "lastModifiedDate", 
-            //width: 180,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
@@ -237,7 +236,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="left" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="auto" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-view')[0];
                 vButton.addEventListener('click', function() {
@@ -254,7 +253,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="left" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="auto" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                 vButton.addEventListener('click', function(clickParams) {
@@ -271,7 +270,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="left" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="auto" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-delete')[0];
                 vButton.addEventListener('click', function() {

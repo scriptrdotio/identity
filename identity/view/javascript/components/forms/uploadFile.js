@@ -100,6 +100,7 @@ angular
         this.downloadTemplate = function(){
             httpClient.post(identityConfig.reports.apis.template).then(
                 function(data, response) {
+                    self.showLoading = false;
                     if(data.status == "failure") {
                         self.showAlert("danger", "Unable to download template, please try again");
                     } else {
@@ -113,6 +114,7 @@ angular
                         document.body.removeChild(element);
                     } 
                 }, function(err) {
+                    self.showLoading = false;
                     self.showAlert("danger", "Unable to download template, please try again");
                 }
             );

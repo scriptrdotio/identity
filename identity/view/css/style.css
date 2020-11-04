@@ -26,7 +26,7 @@
 
 /*** Override boostrap button styles ***/
 .btn-default {
-  background: #5477a0;
+  background: #ff8c00;
   border: none;
   color: #fff;
   text-shadow: none;
@@ -41,13 +41,13 @@
 }
 
 .btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover  {
-  background: #374f6b;
+  background: #e4710d;
   color: #fff;
   border: none;
   outline: 0;
 }
 .md-button.md-default-theme:not([disabled]).md-focused, .md-button:not([disabled]).md-focused, .md-button.md-default-theme:not([disabled]):hover, .md-button:not([disabled]):hover {
-    background-color: #374f6b!important;
+    background-color: #e4710d!important;
 }
 
 .device-details {font-family: 'Josefin Sans', sans-serif;}
@@ -70,12 +70,15 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 
 /*** Override boostrap button styles ***/
 .btn-primary {
-  background: #337ab7;
+  background: #ff8c00;
   border: none;
   color: #fff;
   text-shadow: none;
 }
 
+.btn-primary:hover {
+  background: #e4710d;
+}
 
 .user-details {font-family: 'Josefin Sans', sans-serif;}
 
@@ -139,6 +142,9 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 .contentContainer .blockContent.noBorder {
     border: none;
 }
+
+.contentContainer p {overflow: hidden;text-overflow: ellipsis;}
+
 .closeHeaderBtn.md-button.md-ink-ripple:hover {
     background-color: #FFF!important;
 }
@@ -155,9 +161,9 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
     border: 1px solid #5477A0;
 }
 .btn-group .btnContent:hover {
-    background-color: #5477a0!important;
+    background-color: #5477a0;
     color: #FFF;
-    border-color: #5477A0!important;
+    border-color: #5477A0;
 }
 .btn-group .btnContent.btnSelected {
     background-color: #5477a0;
@@ -171,16 +177,31 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
     margin-top: 0;
 }
 .ag-bootstrap .ag-paging-button {
-    border: 1px solid #5477a0;
+    border: 1px solid #ff8c00;
     border-radius: 5px;
-    color: #5477a0;
-    background: none;
+    color: #ff8c00;
+    background: transparent;
     padding: 2px 6px;
 }
 .ag-bootstrap .ag-paging-button:hover {
-    background: #5477a0;
+    background: #e4710d;
     color: #FFF;
 }
+
+.ag-bootstrap .ag-paging-button[disabled] {
+    cursor: default;
+    color: #AAA;
+    border-color: #AAA;
+}
+
+.ag-bootstrap .ag-paging-button[disabled]:hover {
+    background-color: transparent;
+}
+
+.ag-bootstrap .ag-paging-button:focus {
+    outline: none;
+}
+
 .ag-bootstrap .ag-header-icon {
     fill: #5477a0!important;
 }
@@ -199,13 +220,7 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 .btnToggle .ng-valid-parse {
   background-color: #5477a0; 
 }
-.icon {
-    margin-left: 5px;
-    color: #5477a06b;
-    position: absolute;
-    top: 2px;
-    right: 15px;
-}
+
 .ag-bootstrap .ag-row-selected {background-color: #5477a06b!important;}
 /* modal view and edit*/
 .closeHeaderBtn {
@@ -307,3 +322,37 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
   opacity: 1;
   color: #FFF;
 }
+
+/**md dialog**/
+.identityTheme md-dialog md-dialog-content:not([layout=row]) > *:first-child:not(.md-subheader) {margin-top: 10px;}
+.identityTheme md-dialog md-dialog-actions{padding: 15px;text-align: right;border-top: 1px solid #e5e5e5;}
+.identityTheme md-dialog md-dialog-actions .md-button {margin: 0 10px 0 0;}
+.identityTheme .md-button.md-default-theme:not([disabled]).md-focused, .identityTheme .md-button:not([disabled]).md-focused, .identityTheme .md-button.md-default-theme:not([disabled]):hover, .identityTheme .md-button:not([disabled]):hover {background-color: #a6cbd0;}
+.identityTheme md-dialog md-dialog-content {min-height: 100px;}
+.identityTheme md-dialog .title-header {padding: 20px;border-bottom: 1px solid #e5e5e5;}
+.identityTheme md-dialog h4 {margin: 0;}
+
+/**Basic styles**/
+.identityTheme {background-color: #FFF;}
+.identityTheme .tabContent {background-color: #f2f2f2;padding-top: 10px;}
+.identityTheme .level-bg-0 {background: #333333;}
+.identityTheme .logo {background: #333333;}
+.identityTheme .logo img {width: 70%;}
+.identityTheme .side-bar .nav>li.active>a {background-color: rgba(255,255,255,0.05);border-left: 4px solid #ff8c00;}
+.identityTheme header {background: #FFF; color: #333;border-bottom: thin solid #ccc;}
+.identityTheme .username {background-color: #FFF;border-left: 1px solid #ccc;}
+.identityTheme #username-button {color: #333;line-height: 2.3;}
+.identityTheme h1 {font-size: 25px;margin: 35px 0;}
+.identityTheme .btn-group .btnContent {width: auto; margin: 0 15px;padding: 0 0 5px;background-color: transparent!important;border: none;border-radius: 0;color: #333;font-weight: bold;text-transform: uppercase;color: #888;font-size:1em;}
+.identityTheme .btn-group .btnContent.btnSelected {border-bottom: 4px solid #ff8c00;color: #333;}
+.identityTheme .btn-group .btnContent:hover {border-bottom: 4px solid #ff8c00;}
+.identityTheme .btn-group .btnContent.btnSelected:hover {border-color: #ff8c00;}
+
+.identityTheme .filter-bar .btn-default {background-color: transparent;border-radius: 50%;border: 1px solid #888;color: #888;margin: 0 2px;}
+.identityTheme .filter-bar .btn-default:hover {border-color: #ff8c00;color: #ff8c00;}g
+
+.identityTheme .icon {margin-left: 5px;margin-right: 10px;color: #ff8c00;float: right;display: block;}
+
+/**Alert**/
+.identityTheme .alert-danger {background-image: none;}
+
