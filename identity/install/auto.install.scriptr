@@ -1,0 +1,52 @@
+var responseObject = {};
+var users = require("user");
+var groups = require("group");
+var log = require("log");
+log.setLevel("info");
+
+var configurationSettings = {"apsdb.optionalBindReferrer": "true"};
+responseObject["savingConfiguration"] = apsdb.callApi("SaveConfiguration", configurationSettings, null);
+
+//Create the identity-managers group and a default admin user that belongs to that group
+
+var responseObject = {};
+var step1 = groups.create("identity-managers");
+responseObject["group_creation"] = JSON.stringify(step1);
+
+var adminData = {
+    "id": "admin",
+    "name": "Identity Manager",
+    "password": "admin",
+    "groups": "identity-managers"
+}
+
+var step2 = users.save(adminData);
+
+responseObject["admin_user_creation"] = JSON.stringify(step2);
+
+//create the CSV templates for users to download from the Import Devices/Users panel
+var fileContent = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\ndev1,Device1,This is the device description,active,stringAttr,,123\r\ndev2,Device2,,stringAttr,stringAttr,textAttr,\r\ndev3,Device3,,suspended,,,555";
+
+var fileName = "devicesTemplate.csv";
+var devicesTemplateResult = apsdb.createFile(fileContent,fileName);
+var docKey = "devicesTemplate";
+var reportData = {
+    "key": docKey,
+    "attachments": devicesTemplateResult.file
+};
+var defaultStore = require('document').getInstance('DefaultStore');
+var step3 = defaultStore.save(reportData);
+responseObject["device_template_creation"] = JSON.stringify(step3);
+
+fileContent = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\nuser1,User1,user1@gmail.com,active,stringAttr,,123\r\nuser2,User2,,stringAttr,stringAttr,textAttr,\r\nuser3,User3,,suspended,,,555";
+fileName = "usersTemplate.csv";
+var usersTemplateResult = apsdb.createFile(fileContent,fileName);
+var docKey = "usersTemplate";
+var reportData = {
+    "key": docKey,
+    "attachments": usersTemplateResult.file
+};
+var step4 = defaultStore.save(reportData);
+responseObject["user_template_creation"] = JSON.stringify(step4);
+
+return responseObject;
