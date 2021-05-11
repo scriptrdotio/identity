@@ -61,7 +61,7 @@ function ConvertToCSV(params) {
                 line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "N/A") + ","; 
                 line += ((array[i].id != undefined && array[i].id!=null) ? array[i].id : "N/A") + ","; 
                 if(gridType == "device"){
-                    line += ((array[i].description != undefined && array[i].description!=null) ? array[i].description : "N/A") + ","; 
+                    line += ((array[i].description != undefined && array[i].description!=null) ? "\"" +array[i].description.replace(/"/g,'""')+ "\"" : "N/A") + ","; 
                     line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ","; 
                     
                 } else if(gridType == "user"){
