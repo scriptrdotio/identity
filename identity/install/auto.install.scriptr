@@ -1,5 +1,6 @@
 var responseObject = {};
 var users = require("user");
+var channels = require("channel");
 var groups = require("group");
 var log = require("log");
 log.setLevel("info");
@@ -7,9 +8,20 @@ log.setLevel("info");
 var configurationSettings = {"apsdb.optionalBindReferrer": "true"};
 responseObject["savingConfiguration"] = apsdb.callApi("SaveConfiguration", configurationSettings, null);
 
+/** Create Anonymous publish channel used to receive requests from browser **/
+var channelsList =  ["requestChannel", "responseChannel"];
+var options = {
+  "subscribeACL": "anonymous",
+  "publishACL": "anonymous"
+}
+
+channelsList.forEach(function(channel) {
+   var step0 = channels.create(channel, options);
+   responseObject["channelCreation_"+channel] = JSON.stringify(step0);
+});
+
 //Create the identity-managers group and a default admin user that belongs to that group
 
-var responseObject = {};
 var step1 = groups.create("identity-managers");
 responseObject["group_creation"] = JSON.stringify(step1);
 
