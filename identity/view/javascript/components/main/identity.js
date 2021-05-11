@@ -779,14 +779,14 @@ angular
                     return;
                 }
 				
-                vm.parent.showAlert("success", gridId+ "deleted successfully");
+                vm.parent.showAlert("success", gridId+ " deleted successfully");
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
             },
             function(err) {
                 vm.grid.hideOverlay();
                 if(err.status == "success"){
-                    vm.parent.showAlert("success", gridId+ "deleted successfully");
+                    vm.parent.showAlert("success", gridId+ " deleted successfully");
                     vm.grid.refreshInfiniteCache();
                     return;
                 }
@@ -1039,7 +1039,7 @@ angular
                     return;
                 }
 
-                vm.parent.showAlert("success", vm.gridId+ "deleted successfully");
+                vm.parent.showAlert("success", vm.gridId+ " deleted successfully");
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
                 vm.closeDialog();
@@ -1049,7 +1049,7 @@ angular
                 if(err.status == "success"){
                     vm.showActionButtons = true;
                     vm.closeDialog();
-                    vm.parent.showAlert("success", vm.gridId+ "deleted successfully");
+                    vm.parent.showAlert("success", vm.gridId+ " deleted successfully");
                     vm.grid.refreshInfiniteCache();
                     vm.closeDialog();
                     return;
