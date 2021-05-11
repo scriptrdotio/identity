@@ -1,0 +1,68 @@
+var log = require("log")
+var users = require("user");
+var errorHandler = require("../../entities/ErrorHandler");
+var errorHandler = new errorHandler.ErrorHandler();
+var identityManager = require("identity/entities/identityManager");
+log.setLevel("INFO");
+var config = require ("identity/config/config");
+var aclEvaluator = require("../../entities/AclEvaluator");
+//Check permissions
+var identityManagementGroups = config.identityManagementGroups;
+//Check if user has rights to access this api
+var aclEvaluator = new aclEvaluator.AclEvaluator();
+//user needs to be in the identityManagementGroups
+var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
+if(!hasPermission) {
+    return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+}
+
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("Request normalized params: " + JSON.stringify(params));
+
+var fields = "*";
+if(params["fields"] !== undefined && params["fields"] !== null ) {
+    fields = params["fields"];
+}
+
+var count = true;
+if(params["count"] !== undefined && params["count"] !== null) {
+    count = (params["count"] === "true") ?  true : false;
+}
+
+var queryFilter = "";
+if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
+    queryFilter = params["queryFilter"];
+}
+
+// if count is true (default is set to true as well), then the request is coming from the grid
+var queryObj = { "fields": fields, "count": count};
+if(queryFilter!="")
+    queryObj["query"] = 'id <CI> like "' + queryFilter + '%" or name <CI> like "' + queryFilter + '%"';
+
+var resultsPerPage = params.resultsPerPage; //Grid size
+var pageNumber = params.pageNumber; 
+var sort = params.sort;
+var sortType = params.sortType;
+var sortingColumnName = params.sortingColumnName;
+
+var sortString = (sortingColumnName && sortingColumnName != "" && sortingColumnName != "undefined") ? sortingColumnName+"<"+sortType+":"+sort+">" : null;
+if(sortString){
+    queryObj["sort"] = sortString;
+}
+if(resultsPerPage){
+    queryObj["resultsPerPage"] = resultsPerPage;
+}
+if(pageNumber){
+    queryObj["pageNumber"] = pageNumber;
+}
+var response = users.query(queryObj);
+if(response.metadata.status == "failure") {
+    return response.metadata;
+}
+var responseObj = { "count": response.result.count, "documents": response.result.users};
+log.info("Response" + JSON.stringify(responseObj));
+return responseObj;
+
+
+

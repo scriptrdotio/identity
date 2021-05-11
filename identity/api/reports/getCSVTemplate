@@ -16,11 +16,16 @@ if(!hasPermission) {
   return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
 }
 
+var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
+var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info(JSON.stringify(params));
+
 var defaultStore = require('document').getInstance('DefaultStore');
-var attachmentResult = defaultStore.getAttachment(config.templateKey, "devicesTemplate.csv", {"versionNumber": "1"});
+var attachmentResult = defaultStore.getAttachment(params.templateKey, params.attachment, {"versionNumber": "1"});
+log.info(JSON.stringify(attachmentResult));
 var content = attachmentResult.content;
 if(content != null && content != ""){
-    response.setHeader("content-disposition", "attachment;filename=devicesTemplate.csv");
+    response.setHeader("content-disposition", "attachment;filename="+params.attachment);
     response.setHeader("content-type","text/csv");
     response.addHeaders(configuration.crossDomainHeaders);
     response.setStatus(200);

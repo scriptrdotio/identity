@@ -545,31 +545,58 @@ angular
             }
             
             this.refreshTokens = function(){
-                $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Refreshing token(s), please wait...</b>');
                 var selectedNodes = self.gridOptions.api.getSelectedNodes();
                 var selectedKeys = [];
                 for(var i = 0; i < selectedNodes.length; i++){
                     selectedKeys.push(selectedNodes[i].data[self._dataIdentifierProperty]);
                 }
                 if(selectedKeys.length > 0){
-                    var params = {"id": selectedKeys};
-                    httpClient.post(identityConfig.device.apis.generate, params).then(
-                        function(data, response) {
-                            if(data.status == "failure") {
-                                self.showAlert("danger", "Unable to refresh token(s), please try again");
-                            } else {
+                    var parameters = {
+                        "id": selectedKeys,
+                    }
+                httpClient.post(identityConfig.device.apis.generate, parameters).then(
+                    function(data, response) {
+
+                        if(data.scriptHandleId != null && data.scriptHandleId != ""){
+                            $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Refreshing Token(s)...</b>');
+                            identityFactory.getJobStatus(identityConfig.device.apis.generate, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
+                                $loadingOverlay.hide();
+                                self.showTokenButtons = true;
+                                if(res.status && res.status == "failure"){
+                                    var errDesc = 'Unknown error';
+                                    if (res.errorDetail) {
+                                        res = data.errorDetail;
+                                    }
+                                    self.showAlert("danger", "Unable to refresh token(s), please try again");
+                                    return;
+                                }
+
+                                self.token = res.token ? res.token : "N/A";
                                 self._createNewDatasource();
                                 self.gridOptions.api.deselectAll();
                                 self.showAlert("success", "Token(s) refreshed successfully");
-                            } 
-                        }, function(err) {
-                            console.log("failure", err);
-                            self.showAlert("danger", "Unable to refresh token(s), please try again");
+                            },function(err) {
+                                self.showTokenButtons = true;
+                                var errDesc = 'Unknown error';
+                                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                                    errDesc = err.data.metadata.description.en;
+                                } else if (err.errorDetail) {
+                                    errDesc = err.errorDetail;
+                                }
+                                self.showAlert("danger", "Unable to refresh token(s), please try again");
+                            })
                         }
-                    );
-                } else {
+                    
+                        else
+                            self.showAlert("danger", "Unable to refresh token(s), please try again");
+
+
+
+                    },function(err){
+                        self.showAlert("danger", "Unable to refresh token(s), please try again");
+                    })
+                } else
                     self.showAlert("danger", "No device(s) selected");
-                }
             }
             
             this.exportData = function(){
@@ -624,7 +651,6 @@ angular
                     component: 'uploadFileComponent',
                     size: 'lg',
                     scope: $scope,
-                    
                     resolve: {
                         widget: function() {
                             return formWidget;
@@ -658,6 +684,7 @@ angular
                             } else {
                                 params[self._dataIdentifierProperty] =  selectedKeys;
                             }
+                            params["module"] =  self.gridEventsId;
                             
                             dataStore.postGridHelper(api, params).then(
                                 function(data, response) {

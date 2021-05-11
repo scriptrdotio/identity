@@ -2,7 +2,7 @@ var _ = require("/modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
-var devices= require("device");
+var users = require("user");
 var log = require("log")
 log.setLevel("INFO");
 var config = require ("identity/config/config");
@@ -14,11 +14,11 @@ var aclEvaluator = new aclEvaluator.AclEvaluator();
 //user needs to be in the identityManagementGroups
 var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
 if(!hasPermission) {
-  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage users.");
 }
 
 var requiredParams = ["id", "name"];
-var optionalParams = ["update", "description", "groups", "password", "isSuspended", "deviceAttrs", "_oldDeviceAttrs"];
+var optionalParams = ["update", "email", "groups", "password", "isSuspended", "userAttrs", "_oldUserAttrs"];
 
 //Check if required params
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
@@ -35,47 +35,48 @@ if(params["update"] !== undefined && params["update"] !== null )
 //remove update from params so it does not get saved as a device attribute
 delete params['update'];
 
-var oldDeviceAttrs = params._oldDeviceAttrs;
-var deviceAttrs = params.deviceAttrs;
+var oldUserAttrs = params._oldUserAttrs;
+var userAttrs = params.userAttrs;
 //if a user added empty device attributes rows and saved. We would have empty objects in an empty array. The following validation is to avoid looping multiple times on empty objects 
-if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
+if(userAttrs != null && !(userAttrs.filter(function(el) {
     return Object.keys(el).length !== 0;
 }).length === 0)){
     var jsonObj = {};
     params['meta.types'] = {};
-    if(deviceAttrs !=null && deviceAttrs.length > 0){
-        for(var i=0; i<deviceAttrs.length; i++){
-            if(deviceAttrs[i] != null && Object.keys(deviceAttrs[i]).length > 0){
-                var name = deviceAttrs[i].name;
-                var value = deviceAttrs[i].value;
-                var type = deviceAttrs[i].type;
+    if(userAttrs !=null && userAttrs.length > 0){
+        for(var i=0; i<userAttrs.length; i++){
+            if(userAttrs[i] != null && Object.keys(userAttrs[i]).length > 0){
+                var name = userAttrs[i].name;
+                var value = userAttrs[i].value;
+                var type = userAttrs[i].type;
                 jsonObj[name]= type;
                 params[name] = value;
             }
         }
         params['meta.types'] = jsonObj;
-        if(params.description != null && params.description != "")
-            params['meta.types'].description = "text";
+        if(params.email != null && params.email != "")
+            params['meta.types'].email = "text";
     }
 }
-delete params['deviceAttrs'];
-delete params['_oldDeviceAttrs'];
+delete params['userAttrs'];
+delete params['_oldUserAttrs'];
 delete confirmPassword;
 log.info("Request normalized params: " + JSON.stringify(params));
 
 var response;
 if(update){
     //check if any attribute was removed
-    var newDeviceAttrs = _.pluck(deviceAttrs, "name");
-    var removedAttrs = _.difference(oldDeviceAttrs, newDeviceAttrs);
+    var newUserAttrs = _.pluck(userAttrs, "name");
+    var removedAttrs = _.difference(oldUserAttrs, newUserAttrs);
     if(removedAttrs && removedAttrs.length > 0){
         removedAttrs.forEach(function(removedAttr) {
             params[removedAttr] = "";
         })
     }
-    response = devices.save(params);
+    response = users.save(params);
 }else
-    response = devices.create(params);
+    response = users.create(params);
+
 log.info("response"+JSON.stringify(response));
 if(response.metadata.status == "failure") {
     return response.metadata;

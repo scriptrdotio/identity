@@ -18,7 +18,7 @@
         <button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn btn-default mt4" tooltip-placement="auto" uib-tooltip="Delete selected {{$ctrl.gridEventsId}}(s)"><i class="fa fa-close" aria-hidden="true"></i></button>
 
         <button ng-click="$ctrl.exportData()" class="btn btn-default mt4" tooltip-placement="auto" uib-tooltip="Export to CSV"><i class="glyphicon glyphicon-export" aria-hidden="true"></i></button>
-         <button ng-if= "$ctrl.gridEventsId == 'device'" ng-click="$ctrl.loadImportOverlay()" class="btn btn-default mt4" tooltip-placement="auto" uib-tooltip="Import devices"><i class="glyphicon glyphicon-import" aria-hidden="true"></i></button>
+         <button ng-if= "$ctrl.gridEventsId == 'device' || $ctrl.gridEventsId == 'user'" ng-click="$ctrl.loadImportOverlay()" class="btn btn-default mt4" tooltip-placement="auto" uib-tooltip="Import devices"><i class="glyphicon glyphicon-import" aria-hidden="true"></i></button>
     </div>
    </form>  
     </div>

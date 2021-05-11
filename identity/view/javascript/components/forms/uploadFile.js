@@ -10,14 +10,19 @@ angular
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
     controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
         var self = this;
+        
         self.showLoading = false;
         this.$onInit = function(){
+            console.log($scope);
             this.widget = this.resolve.widget;
+            this.gridType = this.resolve.widget.parent.gridEventsId;
             $scope.$broadcast('schemaFormRedraw')
+           // this.gridType1 = $scope.$ctrl.resolve.widget.parent.gridEventsId;
             this.frmGlobalOptions = {
                 "destroyStrategy" : "remove",
                 "formDefaults": {"feedback": false}
             }
+            
             if(this.widget) {
                 this.parent = this.widget.parent;
                 
@@ -52,16 +57,22 @@ angular
                 self.showLoading = true;
                 $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Uploading CSV, please wait...</b>');
                 var d = $q.defer();  
-                var data = angular.copy(this.model);
-                if(form.uploadForm.file.$dirty) {
-                    data["file"] = form.uploadForm.file.$modelValue
-                } 
-                delete data["csvFile"]
+               // var data = angular.copy(this.model);
+               /* if(form.$dirty) {
+                    data["file"] = form.$modelValue
+                } */
+                //delete data["csvFile"]
                 var fd = new FormData();
-                for ( var key in data ) {
-                    fd.append(key, data[key]);
+                for ( var key in  this.model ) {
+                    if(Array.isArray( this.model[key])) {
+                        _.forEach( this.model[key], function(entry) {
+                            fd.append(key, entry)
+                        })
+                    } else {
+                        fd.append(key, this.model[key]);
+                    }
                 }
-
+                fd.append("gridType", this.gridType)
                 httpClient.post(identityConfig.reports.apis.import, fd, null,true).then(
                     function(data, response) {
                         if(data.status == "failure") {
@@ -71,16 +82,16 @@ angular
                             identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (res){
                                 self.showLoading = false;
                                 if (res.status && res.status == "success") {
-                                    self.showAlert("success", "The devices have been imported successfully");
+                                    self.showAlert("success", "The "+this.gridType+"s have been imported successfully");
                                     self.parent._createNewDatasource();
                                     d.resolve(data, response);
                                 } else {
-                                    //This is in case some devices failed to be created
-                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import devices");
+                                    //This is in case some devices/users failed to be created
+                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import "+this.gridType+"s");
                                     d.reject(res.errorCode, res.errorDetail);
                                 }
                             },function(errorDetail){
-                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import devices");
+                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+this.gridType+"s");
                                 self.showLoading = false;
                                 d.reject(errorDetail);  
                             })
@@ -98,7 +109,18 @@ angular
         }
         
         this.downloadTemplate = function(){
-            httpClient.post(identityConfig.reports.apis.template).then(
+            var params;
+            if(this.gridType == "device")
+                params = {
+                    templateKey: "devicesTemplate",
+                    attachment: "devicesTemplate.csv"
+                };
+            else if(this.gridType == "user")
+                params = {
+                    templateKey: "usersTemplate",
+                    attachment: "usersTemplate.csv"
+                };
+            httpClient.post(identityConfig.reports.apis.template, params).then(
                 function(data, response) {
                     self.showLoading = false;
                     if(data.status == "failure") {
@@ -107,7 +129,7 @@ angular
                         self.showAlert("success", "Template downloaded successfully");
                         var element = document.createElement('a');
                         element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
-                        element.setAttribute('download', 'devicesTemplate.csv');
+                        element.setAttribute('download', params.attachment);
                         element.style.display = 'none';
                         document.body.appendChild(element);
                         element.click();

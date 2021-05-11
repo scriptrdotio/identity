@@ -28,14 +28,22 @@ function ConvertToCSV(params) {
             }
         }
     }
-    if(gridType == "device"){
-        var fileName = "devices";
-        var object  = identityManager.getDevices({"queryFilter" : params.queryFilter});
-        log.info('getDevices' + JSON.stringify(object));
+    if(gridType == "device" || gridType == "user"){
+        var fileName;
+        var object;
+        if(gridType == "device"){
+            fileName = "devices";
+            object  = identityManager.getDevices({"queryFilter" : params.queryFilter});
+        }
+        else if(gridType == "user"){
+            fileName = "users";
+            object  = identityManager.getUsers({"queryFilter" : params.queryFilter});
+        }
+        log.info('getIdentity' + JSON.stringify(object));
         var headerStr = "";
         var array = typeof object != 'object' ? JSON.parse(object) : object;
         if(array!= null && array.length >0){
-            var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
+            var defaultAttrs = ["name", "groups", "creator","email", "workflowState", "tokens","login", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
             var deviceAttrsObj = {};
             for (var i = 0; i < array.length; i++) {
                 var data = array[i];
@@ -52,14 +60,19 @@ function ConvertToCSV(params) {
                 var line = '';
                 line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "N/A") + ","; 
                 line += ((array[i].id != undefined && array[i].id!=null) ? array[i].id : "N/A") + ","; 
-                line += ((array[i].description != undefined && array[i].description!=null) ? array[i].description : "N/A") + ","; 
-                line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ","; 
-                var devStatus = "Active";
-                if(array[i].isSuspended != undefined && array[i].isSuspended != null && array[i].isSuspended == "true"){
-                    devStatus = "Suspended";
+                if(gridType == "device"){
+                    line += ((array[i].description != undefined && array[i].description!=null) ? array[i].description : "N/A") + ","; 
+                    line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ","; 
+                    
+                } else if(gridType == "user"){
+                    line += ((array[i].email != undefined && array[i].email!= null) ? array[i].email : "N/A") + ","; 
                 }
-                line += devStatus + ","; 
-				line += ((array[i].lastModifiedDate != undefined && array[i].lastModifiedDate!=null) ? moment(array[i].lastModifiedDate).format("DD-MMM-YYYY hh:mm A") : "N/A") + ",";
+                    var devStatus = "Active";
+                    if(array[i].isSuspended != undefined && array[i].isSuspended != null && array[i].isSuspended == "true"){
+                        devStatus = "Suspended";
+                    }
+                    line += devStatus + ",";
+                line += ((array[i].lastModifiedDate != undefined && array[i].lastModifiedDate!=null) ? moment(array[i].lastModifiedDate).format("DD-MMM-YYYY hh:mm A") : "N/A") + ",";
                 
                 Object.keys(deviceAttrsObj).forEach(function(key) {
                     line += ((data[key] != undefined && data[key] != null) ? data[key] : "N/A") + ",";
@@ -70,7 +83,11 @@ function ConvertToCSV(params) {
                 if(i != array.length-1)
                     str += '\r\n';
             }
-            str = "name,id,description,token,status,lastModified" + headerStr + "\r\n" + str;
+            if(gridType == "device")
+                str = "name,id,description,token,status,lastModified" + headerStr + "\r\n" + str;
+            else if(gridType == "user")
+                str = "name,id,email,status,lastModified" + headerStr + "\r\n" + str;
+
         }
     }
     log.info('end converting document to CSV');

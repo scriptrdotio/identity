@@ -39,7 +39,7 @@ if(count) {
     // if count is true (default is set to true as well), then the request is coming from the grid
     var queryObj = { "fields": fields, "count": count};
     if(queryFilter!="")
-        queryObj["query"] = 'id !="scriptr" and id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
+        queryObj["query"] = 'id !="scriptr" and id <CI>  like "' + queryFilter + '%" or name <CI> like "' + queryFilter + '%"';
     else
         queryObj["query"] = 'id !="scriptr"';
     

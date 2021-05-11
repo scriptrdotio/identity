@@ -15,7 +15,7 @@ var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagement
 if(!hasPermission) {
   return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
 }
-
+//log.info(JSON.stringify(request))
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info("Request params: " + JSON.stringify(params));
@@ -27,11 +27,12 @@ switch (request.method) {
         return identityManager.getJobStatus(params, paramsEvaluator, errorHandler);
         break;
   case "POST":
-        if(request.files != null && request.files.file != null) {
-        	var fileParam = request.files.file;
+        //log.info(JSON.stringify(request))
+        if(request.files != null && request.files.csvFile != null) {
+        	var param = {"file": request.files.csvFile, gridType: params.gridType}
             var data = {
                 "apsdb.scriptName": importCsvScriptPath,
-                "params": JSON.stringify(fileParam)
+                "params": JSON.stringify(param)
             };
             var result = apsdb.callApi("QueueScript", data, null);
 

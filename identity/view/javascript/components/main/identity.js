@@ -48,6 +48,11 @@ angular
             api: identityConfig.device.apis.delete,
             queryParam: "id"
         }
+        
+        self.removeUserConfig = {
+            api: identityConfig.user.apis.delete,
+            queryParam: "id"
+        }
 
         self.removeGroupConfig = {
             api : identityConfig.group.apis.delete,
@@ -63,6 +68,11 @@ angular
             "api": identityConfig.group.apis.save,
             "schemaFormDefinition": self.identityForms.group,
         }
+        
+        self.saveUserConfig = {
+            "api": identityConfig.user.apis.save,
+            "schemaFormDefinition": self.identityForms.user,
+        }
     }
             
     
@@ -71,14 +81,22 @@ angular
         self.gridId = value;
         if(self.gridId ==  "group"){
             self.deviceTabClass = "";
+            self.userTabClass = "";
             self.groupTabClass = "btnSelected";
-            self.identifierProperty = identityConfig.device.identifierProperty;
+            self.identifierProperty = identityConfig.group.identifierProperty;
             self.gridAPI = identityConfig.group.apis.list;
         } else if (self.gridId ==  "device"){
             self.deviceTabClass = "btnSelected";
             self.identifierProperty = identityConfig.device.identifierProperty;
             self.groupTabClass = "";
+            self.userTabClass = "";
             self.gridAPI = identityConfig.device.apis.list;
+        } else if (self.gridId ==  "user"){
+            self.userTabClass = "btnSelected";
+            self.identifierProperty = identityConfig.user.identifierProperty;
+            self.groupTabClass = "";
+            self.deviceTabClass = "";
+            self.gridAPI = identityConfig.user.apis.list;
         }
     }
 
@@ -113,7 +131,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="top" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="View Group"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var viewBtn = eDiv.querySelectorAll('.btn')[0];
                 viewBtn.addEventListener('click', function(clickParams) { 
@@ -129,7 +147,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit Group"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var editBtn = eDiv.querySelectorAll('.btn')[0];
                 editBtn.addEventListener('click', function(clickParams) { 
@@ -145,7 +163,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-placement="auto" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete Group"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var deleteBtn = eDiv.querySelectorAll('.btn')[0];
                 deleteBtn.addEventListener('click', function(clickParams) { 
@@ -191,7 +209,7 @@ angular
             cellRenderer: function(params) {
                 if(params.value) {
                     var eDiv = document.createElement('div');
-                    var copyHtml = '<span tooltip-placement="auto" uib-tooltip="Copy Token" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
+                    var copyHtml = '<span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="Copy Token" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
                     var token = "..." + params.value.substr((params.value.length - 8),8);
                     eDiv.innerHTML = token + "&nbsp;&nbsp;&nbsp;" + copyHtml;
                     var copyBtn = eDiv.querySelectorAll('.icon')[0];
@@ -236,7 +254,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-placement="auto" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-view')[0];
                 vButton.addEventListener('click', function() {
@@ -253,11 +271,11 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-placement="auto" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                 vButton.addEventListener('click', function(clickParams) {
-                    self.loadEditDeviceOverlay.bind(self, params.data)();
+                   self.loadEditIdentityOverlay.bind(self, params.data)();
                 });
                 return eDiv;
             },
@@ -270,7 +288,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-placement="auto" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-delete')[0];
                 vButton.addEventListener('click', function() {
@@ -279,8 +297,132 @@ angular
                 return eDiv;
             },
             width: 60,
+        },
+        {
+            hide: true, 
+            field: 'description'
         }
+
     ];
+            
+            
+   self.usersColDef = [
+        {   headerName: '',
+         	checkboxSelection: true,
+         	headerCheckboxSelection: true,
+         	width: 30
+        },
+       {
+           headerName: "Login", 
+           field: "id", 
+           cellClass: "textWrap", 
+           editable : false,
+           cellRenderer: function(params) {
+               return params.value? params.value.split("_")[0]: 'N/A';
+           }
+       },
+        {
+            headerName: "User Name", 
+            field: "name", 
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                return params.value? params.value.split("_")[0]: 'N/A';
+            }
+        },
+      /* {
+           headerName: "User Id", 
+           field: "id", 
+           cellClass: "textWrap", 
+           editable : false,
+           cellRenderer: function(params) {
+               return params.value? params.value.split("_")[0]: 'N/A';
+           }
+       },*/
+       {
+           headerName: "Email", 
+           field: "email", 
+           cellClass: "textWrap", 
+           editable : false,
+           cellRenderer: function(params) {
+               return params.value? params.value.split("_")[0]: 'N/A';
+           }
+       },
+       {
+            headerName: "Status", 
+            field: "isSuspended", 
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var status = "Active";
+                if(params.value != null){
+                    var isSuspended = params.value;
+                    if(isSuspended == "true")
+                        status = "Suspended";
+                }
+                return status;
+            }
+        },
+       {
+           headerName: "Last Modified", 
+           field: "lastModifiedDate", 
+           cellClass: "textWrap", 
+           editable : false,
+           cellRenderer: function(params) {
+               return params.value? moment(params.value).format("DD-MMM-YYYY hh:mm A"): 'N/A';
+           }
+       },
+       {
+            headerName: "", 
+            width: 60,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="View User"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var viewBtn = eDiv.querySelectorAll('.btn')[0];
+                viewBtn.addEventListener('click', function(clickParams) { 
+                    self.showViewDialog(params)
+                });
+                return eDiv;
+            }
+        },
+        {
+            headerName: "", 
+            width: 60,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit User"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var editBtn = eDiv.querySelectorAll('.btn')[0];
+                editBtn.addEventListener('click', function(clickParams) { 
+                    self.loadEditIdentityOverlay.bind(self, params.data)();
+                });
+                return eDiv;
+            }
+        },
+        {
+            headerName: "", 
+            width: 60,
+            cellClass: "textWrap", 
+            editable : false,
+            cellRenderer: function(params) {
+                var eDiv = document.createElement('div');
+                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete User"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = btn;
+                var deleteBtn = eDiv.querySelectorAll('.btn')[0];
+                deleteBtn.addEventListener('click', function(clickParams) { 
+                    self.showConfirmDialog(params);
+
+                });
+                return eDiv;
+            }
+        },
+    ];
+
 
     self.showAlert = function(type, content) {
         $scope.$broadcast("showGridAlert-"+self.gridId, {"type" : type, "content" : content});
@@ -421,10 +563,10 @@ angular
         );
     };
             
-   self.temp = function(deviceData, data, response) {
+   self.temp = function(identityData, data, response) {
        
-       var overlayForm = identityForms.device;
        var self = this;
+       var overlayForm = identityForms[self.gridId]
        console.log(self)
        if(data.status && data.status == "failure"){
            var errDesc = 'Unknown error';
@@ -442,17 +584,28 @@ angular
        }else{
            groupsArr = [data.groups];
        };
-       var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
-       var deviceAttrsArray = [];
+       
+       var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
+       var backendApi;
+       if(self.gridId == "device"){
+           defaultAttrs.push("auth_token", "description")
+           backendApi = identityConfig.device.apis.save;
+           
+       }
+       else if(self.gridId == "user"){
+           defaultAttrs.push("email", "token", "login")
+           backendApi = identityConfig.user.apis.save;
+       }
+       var identityAttrsArray = [];
        var metaTypes = data["meta.types"];
        Object.keys(data).forEach(function(key) {
            if(defaultAttrs.indexOf(key)<0){
                self.hasAttrs = true;
-               var deviceAttrsObj = {};
-               deviceAttrsObj.name = key;
-               deviceAttrsObj.type = metaTypes[key];
-               deviceAttrsObj.value = data[key];
-               deviceAttrsArray.push(deviceAttrsObj);
+               var identityAttrsObj = {};
+               identityAttrsObj.name = key;
+               identityAttrsObj.type = metaTypes[key];
+               identityAttrsObj.value = data[key];
+               identityAttrsArray.push(identityAttrsObj);
            }
        });
 
@@ -460,17 +613,28 @@ angular
        var of = angular.copy(overlayForm);
        of.title = "Edit "+of.title;
        var form = angular.copy(of.form);
-       form[0].items[1].readonly = true;
+       //form[0].items[1].readonly = true;
        var required = ["name","id"];
        var schema = angular.copy(of.schema);
        schema.required = required;
+       schema.properties.id.readonly = true;
        var formWidget = {
            'label': of.title,
            'buttons': {'save': {'label': 'Save'}, 'cancel': {'label': 'Cancel'}},
            'schema': schema,
            'form': form,
-           'model': {"name": deviceData.name, "id": deviceData.id, "description": deviceData.description, "isSuspended": deviceData.isSuspended, "groups":groupsArr, "deviceAttrs": deviceAttrsArray}
+           'model': {"name": identityData.name, "id": identityData.id, "isSuspended": data.isSuspended, "groups":groupsArr}
        }
+      if(self.gridId == "device"){
+           formWidget.model.deviceAttrs = identityAttrsArray;
+           formWidget.model.description = identityData.description;
+       }
+       else if(self.gridId == "user"){
+           formWidget.model.userAttrs = identityAttrsArray;
+           formWidget.model.email = identityData.email;
+           formWidget.model.login = identityData.login;
+       }
+           
        $loadingOverlay.hide();
        var self = this;
        var modalInstance= $uibModal.open({
@@ -501,7 +665,6 @@ angular
                    self.showAlert("danger", "Could not save device, please try again later: "+errDesc);
                }
                wdgModel.update = true;
-               var backendApi = identityConfig.device.apis.save;
                self.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
            }
        }, function () {
@@ -509,10 +672,11 @@ angular
        });
    }
 
-    this.loadEditDeviceOverlay = function(deviceData) {
+    this.loadEditIdentityOverlay = function(identityData) {
         var self = this;
-        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching device...</b>');
-        httpClient.post(identityConfig.device.apis.getDevice, deviceData).then(self.temp.bind(self, deviceData),
+        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching '+self.gridId+'...</b>');
+       // angular.element('body')[0].style.cssText = "";
+        httpClient.post(identityConfig[self.gridId].apis.get, {id: identityData.id, module: self.gridId}).then(self.temp.bind(self, identityData),
                 function(err) {
                     if(err.status == "success"){
                         $scope.$broadcast("updateGridData-"+self.gridId, {});
@@ -562,15 +726,15 @@ angular
         var controller = "";
         var templateUrl = "";
         var localsObj = {};
-        if(self.gridId == "device"){
-            localsObj = {grid: params.api, deviceData: params.data, parent: self};
-            controller = 'viewDeviceDialogCtrl';
-            templateUrl = '/identity/view/html/views/devices/viewDevice.html';
+        if(self.gridId == "device" || self.gridId == "user"){
+            localsObj = {grid: params.api, identityData: params.data, parent: self};
+            controller = 'viewIdentityDialogCtrl';
+            templateUrl = '/identity/view/html/views/viewIdentity.html';
         } else if (self.gridId == "group"){
             localsObj = {grid: params.api, groupData: params.data, parent: self};
             controller = 'viewGroupDialogCtrl';
             templateUrl = '/identity/view/html/views/groups/viewGroup.html';
-        }
+        } 
             $mdDialog.show({
                 controller: controller,
                 controllerAs: 'vm',
@@ -592,7 +756,7 @@ angular
     vm.identifier = dataObject[vm.parent.identifierProperty];
     vm.grid = grid;
     vm.config = identityConfig;
-    vm.api = vm.config[vm.parent.gridId].apis.delete;
+    vm.deleteApi = identityConfig[vm.parent.gridId].apis.delete;
     vm.header = "Confirm Delete";
     
     vm.init = function() {
@@ -604,7 +768,8 @@ angular
         $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting '+vm.parent.gridId+'...</b>');
         var parameters = {};
         parameters[vm.parent.identifierProperty] = vm.identifier;
-        httpClient.post(vm.api, parameters).then(
+        parameters["module"] = vm.parent.gridId;
+        httpClient.post(vm.deleteApi, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.parent.showAlert("danger", 'Could not delete '+vm.parent.gridId+', please try again later');
@@ -640,30 +805,36 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewDeviceDialogCtrl', function($timeout, httpClient, deviceData, grid, parent, $mdDialog, $scope, identityConfig) {
+    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig) {
    
     var vm = this;
-    vm.promptMessage = {
-        content:'Fetching device...'
-    };
-    vm.deviceData = deviceData;
-    vm.deviceId = deviceData.id;
+   
+    vm.identityData = identityData;
+    vm.identityId = identityData.id;
     vm.parent = parent;
+    vm.gridId =  vm.parent.gridId.charAt(0).toUpperCase() + vm.parent.gridId.substring(1);
     vm.grid = grid;
-    vm.deviceFetched = false;
+    vm.identityFetched = false;
     vm.hidePromptMessage = false;
     vm.showTokenButtons = true;
+    vm.deleteApi = identityConfig[vm.parent.gridId].apis.delete;
+    vm.getApi = identityConfig[vm.parent.gridId].apis.get;
+     vm.promptMessage = {
+        content:'Fetching '+vm.parent.gridId+'...'
+    };
     vm.showActionButtons = true;
     vm.init = function() {
-        vm.getDevice();
+        vm.getIdentity();
     }
     
-	vm.getDevice = function() {
+	vm.getIdentity = function() {
         vm.isLoading = true;
-        var parameters = {
-            id: vm.deviceId
+        var parameters = { 
+            id: vm.identityId,
+            module: vm.parent.gridId
         }
-        httpClient.post(identityConfig.device.apis.getDevice, parameters).then(
+        
+        httpClient.post(vm.getApi, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.hidePromptMessage = true;
@@ -671,33 +842,50 @@ angular
                     if (data.errorDetail) {
                         errDesc = data.errorDetail;
                     }
-                    vm.showAlert("danger", "Could not fetch device: "+errDesc);
+                    vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
                     //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later");
                     return;
                 }
 
                 vm.name = data.name ? data.name : "N/A";
                 vm.id = data.id ? data.id : "N/A";
-                vm.description = data.description ? data.description : "N/A";
+                if(vm.parent.gridId == "device"){
+                    vm.identityNameLabel = "Device Name"
+                    vm.identityIdLabel = "Device ID"
+                    vm.description = data.description ? data.description : "N/A";
+                    vm.token = data.auth_token ? data.auth_token : "N/A";
+                }
+                if(vm.parent.gridId == "user"){
+                    vm.identityNameLabel = "User Name";
+                    vm.identityIdLabel = "Login";
+                    vm.email = data.email ? data.email : "N/A";
+                 // vm.login = data.login ? data.login : "N/A";
+                }
                 if(data.groups != null){
                     if(data.groups instanceof Array){
-                       vm.groups = data.groups;
+                        vm.groups = data.groups;
                     }else{
-                       vm.groups = [data.groups];
+                        vm.groups = [data.groups];
                     }
                 } else {
                     vm.groups = ["N/A"];
                 }
-                var devStatus = "Active";
+                var status = "Active";
                 if(data.isSuspended != null && data.isSuspended == "true"){
-                    devStatus = "Suspended";
+                    status = "Suspended";
                 }
-                vm.status = devStatus;
-                vm.token = data.auth_token ? data.auth_token : "N/A";
+                vm.status = status;
                 
                 vm.hasAttrs = false;
-                var defaultAttrs = ["name", "groups", "creator", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
-                var deviceAttrsArray = [];
+                var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
+                var backendApi;
+                if(vm.parent.gridId == "device"){
+                    defaultAttrs.push("auth_token", "description")
+                }
+                else if(vm.parent.gridId == "user"){
+                    defaultAttrs.push("email", "token", "login")
+                }
+                var identityAttrsArray = [];
                 var metaTypes = data["meta.types"];
                 Object.keys(data).forEach(function(key) {
                     if(defaultAttrs.indexOf(key)<0){
@@ -706,13 +894,13 @@ angular
                         deviceAttrsObj.name = key;
                         deviceAttrsObj.type = metaTypes[key];
                         deviceAttrsObj.value = data[key];
-                        deviceAttrsArray.push(deviceAttrsObj);
+                        identityAttrsArray.push(deviceAttrsObj);
                     }
                 })
-                vm.deviceAttrs = deviceAttrsArray;
+                vm.identityAttrs = identityAttrsArray;
                 
                 //vm.showPromptMessage("success",false, "success");
-                vm.deviceFetched = true;
+                vm.identityFetched = true;
                 vm.hidePromptMessage = true;
             },
             function(err) {
@@ -722,20 +910,20 @@ angular
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showAlert("danger", "Could not fetch device: "+errDesc);
+                vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
                 //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later!");
             }
         );
     }
         
-    vm.confirmationDeleteDevice = function(){
+    vm.confirmationDeleteIdentity = function(){
         vm.showActionButtons = false;
     }
     
-    vm.editDevice = function(){
+    vm.editIdentity = function(){
         vm.closeDialog();
-        var identityForms = vm.parent.identityForms.device;
-        vm.parent.loadEditDeviceOverlay(vm.deviceData, identityForms, identityConfig.device.apis.save)
+        var identityForms = vm.parent.identityForms[vm.parent.gridId];
+        vm.parent.loadEditIdentityOverlay(vm.identityData, identityForms, identityConfig[vm.parent.gridId].apis.save);
     }
     
     vm.copyToken = function() {
@@ -830,11 +1018,12 @@ angular
     	);
     }
     
-    vm.deleteDevice = function() {
+    vm.deleteIdentity = function() {
         var parameters = {
-            id: vm.deviceId
+            id: vm.identityId,
+            module: vm.parent.gridId
         }
-        httpClient.post(identityConfig.device.apis.delete, parameters).then(
+        httpClient.post(vm.deleteApi, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.showActionButtons = true;

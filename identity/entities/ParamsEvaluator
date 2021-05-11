@@ -14,9 +14,11 @@ function ParamsEvaluator() {
 	this.hasRequiredParams = function(requestParams, requiredParams) {
 		var missedParam = null;
 		var valid = _.every(requiredParams, function(param) {
+            log.info("[app/entities/ParamsEvaluator]"+param+" "+requestParams[param]);
 			if (requestParams[param] != null && requestParams[param] != "") {
 				return true;
 			} else {
+                log.info("[app/entities/ParamsEvaluator]"+param);
 				missedParam = param;
 				return false;
 			}

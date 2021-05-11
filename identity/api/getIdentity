@@ -1,12 +1,13 @@
-var paramsEvaluator = require("../../entities/ParamsEvaluator");
-var errorHandler = require("../../entities/ErrorHandler");
+var paramsEvaluator = require("../entities/ParamsEvaluator");
+var errorHandler = require("../entities/ErrorHandler");
 var devices = require("device");
+var users = require("user");
 var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
 
 var config = require ("identity/config/config");
-var aclEvaluator = require("../../entities/AclEvaluator");
+var aclEvaluator = require("../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
@@ -20,6 +21,8 @@ if(!hasPermission) {
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 
+log.info("############"+JSON.stringify(params))
+
 //Check if required params
 var requiredParams = ["id"];
 var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
@@ -27,12 +30,18 @@ hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
 if(!hasAllRequiredParams.success) {
   return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
 }
-
-var response = devices.get(params["id"], {"includeFieldType" : true})
+var response;
+if(params.module == "device")
+ response = devices.get(params["id"], {"includeFieldType" : true})
+else if(params.module == "user")
+    response = users.get(params["id"], {"includeFieldType" : true})
 
 if(response.metadata.status == "failure") {
-   return response.metadata;
+    return response.metadata;
 } else {
-  return response.result;
+    log.info("############"+JSON.stringify(response.result))
+    var result = response.result;
+    //delete result.workflowState
+    return response.result;
 }
 

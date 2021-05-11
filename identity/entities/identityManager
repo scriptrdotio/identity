@@ -1,6 +1,8 @@
 var log = require("log");
 log.setLevel("INFO");
 var devices = require("device");
+var groups = require("group");
+var users = require("user");
 var config = require ("identity/config/config");
 var queryDocsPerPage = config.queryDocsPerPage;
 var buildCsvSciptPath = config.buildCsvSciptPath;
@@ -29,8 +31,9 @@ function getDevices(params){
     while(continueLoop){
         var queryObj = { "fields": fields, "sort":"name<string:DESC>", "count": count,"query":'id !="scriptr"', "includeFieldType" : true};
         if(queryFilter!="")
-            queryObj.query = 'id like "' + queryFilter + '%" or name like "' + queryFilter + '%"';
+            queryObj.query = 'id <CI> like "' + queryFilter + '%" or name <CI> like "' + queryFilter + '%"';
         queryObj.pageNumber = pageNumber;
+        log.info("queryObj"+JSON.stringify(queryObj))
         var response = devices.query(queryObj);
         if(response.metadata.status == "failure") {
             return response.metadata;
@@ -46,6 +49,45 @@ function getDevices(params){
     log.info("getDevices documents: " + documents);
     return documents;
 }
+
+function getUsers(params){
+    log.info("getUsers params: " + JSON.stringify(params));
+
+    var fields = "*";
+    if(params["fields"] !== undefined && params["fields"] !== null ) {
+        fields = params["fields"];
+    }
+
+
+    var queryFilter = "";
+    if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
+        queryFilter = params["queryFilter"];
+    }
+
+    var documents = [];
+    var pageNumber = 1;
+    var continueLoop = true;
+    while(continueLoop){
+        var queryObj = { "fields": fields, "sort":"name<string:DESC>", "includeFieldType" : true};
+        if(queryFilter!="")
+            queryObj.query = 'id <CI> like "' + queryFilter + '%" or name <CI> like "' + queryFilter + '%" or email like "' + queryFilter + '%"';
+        queryObj.pageNumber = pageNumber;
+        var response = users.query(queryObj);
+        if(response.metadata.status == "failure") {
+            return response.metadata;
+        }
+        if(response.result.users.length < queryDocsPerPage){
+            continueLoop = false;
+        } else {
+            pageNumber++;
+        }
+        if(response.result.users.length > 0)
+            documents = documents.concat(response.result.users);
+    }
+    log.info("getUsers documents: " + documents);
+    return documents;
+}
+
 
 function getGroups(params){
     var groups = require("group");
@@ -68,8 +110,11 @@ function getGroups(params){
         if(count){
             for (var i=0; i<result.length;i++){
                 var name = result[i].name;
-                if(queryFilter!="" && !name.includes(queryFilter)){
-                    continue;
+                if(queryFilter!=""){
+                    var lowerCaseName = name.toLowerCase();
+                    var lowerCaseFilter = queryFilter.toLowerCase();
+                    if(!lowerCaseName.includes(lowerCaseFilter))
+                        continue;
                 }
                 var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
                 response.result["name"] = name;
@@ -101,42 +146,54 @@ function getGroups(params){
     }
 }
 
-function importDevices(devicesArr){
+function importIdentity(identityParams){
     //loop on all devices, save them one by one
     //after successful save, generate token
     //if one fails, rollback everything and return failure
 
+    var identityArr = identityParams.identityArr;
+    var gridType = identityParams.gridType;
     var ts = apsdb.beginTransaction();
     try{
         var responseObj = {};
-        devicesArr.forEach(function(params) {
+        identityArr.forEach(function(params) {
             if(params.id != null && params.id != ""){
-                var deviceAttrs = params.deviceAttrs;
-                if(deviceAttrs != null && !(deviceAttrs.filter(function(el) {
+                var identityAttrs = params.identityAttrs;
+                if(identityAttrs != null && !(identityAttrs.filter(function(el) {
                     return Object.keys(el).length !== 0;
                 }).length === 0)){
                     var jsonObj = {};
                     params['meta.types'] = {};
-                    if(deviceAttrs !=null && deviceAttrs.length > 0){
-                        for(var i=0; i<deviceAttrs.length; i++){
-                            if(deviceAttrs[i] != null && Object.keys(deviceAttrs[i]).length > 0){
-                                var name = deviceAttrs[i].name;
-                                var value = deviceAttrs[i].value;
-                                var type = deviceAttrs[i].type;
+                    if(identityAttrs !=null && identityAttrs.length > 0){
+                        for(var i=0; i<identityAttrs.length; i++){
+                            if(identityAttrs[i] != null && Object.keys(identityAttrs[i]).length > 0){
+                                var name = identityAttrs[i].name;
+                                var value = identityAttrs[i].value;
+                                var type = identityAttrs[i].type;
                                 jsonObj[name]= type;
                                 params[name] = value;
                             }
                         }
                         params['meta.types'] = jsonObj;
-                        if(params.description != null && params.description != "")
-                            params['meta.types'].description = "text";
+                        if(gridType == "device"){
+                            if(params.description != null && params.description != "")
+                                params['meta.types'].description = "text";
+                        } else if(gridType == "user"){
+                            if(params.email != null && params.email != "")
+                                params['meta.types'].email = "string";
+                        }
                     }
                 }
-                delete params['deviceAttrs'];
+                delete params['identityAttrs'];
                 params["password"] = Math.random().toString(36).substring(7);
-                var response = devices.create(params);
+                var response;
+                if(gridType == "device")
+                    response = devices.create(params);
+                else if(gridType == "user")
+                    response = users.create(params);
+                log.error("Creating identity: " + JSON.stringify(response));
                 if(response.metadata.status == "failure") {
-                    log.error("Creating device failed: " + JSON.stringify(response.metadata));
+                    log.error("Creating identity failed: " + JSON.stringify(response.metadata));
                     responseObj = response.metadata;
                     throw {
                         errorCode: response.metadata.errorCode,
@@ -144,10 +201,11 @@ function importDevices(devicesArr){
                     };
                 } else {
                     responseObj = {"status": "success"};
+                    if(gridType == "device") {
                     //generate token after successfull device creation
-                    //var tokenResponse = devices.generateToken(response.result.device.id);
-                    /*
-                        var tokenResponse = apsdb.callApi("GenerateToken", {"apsws.id": response.result.device.id}, null);
+                    var tokenResponse = devices.generateToken(response.result.device.id);
+                    log.error("Generating token response: " + JSON.stringify(tokenResponse));
+                      //  var tokenResponse = apsdb.callApi("identity/api/devices/scripts/generateTokens", response.result.device.id, null);
                         if(tokenResponse.metadata.status == "failure") {
                             log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
                             responseObj = tokenResponse.metadata;
@@ -158,14 +216,14 @@ function importDevices(devicesArr){
                         } else {
                             responseObj = {"status": "success"};
                         }
-                        */
+                    }
                 }
             }
         });
         ts.commit();
     } catch(e){
         ts.rollback();
-        log.error("Failure when importing devices\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+        log.error("Failure when importing identity\n" + typeof(e) == "string" ? e : JSON.stringify(e));
     }
 
     return responseObj;
@@ -197,13 +255,19 @@ function deleteDevices(deviceArr){
     return responseObj;
 }
 
-function deleteGroups(groupArr){
+function deleteIdentity(identityArr, module){
     var groups = require("group");
     var ts = apsdb.beginTransaction();
     try{
         var responseObj = {};
-        groupArr.forEach(function(groupName) {
-            var response = groups.delete(groupName);
+        identityArr.forEach(function(identityId) {
+            var response;
+            if(module == "group")
+                response = groups.delete(identityId);
+            else if(module == "device")
+                response = devices.delete(identityId);
+            else if(module == "user")
+                response = users.delete(identityId);
             if(response.metadata.status == "failure") {
                 responseObj = response.metadata;
                 throw {
@@ -218,7 +282,7 @@ function deleteGroups(groupArr){
         ts.commit();
     } catch(e){
         ts.rollback();
-        log.error("Failure when deleting groups\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+        log.error("Failure when deleting "+module+"\n" + typeof(e) == "string" ? e : JSON.stringify(e));
     }      
 
     return responseObj;
@@ -226,6 +290,7 @@ function deleteGroups(groupArr){
 
 function getJobStatus(params, paramsEvaluator, errorHandler){
     var requiredParams = ["scriptHandleId"];
+    log.info("Params"+ JSON.stringify(params));
     paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
     var hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams)
     if(!hasAllRequiredParams.success) {
@@ -242,4 +307,78 @@ function getJobStatus(params, paramsEvaluator, errorHandler){
     } else {
         return result.result;
     }
+}
+
+
+function generateToken(params){
+    var deviceIdParam = params["id"];
+    var action = "";
+    if(params["action"] !== undefined && params["action"] !== null ) {
+        action = params["action"];
+    }
+    var deviceArr = [];
+    if(deviceIdParam instanceof Array){
+        deviceArr = deviceIdParam;
+    }else{
+        deviceArr = [deviceIdParam];
+    }
+
+    var ts = apsdb.beginTransaction();
+    try{
+        var responseObj = {};
+        deviceArr.forEach(function(deviceId) {
+            /*
+            * if action is not empty then we have a single device id coming from viewDevice (so we know its either generate or regenerate)
+            * if action is empty it means its coming from refreshTokens and we do not know if this device id already has a token or not
+            * so first the regenerate is called, if it failed with a code of TOKEN_NOT_FOUND then this device has no token 
+            * and we move on to generate one
+            */
+            var regenerate = true;
+            if(action != "" && action != "regenerate"){
+                log.info("action is not regenerate");
+                regenerate = false;
+            }
+            if(regenerate){
+                log.info("action is regenerate");
+                var response = devices.regenerateToken(deviceId);
+                log.info("regenerateResponse"+ JSON.stringify(response))
+                if(response.metadata.status == "failure") {
+                    responseObj = response.metadata;
+                    //if action is empty and the error was not TOKEN_NOT_FOUND, then something else happened and an error should be thrown
+                    if(action != "" || (action == "" && responseObj.errorCode != "TOKEN_NOT_FOUND")){
+                        throw {
+                            errorCode: response.metadata.errorCode,
+                            errorDetail: response.metadata.errorDetail
+                        };
+                    }
+                } else {
+                    if(action != "")
+                        responseObj = response.result;                   
+                    else
+                        responseObj = {"status": "success"};
+                    //if regenerate succeeds no need to continue to generate
+                    return;
+                }
+            }
+            var response = devices.generateToken(deviceId);
+            if(response.metadata.status == "failure") {
+                responseObj = response.metadata;
+                throw {
+                    errorCode: response.metadata.errorCode,
+                    errorDetail: response.metadata.errorDetail
+                };
+            } else {
+                if(action != "")
+                    responseObj = response.result;                   
+                else
+                    responseObj = {"status": "success"};
+            }
+        })
+        ts.commit();
+    } catch(e){
+        ts.rollback();
+        log.error("Failure when generating token\n" + typeof(e) == "string" ? e : JSON.stringify(e));
+    }      
+
+    return responseObj;
 }

@@ -7,92 +7,64 @@ log.setLevel("INFO");
 var errorHandler = new errorHandler.ErrorHandler();
 var config = require ("identity/config/config");
 var aclEvaluator = require("../../entities/AclEvaluator");
-//Check permissions
+var identityManager = require("identity/entities/identityManager");
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
 var aclEvaluator = new aclEvaluator.AclEvaluator();
 //user needs to be in the identityManagementGroups
 var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
 if(!hasPermission) {
-  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+    return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
 }
 
-var requiredParams = ["id"];
+
+log.info("rawBody"+ request.rawBody)
+log.info("body"+ request.body)
+log.info("parameters"+ request.parameters)
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
-var params = typeof(body) == "string" ? JSON.parse(body) : body;
-log.info("Request normalized params: " + JSON.stringify(params));
-var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
-hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
-if(!hasAllRequiredParams.success) {
-  return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
-}
+var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("Request normalized params: " + JSON.stringify(requestParams));
 
-var deviceIdParam = params["id"];
-var action = "";
-if(params["action"] !== undefined && params["action"] !== null ) {
-    action = params["action"];
-}
-var deviceArr = [];
-if(deviceIdParam instanceof Array){
-    deviceArr = deviceIdParam;
-}else{
-    deviceArr = [deviceIdParam];
-}
+switch (request.method) {
+    case "GET":
+        // if the request method is GET, it means we are checking on jobHandleId
+        return identityManager.getJobStatus(requestParams, paramsEvaluator, errorHandler);
+        break;
+    case "POST":
+        var requiredParams = ["id"];
+        var optionalParams = ["action"];
 
-var ts = apsdb.beginTransaction();
-try{
-    var responseObj = {};
-    deviceArr.forEach(function(deviceId) {
-        /*
-        * if action is not empty then we have a single device id coming from viewDevice (so we know its either generate or regenerate)
-        * if action is empty it means its coming from refreshTokens and we do not know if this device id already has a token or not
-        * so first the regenerate is called, if it failed with a code of TOKEN_NOT_FOUND then this device has no token 
-        * and we move on to generate one
-        */
-        var regenerate = true;
-        if(action != "" && action != "regenerate"){
-            log.info("action is not regenerate");
-            regenerate = false;
+        //Check if required params
+        var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
+        hasAllRequiredParams = paramsEvaluator.hasRequiredParams(requestParams, requiredParams)
+        if(!hasAllRequiredParams.success) {
+            return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.", null, null, hasAllRequiredParams.param);
         }
-        if(regenerate){
-            log.info("action is regenerate");
-            var response = devices.regenerateToken(deviceId);
-            if(response.metadata.status == "failure") {
-                responseObj = response.metadata;
-                //if action is empty and the error was not TOKEN_NOT_FOUND, then something else happened and an error should be thrown
-                if(action != "" || (action == "" && responseObj.errorCode != "TOKEN_NOT_FOUND")){
-                    throw {
-                        errorCode: response.metadata.errorCode,
-                        errorDetail: response.metadata.errorDetail
-                    };
-                }
-            } else {
-                if(action != "")
-					responseObj = response.result;                   
-                else
-            		responseObj = {"status": "success"};
-                //if regenerate succeeds no need to continue to generate
-                return;
-            }
-    	}
-        var response = devices.generateToken(deviceId);
-        if(response.metadata.status == "failure") {
-            responseObj = response.metadata;
-            throw {
-                errorCode: response.metadata.errorCode,
-                errorDetail: response.metadata.errorDetail
-            };
+
+        var params = paramsEvaluator.buildParams(requestParams, requiredParams, optionalParams);
+        log.info("params12345 "+JSON.stringify(params));
+
+        // if we have action param ( single regenerate / generate ), no need to schedual a job
+        if(params.action != null && params.action != ""){
+			return identityManager.generateToken(params);
         } else {
-            if(action != "")
-                responseObj = response.result;                   
-            else
-            	responseObj = {"status": "success"};
-        }
-    })
-	ts.commit();
-} catch(e){
-    ts.rollback();
-    log.error("Failure when generating token\n" + typeof(e) == "string" ? e : JSON.stringify(e));
-}      
 
-return responseObj;
+            //schedule job
+            var data = {
+                "apsdb.scriptName": "identity/api/devices/scripts/generateTokens",
+                "params": JSON.stringify(params)
+            };
+            var result = apsdb.callApi("QueueScript", data, null);
+            log.info(JSON.stringify(result));
+            if (result.status == "failure") {
+                var errorMsg = "[traceContact] An error occurred while queueing job [" + JSON.stringify(result) + "]";
+                return { "status": "failure", "errorCode": "error_queueing_job", "errorDetail": errorMsg };
+            } else {
+                return {"status":"success", "scriptHandleId": result.result.script.scriptHandle};
+            }
+        }
+        break;
+    default:
+        return errorHandler.buildError("invalid_method", "Invalid HTTP method"); 
+
+}

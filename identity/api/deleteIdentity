@@ -1,12 +1,15 @@
-var paramsEvaluator = require("../../entities/ParamsEvaluator");
-var aclEvaluator = require("../../entities/AclEvaluator");
-var errorHandler = require("../../entities/ErrorHandler");
+// this api is used to delete a group
+var paramsEvaluator = require("../entities/ParamsEvaluator");
+var errorHandler = require("../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
-var config = require ("identity/config/config");
+var groups = require("group");
 var devices = require("device");
+var users = require("user");
+var config = require ("identity/config/config");
 var log = require("log")
 log.setLevel("INFO");
-
+var config = require ("identity/config/config");
+var aclEvaluator = require("../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
@@ -19,7 +22,7 @@ if(!hasPermission) {
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
-log.info("Request params: " + JSON.stringify(params));
+log.info("Request normalized params: " + JSON.stringify(params));
 switch (request.method) {
     case "GET":
         // if the request method is GET, it means we are checking on jobHandleId
@@ -28,23 +31,41 @@ switch (request.method) {
         break;
     case "POST":
         //Check required params
-        var requiredParams = ["id"];
+        var requiredParams = [];
+        var identityIdParam; 
+        if(params.module == "group"){
+            requiredParams = ["name"];
+            identityIdParam = params["name"];
+        } else if (params.module == "device"){
+            requiredParams = ["id"];
+            identityIdParam = params["id"];
+        } else if (params.module == "user"){
+            requiredParams = ["id"];
+            identityIdParam = params["id"];
+        }
+        
         var paramsEvaluator = new paramsEvaluator.ParamsEvaluator();
         hasAllRequiredParams = paramsEvaluator.hasRequiredParams(params, requiredParams);
         if(!hasAllRequiredParams.success) {
             return errorHandler.buildError("missing_parameter", "Parameter \""+hasAllRequiredParams.param+ "\" is required.");
         }
 
-        var deviceIdParam = params["id"];
-        var deviceArr = [];
-        if(deviceIdParam instanceof Array){
-            deviceArr = deviceIdParam;
+        //var groupIdParam = params["name"];
+        var identityArr = [];
+        if(identityIdParam instanceof Array){
+            identityArr = identityIdParam;
         }else{
-            deviceArr = [deviceIdParam];
+            identityArr = [identityIdParam];
         }
 
-        if(deviceArr.length == 1){
-            var response = devices.delete(deviceArr[0]);
+        if(identityArr.length == 1){
+            var response;
+            if(params.module == "device")
+                response = devices.delete(identityArr[0]);
+            else if(params.module == "group")
+                response = groups.delete(identityArr[0]);
+            else if(params.module == "user")
+                response = users.delete(identityArr[0]);
             if(response.metadata.status == "failure") {
                 return response.metadata;
             } else {
@@ -53,13 +74,14 @@ switch (request.method) {
         }else{
             //schedule job if the devices are multiple
             var data = {
-                "apsdb.scriptName": config.deleteDevicesScriptPath,
-                "params": JSON.stringify(deviceArr)
+                "apsdb.scriptName": "identity/api/scripts/deleteIdentity",
+                "params": JSON.stringify(identityArr), 
+                "module": params.module
             };
             var result = apsdb.callApi("QueueScript", data, null);
 
             if (result.status == "failure") {
-                var errorMsg = "[deleteDevice] An error occurred while queueing job [" + JSON.stringify(result) + "]";
+                var errorMsg = "[delete"+params.module+"] An error occurred while queueing job [" + JSON.stringify(result) + "]";
                 return { "status": "failure", "errorDetail": errorMsg };
             } else {
                 return {"status":"success", "scriptHandleId": result.result.script.scriptHandle};
