@@ -30,7 +30,7 @@ angular
                             "key": "devices",
                             "type": 'uiselectmultiple',
                             'htmlClass': 'col-xs-12',
-                            "placeholder": "Select devices",
+                            "placeholder": "Select Devices",
                             "options": {
                                 "multiple": true,
                                 "closeOnSelect": true,
@@ -209,7 +209,7 @@ angular
                             'items':[
                                 {
                                     'type':'uiselectmultiple',
-                                    "placeholder": "Select group",
+                                    "placeholder": "Select Group",
                                     'key': 'groups',
                                     "options": {
                                         "httpGet":{
@@ -342,7 +342,7 @@ angular
                     },
                     "groups": {
                         "type": "array",
-                        "title": "groups",
+                        "title": "Groups",
                        // "description": "Select your group",
                         "items": {
                             "type": "object"
@@ -525,7 +525,7 @@ angular
                             'items':[
                                 {
                                     'type':'uiselectmultiple',
-                                    "placeholder": "Select group",
+                                    "placeholder": "Select Group",
                                     'key': 'groups',
                                     "options": {
                                         "httpGet":{
