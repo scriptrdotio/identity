@@ -575,7 +575,7 @@ angular
            } else if (data.errorDetail) {
                errDesc = data.errorDetail;
            }
-           self.showAlert("danger", "Could not fetch device, please try again later: "+errDesc);
+           self.showAlert("danger", "Could not fetch "+self.gridId+", please try again later: "+errDesc);
            return;
        }
        var groupsArr = [];
@@ -653,7 +653,7 @@ angular
            if(wdgModel != 'cancel') {
                var successHandler = function(data) {
                    $scope.$broadcast("updateGridData-"+self.gridId, {});
-                   self.showAlert("success", "Successfully saved device");
+                   self.showAlert("success", "Successfully saved "+self.gridId);
                }
                var failureHandler = function(err) {
                    var errDesc = 'Unknown error';
@@ -662,7 +662,7 @@ angular
                    } else if (err.errorDetail) {
                        errDesc = err.errorDetail;
                    }
-                   self.showAlert("danger", "Could not save device, please try again later: "+errDesc);
+                   self.showAlert("danger", "Could not save "+self.gridId+", please try again later: "+errDesc);
                }
                wdgModel.update = true;
                self.callBackendApiPost(backendApi, wdgModel, successHandler, failureHandler) 
@@ -680,7 +680,7 @@ angular
                 function(err) {
                     if(err.status == "success"){
                         $scope.$broadcast("updateGridData-"+self.gridId, {});
-                        self.showAlert("success", "Successfully saved device");
+                        self.showAlert("success", "Successfully saved "+self.gridId);
                         return;
                     }
 
@@ -690,7 +690,7 @@ angular
                     } else if (err.errorDetail) {
                         errDesc = err.errorDetail;
                     }
-                    self.showAlert("danger", "Could not save device, please try again later: "+errDesc);
+                    self.showAlert("danger", "Could not save "+self.gridId+", please try again later: "+errDesc);
                 }
                 );
     };
@@ -843,7 +843,7 @@ angular
                         errDesc = data.errorDetail;
                     }
                     vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
-                    //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later");
+                    //vm.showPromptMessage("danger",false, "Could not fetch identity, please try again later");
                     return;
                 }
 
@@ -890,11 +890,11 @@ angular
                 Object.keys(data).forEach(function(key) {
                     if(defaultAttrs.indexOf(key)<0){
                         vm.hasAttrs = true;
-                        var deviceAttrsObj = {};
-                        deviceAttrsObj.name = key;
-                        deviceAttrsObj.type = metaTypes[key];
-                        deviceAttrsObj.value = data[key];
-                        identityAttrsArray.push(deviceAttrsObj);
+                        var identityAttrsObj = {};
+                        identityAttrsObj.name = key;
+                        identityAttrsObj.type = metaTypes[key];
+                        identityAttrsObj.value = data[key];
+                        identityAttrsArray.push(identityAttrsObj);
                     }
                 })
                 vm.identityAttrs = identityAttrsArray;
@@ -911,7 +911,7 @@ angular
                     errDesc = err.errorDetail;
                 }
                 vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
-                //vm.showPromptMessage("danger",false, "Could not fetch device, please try again later!");
+                //vm.showPromptMessage("danger",false, "Could not fetch identity, please try again later!");
             }
         );
     }
@@ -1031,12 +1031,12 @@ angular
                     if (data.errorDetail) {
                         errDesc = data.errorDetail;
                     }
-                    vm.showAlert("danger", "Could not delete device: "+errDesc);
-                    //vm.showPromptMessage("danger", false, "Failed to delete device")
+                    vm.showAlert("danger", "Could not delete "+vm.parent.gridId+": "+errDesc);
+                    //vm.showPromptMessage("danger", false, "Failed to delete identity")
                     return;
                 }
 
-                vm.parent.showAlert("success", "Successfully deleted device");
+                vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
                 vm.closeDialog();
@@ -1046,7 +1046,7 @@ angular
                 if(err.status == "success"){
                     vm.showActionButtons = true;
                     vm.closeDialog();
-                    vm.parent.showAlert("success", "Successfully deleted device");
+                    vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
                     vm.grid.refreshInfiniteCache();
                     vm.closeDialog();
                     return;
@@ -1058,8 +1058,8 @@ angular
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showAlert("danger", "Could not delete device: "+errDesc);
-                //vm.showPromptMessage("danger", false, "Could not delete device: "+errDesc)
+                vm.showAlert("danger", "Could not delete "+vm.parent.gridId+": "+errDesc);
+                //vm.showPromptMessage("danger", false, "Could not delete identity: "+errDesc)
             }
         );
     }
