@@ -370,14 +370,14 @@ angular
                                 if(data && data.errorDetail){
                                     self.showAlert("danger", data.errorDetail);
                                 }else{
-                                    self.showAlert("danger", "An error has occured. Please try again later.");
+                                    self.showAlert("danger", "An error has occurred. Please try again later.");
                                 }
                             }
                         },
                         function(err) {
                             self.gridOptions.api.hideOverlay();   
                             console.log("reject", err);
-                            self.showAlert("danger", "An error has occured. Please try again later.");
+                            self.showAlert("danger", "An error has occurred. Please try again later.");
                         });
                 }else{
                     var params = event.data;
@@ -400,14 +400,14 @@ angular
                                 if(data && data.errorDetail){
                                     self.showAlert("danger", data.errorDetail);
                                 }else{
-                                    self.showAlert("danger", "An error has occured. Please try again later.");
+                                    self.showAlert("danger", "An error has occurred. Please try again later.");
                                 }
                             }
                         },
                         function(err) {
                             self.gridOptions.api.hideOverlay();   
                             console.log("reject", err);g
-                            self.showAlert("danger", "An error has occured. Please try again later.");
+                            self.showAlert("danger", "An error has occurred. Please try again later.");
                         });
                 }
             }
@@ -733,7 +733,7 @@ angular
                                 function(err) {
                                     self.gridOptions.api.hideOverlay();     
                                     console.log("reject", err);
-                                    self.showAlert("danger", "An error has occured. Please try again later.");
+                                    self.showAlert("danger", "An error has occurred. Please try again later.");
                                 });
                         }
                     }else{
@@ -1003,7 +1003,7 @@ angular
                                   onSuccess(jobResult.resultJSON.response.result);
                                   return;
                               }else{
-                                  onFailure("An error has occured. Please try again later.");
+                                  onFailure("An error has occurred. Please try again later.");
                               }
 
                           }
