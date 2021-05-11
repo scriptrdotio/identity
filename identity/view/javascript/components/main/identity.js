@@ -768,6 +768,7 @@ angular
         vm.closeDialog();
         $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting '+vm.parent.gridId+'...</b>');
         var parameters = {};
+        var gridId = vm.parent.gridId.charAt(0).toUpperCase() + vm.parent.gridId.substring(1);
         parameters[vm.parent.identifierProperty] = vm.identifier;
         parameters["module"] = vm.parent.gridId;
         httpClient.post(vm.deleteApi, parameters).then(
@@ -777,14 +778,14 @@ angular
                     return;
                 }
 				
-                vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
+                vm.parent.showAlert("success", gridId+ "deleted successfully");
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
             },
             function(err) {
                 vm.grid.hideOverlay();
                 if(err.status == "success"){
-                    vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
+                    vm.parent.showAlert("success", gridId+ "deleted successfully");
                     vm.grid.refreshInfiniteCache();
                     return;
                 }
@@ -1037,7 +1038,7 @@ angular
                     return;
                 }
 
-                vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
+                vm.parent.showAlert("success", vm.gridId+ "deleted successfully");
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
                 vm.closeDialog();
@@ -1047,7 +1048,7 @@ angular
                 if(err.status == "success"){
                     vm.showActionButtons = true;
                     vm.closeDialog();
-                    vm.parent.showAlert("success", "Successfully deleted "+vm.parent.gridId);
+                    vm.parent.showAlert("success", vm.gridId+ "deleted successfully");
                     vm.grid.refreshInfiniteCache();
                     vm.closeDialog();
                     return;
@@ -1184,7 +1185,7 @@ angular
                     return;
                 }
 
-                vm.parent.showAlert("success", "Successfully deleted group");
+                vm.parent.showAlert("success", "Group deleted successfully");
                 vm.grid.refreshInfiniteCache();
                 vm.grid.deselectAll();
                 vm.closeDialog();
@@ -1194,7 +1195,7 @@ angular
                 if(err.status == "success"){
                     vm.showActionButtons = true;
                     vm.closeDialog();
-                    vm.parent.showAlert("success", "Successfully deleted group");
+                    vm.parent.showAlert("success", "Group deleted successfully");
                     vm.grid.refreshInfiniteCache();
                     vm.closeDialog();
                     return;
