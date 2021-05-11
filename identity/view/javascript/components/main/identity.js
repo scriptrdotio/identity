@@ -1173,7 +1173,8 @@ angular
     
     vm.deleteGroup = function() {
         var parameters = {
-            name: vm.groupName
+            name: vm.groupName,
+            module: "group"
         }
         httpClient.post(identityConfig.group.apis.delete, parameters).then(
             function(data, response) {

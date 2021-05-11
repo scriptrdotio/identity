@@ -571,7 +571,7 @@ angular
                                     if (res.errorDetail) {
                                         res = data.errorDetail;
                                     }
-                                    self.showAlert("danger", "Unable to refresh token(s), please try again");
+                                    self.showAlert("danger", "Unable to refresh token(s), please try again later.");
                                     return;
                                 }
 
@@ -587,17 +587,17 @@ angular
                                 } else if (err.errorDetail) {
                                     errDesc = err.errorDetail;
                                 }
-                                self.showAlert("danger", "Unable to refresh token(s), please try again");
+                                self.showAlert("danger", "Unable to refresh token(s), please try again later.");
                             })
                         }
                     
                         else
-                            self.showAlert("danger", "Unable to refresh token(s), please try again");
+                            self.showAlert("danger", "Unable to refresh token(s), please try again later.");
 
 
 
                     },function(err){
-                        self.showAlert("danger", "Unable to refresh token(s), please try again");
+                        self.showAlert("danger", "Unable to refresh token(s), please try again later.");
                     })
                 } else
                     self.showAlert("danger", "No device(s) selected");

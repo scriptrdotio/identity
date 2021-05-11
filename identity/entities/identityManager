@@ -116,7 +116,7 @@ function getGroups(params){
                     if(!lowerCaseName.includes(lowerCaseFilter))
                         continue;
                 }
-                var response = devices.query({"query":'groups = "' +lowerCaseName+ '"', "count": count});
+                var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
                 if(response.metadata.status == "failure") 
                     return response.metadata;
                 response.result["name"] = name;
