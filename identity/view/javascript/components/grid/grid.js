@@ -1003,7 +1003,7 @@ angular
                                   onSuccess(jobResult.resultJSON.response.result);
                                   return;
                               }else{
-                                  onFailure("An error has occured. Please try again later.";
+                                  onFailure("An error has occured. Please try again later.");
                               }
 
                           }
