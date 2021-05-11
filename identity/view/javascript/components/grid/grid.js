@@ -107,7 +107,8 @@ angular
             
             "removeRowConfig": "<?",
             
-            "saveRowConfig": "<?"
+            "saveRowConfig": "<?",
+            "customNoRowsLabel": "@"
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
@@ -218,6 +219,7 @@ angular
                 
                 this._dataIdentifierProperty = (this.gridDataIdentifierProperty) ? this.gridDataIdentifierProperty : "key";
                 this.useWindowParams = (this.useWindowParams) ? this.useWindowParams : "true";
+                this.noRowsLabel = this.customNoRowsLabel ? this.customNoRowsLabel : "No Results To Show"
                 this.sizeColumnsToFit = (this.sizeColumnsToFit !== undefined) ? this.sizeColumnsToFit : true; //backward compatibility default true
                 this.gridOptions = {
                     angularCompileRows: true,
@@ -238,6 +240,7 @@ angular
                     suppressRowClickSelection : (this.suppressRowClickSelection) ? this.suppressRowClickSelection : true,
                     suppressCellSelection : (this.suppressCellSelection) ? this.suppressCellSelection : true,
                     paginationPageSize : (this.paginationPageSize) ? this.paginationPageSize : 50,
+                    overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">'+this.noRowsLabel+'</span>',
                     overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>Loading...</span>',
                     defaultColDef : {
                         filter: false,
@@ -455,11 +458,12 @@ angular
                                     })
                                 }else{
                                     self._createNewDatasource();
-                                    self.showAlert("success", "Successfully saved group");
+                                    self.showAlert("success", "Group saved successfully");
                                 }
                             }else{
+                                var gridId = self.gridEventsId.charAt(0).toUpperCase() + self.gridEventsId.substring(1);
                                 self._createNewDatasource();
-                                self.showAlert("success", "Successfully saved "+self.gridEventsId); 
+                                self.showAlert("success", gridId+" saved successfully"); 
                             }
                         }
                         var failureHandler = function(err) {

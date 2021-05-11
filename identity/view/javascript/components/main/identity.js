@@ -510,7 +510,7 @@ angular
                                 })
                             }else{
                                 $scope.$broadcast("updateGridData-"+self.gridId, {});
-                                self.showAlert("success", "Successfully saved group");
+                                self.showAlert("success", "Group saved successfully");
                             }
                         }
                         var failureHandler = function(err) {
@@ -548,7 +548,7 @@ angular
                 console.dir(err);
                 if(err.status == "success"){
                     $scope.$broadcast("updateGridData-"+self.gridId, {});
-                    self.showAlert("success", "Successfully saved group");
+                    self.showAlert("success", "Group saved successfully");
                     return;
                 }
 
@@ -680,7 +680,8 @@ angular
                 function(err) {
                     if(err.status == "success"){
                         $scope.$broadcast("updateGridData-"+self.gridId, {});
-                        self.showAlert("success", "Successfully saved "+self.gridId);
+                        var gridId = self.gridId.charAt(0).toUpperCase() + self.gridId.substring(1);
+                        self.showAlert("success", gridId+ " saved successfully");
                         return;
                     }
 
