@@ -96,6 +96,7 @@ function getGroups(params){
     var groups = groups.list();
     var result = groups.result.groups;
 
+
     var count = true;
     if(params["count"] !== undefined && params["count"] !== null) {
         count = (params["count"] === "true") ?  true : false;
@@ -105,7 +106,6 @@ function getGroups(params){
     if(params["queryFilter"] !== undefined && params["queryFilter"] !== null) {
         queryFilter = params["queryFilter"];
     }
-
     if(result!= null && result.length >0){
         if(count){
             for (var i=0; i<result.length;i++){
@@ -116,29 +116,27 @@ function getGroups(params){
                     if(!lowerCaseName.includes(lowerCaseFilter))
                         continue;
                 }
-                var response = devices.query({"query":'groups = "' +name+ '"', "count": count});
+                var response = devices.query({"query":'groups = "' +lowerCaseName+ '"', "count": count});
+                if(response.metadata.status == "failure") 
+                    return response.metadata;
                 response.result["name"] = name;
                 users.push(response.result);
             }
-            if(response.metadata.status == "failure") {
-                return response.metadata;
-            } else{
-                var originalCount = users.length;
-                if(users!=null && users.length>0 && params.pageNumber != null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
-                    var startRow = parseInt(params.startRow);
-                    var endRow = parseInt(params.endRow);
-                    var pageDocuments = [];
-                    var x=0;
-                    for(i=startRow; i<endRow; i++){
-                        if(users[i]!=null && users[i]!="")
-                            pageDocuments[x++] = users[i];
-                    }
-                    users = pageDocuments;
-                    log.info("pageDocuments: "+JSON.stringify(pageDocuments));
-                    log.info("users: "+JSON.stringify(users));
+            var originalCount = users.length;
+            if(users!=null && users.length>0 && params.pageNumber != null && params.pageNumber!="" && params.endRow!= null && params.startRow!= null){
+                var startRow = parseInt(params.startRow);
+                var endRow = parseInt(params.endRow);
+                var pageDocuments = [];
+                var x=0;
+                for(i=startRow; i<endRow; i++){
+                    if(users[i]!=null && users[i]!="")
+                        pageDocuments[x++] = users[i];
                 }
-                return { "count": originalCount, "documents": users};
+                users = pageDocuments;
+                log.info("pageDocuments: "+JSON.stringify(pageDocuments));
+                log.info("users: "+JSON.stringify(users));
             }
+            return { "count": originalCount, "documents": users};
         }
         else{
             return  result;
