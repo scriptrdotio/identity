@@ -11,10 +11,14 @@ Below are the main guidelines to follow in order to integrate this component int
 - Branch:master
 
 ##### Dependencies
-- Run the following scripts once:
-	- **identity/install/createDefaultManager**: This will create the "identity-managers" group that will have access to all APIs, and then it will create a default admin user that will be placed in that group. If you wish to create a different group that has access to the APIs, that group has to be placed in the "identityManagementGroups" array located in "identity/config/config".
+- Make sure you have the following installed:
+	- UIComponents
+	- Login (custom installation)
+	- Underscore and momentjs (under modules)
+- Run **identity/install/auto.install.scriptr** once, the script will:
+	- Create the "identity-managers" group that will have access to all APIs, and then it will create a default admin user (login: admin, pass: admin) that will be placed in that group. If you wish to create a different group that has access to the APIs, that group has to be placed in the "identityManagementGroups" array located in "identity/config/config".
 
-	- **identity/install/createTemplateDocument**: This will create a CSV template that the users can download from the "Import CSV" window.
+	- Create CSV templates that the users can download and use as reference from the "Import CSV" window for both Devices and Users tabs.
 
 - Make sure to activate "**QueueScript**" for the scriptr account being used.
 
