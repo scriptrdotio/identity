@@ -4,9 +4,11 @@ var utils = require("identity/entities/identityManager");
 var deviceModule = require("device");
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
+log.info("paramsLogged"+ JSON.stringify(params));
 
 var devices = JSON.parse(params.devices);
-var originalDevices = JSON.parse(params.originalDevices);
+if(params.originalDevices != null && params.originalDevices !="")
+    var originalDevices = JSON.parse(params.originalDevices);
 var groupName = params.groupName;
 
 var response = "";
