@@ -205,6 +205,7 @@ angular
             field: "auth_token", 
             cellClass: "textWrap", 
             editable : false,
+            suppressSorting : true,
             tooltipField: 'auth_token',
             cellRenderer: function(params) {
                 if(params.value) {
