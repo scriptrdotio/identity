@@ -115,7 +115,7 @@ angular
         controller : function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
 
             var self = this;
-
+			
             self.broadcastData = null;
 			this.identityForms = identityForms;
             this.dataSource = {
@@ -771,7 +771,13 @@ angular
             }
 
             this.onServerFilterChanged = function() {
-                self._createNewDatasource();
+                if (self.timeoutId == null) {
+                    self.timeoutId = $timeout(function(){}, 1000).then(function(){
+                        self.timeoutId = null;
+                        self._createNewDatasource();
+                    });
+                }
+                //self._createNewDatasource();
             }
 
             this.buildParams = function(params) {
