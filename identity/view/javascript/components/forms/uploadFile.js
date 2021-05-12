@@ -15,8 +15,8 @@ angular
         this.$onInit = function(){
             console.log($scope);
             this.widget = this.resolve.widget;
-            this.gridType = this.resolve.widget.parent.gridEventsId;
-            this.gridTypeToUpperCase = this.gridType.charAt(0).toUpperCase() + this.gridType.substring(1);
+            self.gridType = this.resolve.widget.parent.gridEventsId;
+            this.gridTypeToUpperCase = self.gridType.charAt(0).toUpperCase() + self.gridType.substring(1);
             $scope.$broadcast('schemaFormRedraw')
            // this.gridType1 = $scope.$ctrl.resolve.widget.parent.gridEventsId;
             this.frmGlobalOptions = {
@@ -73,7 +73,7 @@ angular
                         fd.append(key, this.model[key]);
                     }
                 }
-                fd.append("gridType", this.gridType)
+                fd.append("gridType", self.gridType)
                 httpClient.post(identityConfig.reports.apis.import, fd, null,true).then(
                     function(data, response) {
                         if(data.status == "failure") {
@@ -83,7 +83,7 @@ angular
                             identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (res){
                                 self.showLoading = false;
                                 if (res.status && res.status == "success") {
-                                    self.showAlert("success", "The "+this.gridType+"s have been imported successfully");
+                                    self.showAlert("success", "The "+self.gridType+"s have been imported successfully");
                                     self.parent._createNewDatasource();
                                     d.resolve(data, response);
                                 } else {
@@ -92,7 +92,7 @@ angular
                                     d.reject(res.errorCode, res.errorDetail);
                                 }
                             },function(errorDetail){
-                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+this.gridType+"s");
+                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+self.gridType+"s");
                                 self.showLoading = false;
                                 d.reject(errorDetail);  
                             })
@@ -111,12 +111,12 @@ angular
         
         this.downloadTemplate = function(){
             var params;
-            if(this.gridType == "device")
+            if(self.gridType == "device")
                 params = {
                     templateKey: "devicesTemplate",
                     attachment: "devicesTemplate.csv"
                 };
-            else if(this.gridType == "user")
+            else if(self.gridType == "user")
                 params = {
                     templateKey: "usersTemplate",
                     attachment: "usersTemplate.csv"
