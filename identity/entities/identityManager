@@ -189,7 +189,7 @@ function importIdentity(identityParams){
                     response = devices.create(params);
                 else if(gridType == "user")
                     response = users.create(params);
-                log.error("Creating identity: " + JSON.stringify(response));
+                log.info("Creating identity: " + JSON.stringify(response));
                 if(response.metadata.status == "failure") {
                     log.error("Creating identity failed: " + JSON.stringify(response.metadata));
                     responseObj = response.metadata;
@@ -200,19 +200,21 @@ function importIdentity(identityParams){
                 } else {
                     responseObj = {"status": "success"};
                     if(gridType == "device") {
-                    //generate token after successfull device creation
-                    var tokenResponse = devices.generateToken(response.result.device.id);
-                    log.error("Generating token response: " + JSON.stringify(tokenResponse));
-                      //  var tokenResponse = apsdb.callApi("identity/api/devices/scripts/generateTokens", response.result.device.id, null);
-                        if(tokenResponse.metadata.status == "failure") {
-                            log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
-                            responseObj = tokenResponse.metadata;
-                            throw {
-                                errorCode: tokenResponse.metadata.errorCode,
-                                errorDetail: tokenResponse.metadata.errorDetail
-                            };
-                        } else {
-                            responseObj = {"status": "success"};
+                        //generate token after successfull device creation AND if device is not suspended
+                        if(params.isSuspended == "false"){
+                            var tokenResponse = devices.generateToken(response.result.device.id);
+                            log.info("Generating token response: " + JSON.stringify(tokenResponse));
+                            //  var tokenResponse = apsdb.callApi("identity/api/devices/scripts/generateTokens", response.result.device.id, null);
+                            if(tokenResponse.metadata.status == "failure") {
+                                log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
+                                responseObj = tokenResponse.metadata;
+                                throw {
+                                    errorCode: tokenResponse.metadata.errorCode,
+                                    errorDetail: tokenResponse.metadata.errorDetail
+                                };
+                            } else {
+                                responseObj = {"status": "success"};
+                            }
                         }
                     }
                 }

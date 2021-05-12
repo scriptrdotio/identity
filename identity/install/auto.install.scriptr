@@ -37,7 +37,7 @@ var step2 = users.save(adminData);
 responseObject["admin_user_creation"] = JSON.stringify(step2);
 
 //create the CSV templates for users to download from the Import Devices/Users panel
-var fileContent = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\ndev1,Device1,This is the device description,active,stringAttr,,123\r\ndev2,Device2,,stringAttr,stringAttr,textAttr,\r\ndev3,Device3,,suspended,,,555";
+var fileContent = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\ndev1,Device1,This is the device description,active,stringAttr,,123\r\ndev2,Device2,,active,stringAttr,textAttr,\r\ndev3,Device3,,suspended,,,555";
 
 var fileName = "devicesTemplate.csv";
 var devicesTemplateResult = apsdb.createFile(fileContent,fileName);
@@ -50,7 +50,7 @@ var defaultStore = require('document').getInstance('DefaultStore');
 var step3 = defaultStore.save(reportData);
 responseObject["device_template_creation"] = JSON.stringify(step3);
 
-fileContent = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\nuser1,User1,user1@gmail.com,active,stringAttr,,123\r\nuser2,User2,,stringAttr,stringAttr,textAttr,\r\nuser3,User3,,suspended,,,555";
+fileContent = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\nuser1,User1,user1@gmail.com,active,stringAttr,,123\r\nuser2,User2,,active,stringAttr,textAttr,\r\nuser3,User3,,suspended,,,555";
 fileName = "usersTemplate.csv";
 var usersTemplateResult = apsdb.createFile(fileContent,fileName);
 var docKey = "usersTemplate";

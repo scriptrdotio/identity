@@ -18,7 +18,7 @@ var attributesArr = [];
 var headings = lines[0].split(','); // Splice up the first row to get the headings
 for (var h=0; h<headings.length; h++){
     var headingName = headings[h].toLowerCase().trim();
-    if(headingName == "id")
+    if(headingName == "id" && gridType == "device" || headingName == "login" && gridType == "user")
         idPos = h;
     else if(headingName == "name")
         namePos = h;
@@ -58,7 +58,7 @@ for (var i=1; i<lines.length; i++) {
         identity.email = values[emailPos];
     if(statusPos != null){
         var status = values[statusPos] != null ? values[statusPos].toLowerCase() : "";
-        identity.isSuspended = (status == "active" ? "false" : (status == "suspended" ? "true" : ""));
+        identity.isSuspended = (status == "active" ? "false" : (status == "suspended" ? "true" : "false"));
     }
     if(attributesArr.length > 0){
         var identityAttrs = [];
