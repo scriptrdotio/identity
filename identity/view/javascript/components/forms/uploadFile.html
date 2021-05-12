@@ -10,7 +10,7 @@
             <div sf-options="$ctrl.frmGlobalOptions" sf-schema="$ctrl.schema" sf-form="$ctrl.form" sf-model="$ctrl.model" ></div>
             <div class="modal-footer">
                 <button ng-hide="$ctrl.showLoading" class="btn btn-default"  type="submit">Import</button>
-                <button ng-hide="$ctrl.showLoading" class="btn btn-default" ng-click="$ctrl.downloadTemplate()">Download Template</button>
+                <button type="button" ng-hide="$ctrl.showLoading" class="btn btn-default" ng-click="$ctrl.downloadTemplate()">Download Template</button>
                 <button ng-hide="$ctrl.showLoading" class="btn btn-default" type="reset" ng-click="$ctrl.onCancel()">Close</button>
             </div>
         </div>

@@ -1141,7 +1141,7 @@ angular
         httpClient.post(identityConfig.group.apis.getGroupDevicesToView, parameters).then(
             function(data, response) {
                 if(data.status && data.status == "failure"){
-                    vm.showPromptMessage("danger",false,"Could not fetch group, please try again later");
+                    vm.showAlert("danger","Could not fetch group, please try again later");
                     vm.isLoading = false;
                     return;
                 }
@@ -1156,8 +1156,8 @@ angular
                 } else {
                     vm.devices = "N/A";
                 }
-                vm.showPromptMessage("success",false,"success");
-                vm.promptMessage = "Success";
+                //vm.showPromptMessage("success",false,"success");
+                //vm.promptMessage = "Success";
                 vm.groupFetched = true;
                 vm.hidePromptMessage = true;
             },
@@ -1169,7 +1169,7 @@ angular
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger",false,"Could not fetch group, please try again later");
+                vm.showAlert("danger","Could not fetch group, please try again later");
             }
         );
     } 
@@ -1183,7 +1183,7 @@ angular
             function(data, response) {
                 if(data.status && data.status == "failure"){
                     vm.showActionButtons = true;
-                    vm.showPromptMessage("danger", false, "Failed to delete group")
+                    vm.showAlert("danger", "Could not delete group, please try again later")
                     return;
                 }
 
@@ -1209,7 +1209,7 @@ angular
                 } else if (err.errorDetail) {
                     errDesc = err.errorDetail;
                 }
-                vm.showPromptMessage("danger", false,"Could not delete group, please try again later")
+                vm.showAlert("danger","Could not delete group, please try again later")
             }
         );
     }
@@ -1239,6 +1239,18 @@ angular
             vm.hidePromptMessage = true;
         }, 5000);
     }
+    
+    vm.showAlert = function(type, content) {
+        this.message = {
+            "type" : type,
+            "content" : content
+        }
+        vm.hasAlert = true;
+    };
+
+    vm.closeAlert = function() {
+        vm.hasAlert = false;
+    };
     
      vm.closeDialog = function() {
         $mdDialog.hide();
