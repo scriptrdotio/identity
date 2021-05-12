@@ -735,7 +735,7 @@ angular
                             "type": "array"
                         },
                         "pattern":       {
-                            "mimeType":  "text/csv",
+                            "mimeType":  ".csv",
                             "validationMessage": "Wrong File Type. Allowed types ",
                         },
                         "maxSize":       {
