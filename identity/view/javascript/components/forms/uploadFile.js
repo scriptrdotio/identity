@@ -16,6 +16,7 @@ angular
             console.log($scope);
             this.widget = this.resolve.widget;
             this.gridType = this.resolve.widget.parent.gridEventsId;
+            this.gridTypeToUpperCase = this.gridType.charAt(0).toUpperCase() + this.gridType.substring(1);
             $scope.$broadcast('schemaFormRedraw')
            // this.gridType1 = $scope.$ctrl.resolve.widget.parent.gridEventsId;
             this.frmGlobalOptions = {

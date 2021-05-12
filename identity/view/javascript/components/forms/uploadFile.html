@@ -2,7 +2,7 @@
     <div ng-if="$ctrl.hasAlert" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')  + ' m10'" close="$ctrl.closeAlert()" dismiss-on-timeout="5000">{{$ctrl.message.content}}</div>
     <div class="modal-header">
         <div class="title-header">
-        	<h4 class="mrgb20">Import Devices</h4>
+        	<h4 class="mrgb20">Import {{$ctrl.gridTypeToUpperCase}}s</h4>
         </div>
     </div>
     <form name="uploadFileForm" class="adminHome" ng-submit="$ctrl.save(uploadFileForm)">
