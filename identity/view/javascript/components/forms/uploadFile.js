@@ -88,7 +88,7 @@ angular
                                     d.resolve(data, response);
                                 } else {
                                     //This is in case some devices/users failed to be created
-                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import "+this.gridType+"s");
+                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import "+self.gridType+"s");
                                     d.reject(res.errorCode, res.errorDetail);
                                 }
                             },function(errorDetail){
