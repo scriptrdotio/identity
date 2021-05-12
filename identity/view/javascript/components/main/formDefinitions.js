@@ -692,7 +692,7 @@ angular
                         "type": "string"
                     }
                 },
-                'required': ["login","fullName","password","confirmPassword"]
+                'required': ["name","id","password","confirmPassword"]
             }
         },
         'uploaderForm': {
