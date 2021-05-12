@@ -567,7 +567,8 @@ angular
    self.temp = function(identityData, data, response) {
        
        var self = this;
-       var overlayForm = identityForms[self.gridId]
+       var overlayForm = identityForms[self.gridId];
+       var gridId = self.gridId.charAt(0).toUpperCase() + self.gridId.substring(1);
        console.log(self)
        if(data.status && data.status == "failure"){
            var errDesc = 'Unknown error';
@@ -654,7 +655,7 @@ angular
            if(wdgModel != 'cancel') {
                var successHandler = function(data) {
                    $scope.$broadcast("updateGridData-"+self.gridId, {});
-                   self.showAlert("success", "Successfully saved "+self.gridId);
+                   self.showAlert("success", gridId+" saved successfully");
                }
                var failureHandler = function(err) {
                    var errDesc = 'Unknown error';
