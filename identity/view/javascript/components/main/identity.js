@@ -151,7 +151,7 @@ angular
                 eDiv.innerHTML = btn;
                 var editBtn = eDiv.querySelectorAll('.btn')[0];
                 editBtn.addEventListener('click', function(clickParams) { 
-                    self.loadEditGroupOverlay(params.data, self.identityForms.group, identityConfig.group.apis.save).bind(self);
+                    self.loadEditGroupOverlay(params.data, self.identityForms.group, identityConfig.group.apis.save);
                 });
                 return eDiv;
             }
