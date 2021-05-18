@@ -851,9 +851,9 @@ angular
     vm.showTokenButtons = true;
     vm.deleteApi = identityConfig[vm.parent.gridId].apis.delete;
     vm.getApi = identityConfig[vm.parent.gridId].apis.get;
-     vm.promptMessage = {
+     /*vm.promptMessage = {
         content:'Fetching '+vm.parent.gridId+'...'
-    };
+    };*/
     vm.showActionButtons = true;
     vm.init = function() {
         vm.name = identityInfo.name ? identityInfo.name : "N/A";
@@ -1109,9 +1109,9 @@ angular
 angular
     .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig, groupInfo) {
     var vm = this;
-    vm.promptMessage = {
+    /*vm.promptMessage = {
         content:'Fetching group...'
-    };
+    };*/
     vm.groupData = groupData;
     vm.grid = grid;
     vm.groupInfo = groupInfo;
