@@ -40,6 +40,14 @@ angular
           }
       };
         
+        /*$scope.$on('modal.closing', function(event, reason, closed) {
+            var r = prompt("Are you sure you wanna close the modal? (Enter 'YES' to close)");
+
+            if (r !== 'YES') {
+                event.preventDefault();
+            }
+        });  */
+
       this.highlightTabs = function (formName) {
             var rootEl = $('form[name="' + formName + '"]');
             var tabHeaders = rootEl.find('ul li');
@@ -53,7 +61,7 @@ angular
                 }
             }
     	};
-    
+        
 
       this.onSubmit = function(form) {
         // First we broadcast an event so all fields validate themselves

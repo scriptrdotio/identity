@@ -135,7 +135,9 @@ angular
                 eDiv.innerHTML = btn;
                 var viewBtn = eDiv.querySelectorAll('.btn')[0];
                 viewBtn.addEventListener('click', function(clickParams) { 
-                    self.showViewDialog(params)
+                     $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching group...</b>');
+                     self.getIdentity(params);
+                   // self.showViewDialog(params)
                 });
                 return eDiv;
             }
@@ -259,7 +261,8 @@ angular
 
                 vButton = eDiv.querySelectorAll('.btn-view')[0];
                 vButton.addEventListener('click', function() {
-                    self.showViewDialog(params);
+                    $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching device...</b>');
+                     self.getIdentity(params);
                 });
                 return eDiv;
             },
@@ -331,15 +334,6 @@ angular
                 return params.value? params.value.split("_")[0]: 'N/A';
             }
         },
-      /* {
-           headerName: "User Id", 
-           field: "id", 
-           cellClass: "textWrap", 
-           editable : false,
-           cellRenderer: function(params) {
-               return params.value? params.value.split("_")[0]: 'N/A';
-           }
-       },*/
        {
            headerName: "Email", 
            field: "email", 
@@ -384,7 +378,8 @@ angular
                 eDiv.innerHTML = btn;
                 var viewBtn = eDiv.querySelectorAll('.btn')[0];
                 viewBtn.addEventListener('click', function(clickParams) { 
-                    self.showViewDialog(params)
+                    $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Fetching user...</b>');
+                     self.getIdentity(params);
                 });
                 return eDiv;
             }
@@ -423,6 +418,64 @@ angular
             }
         },
     ];
+            
+            self.getIdentity = function(params) {
+                var api;
+                var parameters;
+                if(self.gridId == "device" || self.gridId == "user"){
+                    parameters = { 
+                        id: params.data.id,
+                        module: self.gridId
+                    }
+                    api = identityConfig[self.gridId].apis.get;
+                }else if (self.gridId == "group"){
+                    parameters = {
+                        name: params.data.name
+                    };
+                    api = identityConfig.group.apis.getGroupDevicesToView;
+                }
+                httpClient.post(api, parameters).then(
+                    function(data, response) {
+                        if(data.status && data.status == "failure"){
+                            $loadingOverlay.hide();
+                            self.showAlert("danger","Could not fetch "+self.gridId+", please try again later");
+                            return;
+                        }
+                        $loadingOverlay.hide();
+                        var controller = "";
+                        var templateUrl = "";
+                        var localsObj = {};
+                        if(self.gridId == "device" || self.gridId == "user"){
+                            localsObj = {grid: params.api, identityData: params.data, parent: self, identityInfo: data};
+                            controller = 'viewIdentityDialogCtrl';
+                            templateUrl = '/identity/view/html/views/viewIdentity.html';
+                        } else if (self.gridId == "group"){
+                            localsObj = {grid: params.api, groupData: params.data, parent: self, groupInfo: data};
+                            controller = 'viewGroupDialogCtrl';
+                            templateUrl = '/identity/view/html/views/groups/viewGroup.html';
+                        } 
+                        $mdDialog.show({
+                            controller: controller,
+                            controllerAs: 'vm',
+                            templateUrl: templateUrl,
+                            clickOutsideToClose:true,
+                            escapeToClose: true,
+                            locals: localsObj,
+                            ok: 'Close'
+                        });
+                    },
+                    function(err) {
+                    console.dir(err);
+                    var errDesc = 'Unknown error';
+                    if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
+                        errDesc = err.data.metadata.description.en;
+                    } else if (err.errorDetail) {
+                        errDesc = err.errorDetail;
+                    }
+                    $loadingOverlay.hide();
+                    self.showAlert("danger","Could not fetch "+self.gridId+", please try again later");
+                });
+            } 
 
 
     self.showAlert = function(type, content) {
@@ -634,7 +687,7 @@ angular
        else if(self.gridId == "user"){
            formWidget.model.userAttrs = identityAttrsArray;
            formWidget.model.email = identityData.email;
-           formWidget.model.login = identityData.login;
+           //formWidget.model.login = identityData.login;
        }
            
        $loadingOverlay.hide();
@@ -725,33 +778,8 @@ angular
         });
     }
     
-    self.showViewDialog = function(params) {
-        var controller = "";
-        var templateUrl = "";
-        var localsObj = {};
-        if(self.gridId == "device" || self.gridId == "user"){
-            localsObj = {grid: params.api, identityData: params.data, parent: self};
-            controller = 'viewIdentityDialogCtrl';
-            templateUrl = '/identity/view/html/views/viewIdentity.html';
-        } else if (self.gridId == "group"){
-            localsObj = {grid: params.api, groupData: params.data, parent: self};
-            controller = 'viewGroupDialogCtrl';
-            templateUrl = '/identity/view/html/views/groups/viewGroup.html';
-        } 
-            $mdDialog.show({
-                controller: controller,
-                controllerAs: 'vm',
-                templateUrl: templateUrl,
-                clickOutsideToClose:true,
-                escapeToClose: true,
-                locals: localsObj,
-                ok: 'Close'
-            });
-        }
         }
 });
-
-
 angular
     .module("Identity").controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
     var vm = this;
@@ -809,7 +837,7 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig) {
+    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig, identityInfo) {
    
     var vm = this;
    
@@ -828,98 +856,60 @@ angular
     };
     vm.showActionButtons = true;
     vm.init = function() {
-        vm.getIdentity();
+        vm.name = identityInfo.name ? identityInfo.name : "N/A";
+        vm.id = identityInfo.id ? identityInfo.id : "N/A";
+        if(vm.parent.gridId == "device"){
+            vm.identityNameLabel = "Device Name"
+            vm.identityIdLabel = "Device ID"
+            vm.description = identityInfo.description ? identityInfo.description : "N/A";
+            vm.token = identityInfo.auth_token ? identityInfo.auth_token : "N/A";
+        }
+        if(vm.parent.gridId == "user"){
+            vm.identityNameLabel = "User Name";
+            vm.identityIdLabel = "Login";
+            vm.email = identityInfo.email ? identityInfo.email : "N/A";
+        }
+        if(identityInfo.groups != null){
+            if(identityInfo.groups instanceof Array){
+                vm.groups = identityInfo.groups;
+            }else{
+                vm.groups = [identityInfo.groups];
+            }
+        } else {
+            vm.groups = ["N/A"];
+        }
+        var status = "Active";
+        if(identityInfo.isSuspended != null && identityInfo.isSuspended == "true"){
+            status = "Suspended";
+        }
+        vm.status = status;
+
+        vm.hasAttrs = false;
+        var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
+        var backendApi;
+        if(vm.parent.gridId == "device"){
+            defaultAttrs.push("auth_token", "description")
+        }
+        else if(vm.parent.gridId == "user"){
+            defaultAttrs.push("email", "token", "login")
+        }
+        var identityAttrsArray = [];
+        var metaTypes = identityInfo["meta.types"];
+        Object.keys(identityInfo).forEach(function(key) {
+            if(defaultAttrs.indexOf(key)<0){
+                vm.hasAttrs = true;
+                var identityAttrsObj = {};
+                identityAttrsObj.name = key;
+                identityAttrsObj.type = metaTypes[key];
+                identityAttrsObj.value = identityInfo[key];
+                identityAttrsArray.push(identityAttrsObj);
+            }
+        })
+        vm.identityAttrs = identityAttrsArray;
+        vm.identityFetched = true;
+        vm.hidePromptMessage = true;
     }
     
-	vm.getIdentity = function() {
-        vm.isLoading = true;
-        var parameters = { 
-            id: vm.identityId,
-            module: vm.parent.gridId
-        }
-        
-        httpClient.post(vm.getApi, parameters).then(
-            function(data, response) {
-                if(data.status && data.status == "failure"){
-                    vm.hidePromptMessage = true;
-                    var errDesc = 'Unknown error';
-                    if (data.errorDetail) {
-                        errDesc = data.errorDetail;
-                    }
-                    vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
-                    //vm.showPromptMessage("danger",false, "Could not fetch identity, please try again later");
-                    return;
-                }
-
-                vm.name = data.name ? data.name : "N/A";
-                vm.id = data.id ? data.id : "N/A";
-                if(vm.parent.gridId == "device"){
-                    vm.identityNameLabel = "Device Name"
-                    vm.identityIdLabel = "Device ID"
-                    vm.description = data.description ? data.description : "N/A";
-                    vm.token = data.auth_token ? data.auth_token : "N/A";
-                }
-                if(vm.parent.gridId == "user"){
-                    vm.identityNameLabel = "User Name";
-                    vm.identityIdLabel = "Login";
-                    vm.email = data.email ? data.email : "N/A";
-                 // vm.login = data.login ? data.login : "N/A";
-                }
-                if(data.groups != null){
-                    if(data.groups instanceof Array){
-                        vm.groups = data.groups;
-                    }else{
-                        vm.groups = [data.groups];
-                    }
-                } else {
-                    vm.groups = ["N/A"];
-                }
-                var status = "Active";
-                if(data.isSuspended != null && data.isSuspended == "true"){
-                    status = "Suspended";
-                }
-                vm.status = status;
-                
-                vm.hasAttrs = false;
-                var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
-                var backendApi;
-                if(vm.parent.gridId == "device"){
-                    defaultAttrs.push("auth_token", "description")
-                }
-                else if(vm.parent.gridId == "user"){
-                    defaultAttrs.push("email", "token", "login")
-                }
-                var identityAttrsArray = [];
-                var metaTypes = data["meta.types"];
-                Object.keys(data).forEach(function(key) {
-                    if(defaultAttrs.indexOf(key)<0){
-                        vm.hasAttrs = true;
-                        var identityAttrsObj = {};
-                        identityAttrsObj.name = key;
-                        identityAttrsObj.type = metaTypes[key];
-                        identityAttrsObj.value = data[key];
-                        identityAttrsArray.push(identityAttrsObj);
-                    }
-                })
-                vm.identityAttrs = identityAttrsArray;
-                
-                //vm.showPromptMessage("success",false, "success");
-                vm.identityFetched = true;
-                vm.hidePromptMessage = true;
-            },
-            function(err) {
-                var errDesc = 'Unknown error';
-                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
-                    errDesc = err.data.metadata.description.en;
-                } else if (err.errorDetail) {
-                    errDesc = err.errorDetail;
-                }
-                vm.showAlert("danger", "Could not fetch "+vm.parent.gridId+": "+errDesc);
-                //vm.showPromptMessage("danger",false, "Could not fetch identity, please try again later!");
-            }
-        );
-    }
-        
     vm.confirmationDeleteIdentity = function(){
         vm.showActionButtons = false;
     }
@@ -1117,62 +1107,36 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig) {
+    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig, groupInfo) {
     var vm = this;
     vm.promptMessage = {
         content:'Fetching group...'
     };
     vm.groupData = groupData;
     vm.grid = grid;
+    vm.groupInfo = groupInfo;
     vm.groupName = groupData.name;
     vm.parent = parent;
     vm.showActionButtons = true;
     vm.groupFetched = false;
     vm.init = function() {
-        vm.getGroup();
-        
+        //vm.getGroup();
+        vm.name = groupInfo.name ? groupInfo. name : "N/A";
+        if(groupInfo.devices != null && groupInfo.devices.length >0){
+            if(groupInfo.devices instanceof Array){
+                vm.devices = groupInfo.devices;
+            }else{
+                vm.devices = [groupInfo.devices];
+            }
+        } else {
+            vm.devices = "N/A";
+        }
+        vm.groupFetched = true;
+        vm.hidePromptMessage = true;
+
     }
     
-	vm.getGroup = function() {
-        vm.isLoading = true;
-        var parameters = {
-            name: vm.groupName
-        }
-        httpClient.post(identityConfig.group.apis.getGroupDevicesToView, parameters).then(
-            function(data, response) {
-                if(data.status && data.status == "failure"){
-                    vm.showAlert("danger","Could not fetch group, please try again later");
-                    vm.isLoading = false;
-                    return;
-                }
 
-                vm.name = data.name ? data. name : "N/A";
-                if(data.devices != null && data.devices.length >0){
-                    if(data.devices instanceof Array){
-                        vm.devices = data.devices;
-                    }else{
-                        vm.devices = [data.devices];
-                    }
-                } else {
-                    vm.devices = "N/A";
-                }
-                //vm.showPromptMessage("success",false,"success");
-                //vm.promptMessage = "Success";
-                vm.groupFetched = true;
-                vm.hidePromptMessage = true;
-            },
-            function(err) {
-                console.dir(err);
-                var errDesc = 'Unknown error';
-                if (err.data && err.data.metadata && err.data.metadata.description && err.data.metadata.description.en) {
-                    errDesc = err.data.metadata.description.en;
-                } else if (err.errorDetail) {
-                    errDesc = err.errorDetail;
-                }
-                vm.showAlert("danger","Could not fetch group, please try again later");
-            }
-        );
-    } 
     
     vm.deleteGroup = function() {
         var parameters = {

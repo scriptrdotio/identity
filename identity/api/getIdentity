@@ -39,9 +39,7 @@ else if(params.module == "user")
 if(response.metadata.status == "failure") {
     return response.metadata;
 } else {
-    log.info("############"+JSON.stringify(response.result))
     var result = response.result;
-    //delete result.workflowState
     return response.result;
 }
 
