@@ -115,6 +115,24 @@ There are a couple of config files that hold common static values that are used 
 	- Identifier property for devices, groups
 	- HTML templates used in multiple instances
 
+### Common APIs
+
+###### identity/api/deleteIdentity:
+- Used for single row delete and multiple select batch delete for device, group or user according to the module sent
+- Calling this API using POST:
+	- If single identity, deletes directly and returns response
+	- If more than 1 identity, schedule a long running job and returns the job handle id (if one identity fails to delete, the whole batch will be rolled back)
+	- Params: id* (can be a string of 1 device/user id or an array of multiple ids) or name (can be a string of 1 group name or an array of multiple names)
+             module ( can be device or group or user depending which module we are dealing with)
+- Calling using GET:
+	- Checks on the job that was scheduled
+	- Params: scriptHandleId*
+
+###### identity/api/getIdentity
+- Used for fetching device/user details
+- Called before View device/user and Edit device/user
+- Params: id* (string of a single device/user id)
+
 ### Devices
 ##### Token manipulation
 - Generate, regenerate, and revoke tokens for each device from within the View Device panel.
@@ -122,15 +140,6 @@ There are a couple of config files that hold common static values that are used 
 - Cannot generate a token for a suspended device. Only regenerating and deleting are allowed.
 
 ##### API
-###### identity/api/devices/deleteDevice:
-- Used for single row delete and multiple select batch delete
-- Calling this API using POST:
-	- If single device, deletes directly and returns response
-	- If more than 1 device, schedule a long running job and returns the job handle id (if one device fails to delete, the whole batch will be rolled back)
-	- Params: id* (can be a string of 1 device id or an array of multiple ids)
-- Calling using GET:
-	- Checks on the job that was scheduled
-	- Params: scriptHandleId*
 
 ###### identity/api/devices/generateTokens
 - Used for generating/regenerating tokens
@@ -139,11 +148,6 @@ There are a couple of config files that hold common static values that are used 
 ###### identity/api/devices/revokeToken
 - Used for deleting a device's token
 - Called from within the View device panel
-
-###### identity/api/devices/getDevice
-- Used for fetching device details
-- Called before View device and Edit device
-- Params: id* (string of a single device id)
 
 ###### identity/api/devices/listDevices
 - Used to retrieve some or all devices, excluding the "scriptr" device
@@ -163,15 +167,6 @@ There are a couple of config files that hold common static values that are used 
 
 ### Groups
 ##### API
-###### identity/api/groups/deleteGroup:
-- Used for single row delete and multiple select batch delete
-- Calling this API using POST:
-	- If single group, deletes directly and returns response
-	- If more than one group, schedule a long running job and returns the job handle id (if one group fails to delete, the whole batch will be rolled back)
-	- Params: name* (can be a string of one group name or an array of multiple names)
-- Calling using GET:
-	- Checks on the job that was scheduled
-	- Params: scriptHandleId*
 
 ###### identity/api/groups/getGroupDevices
 - Used to get the devices IDs of a certain group to show them in the ui-selector when editing a group.
@@ -196,14 +191,14 @@ There are a couple of config files that hold common static values that are used 
 - Can be called from Add or Edit panels
 - Params: name*, update (set to true when updating 'renaming' the name of the group), newName (the new name of the group), devices (the devices sent from the widget), originalDevices (the original devices that were saved in this group), updateDevices (set to false when the original devices are the same of the devices sent from the widget)
 
-### Export Devices / Groups
+### Export Devices or Users
 ##### API
 ###### identity/api/reports/scheduleExport
 - Used for exporting devices or groups in CSV format
-- The content of the grid is exported in addition to all device attributes (in the case of devices export)
+- The content of the grid is exported in addition to all devices/users attributes (in the case of devices/users export)
 - Calling this API using POST:
 	- Schedule a long job to build the CSV file
-	- Params: gridType* (passed from the frontend, value is either device or group), queryFilter (in case the user wants to export only their search results)
+	- Params: gridType* (passed from the frontend, value is either device or user), queryFilter (in case the user wants to export only their search results)
 - Calling using GET:
 	- Checks on the job that was scheduled
 	- Params: scriptHandleId*
@@ -218,7 +213,7 @@ There are a couple of config files that hold common static values that are used 
 - Params: gridType\*, docKey\*
 - Writes the file content into the response and sets appropriate headers such as content-disposition, content-type.
 
-### Import Devices
+### Import Identity (Devices or Users)
 ##### API
 ###### identity/api/reports/scheduleImport
 - Users can refer to the CSV downloadble template as a guidline when building their file
@@ -233,4 +228,4 @@ There are a couple of config files that hold common static values that are used 
 - Used for importing devices from a CSV file and creating the devices in the account
 - If one device fails to create, the whole batch will be rolled back
 - Takes the params that were passed to scheduleImport API
-- This CSV file must contain the name and the id as headers
+- This CSV file must contain the name and the id as headers 
