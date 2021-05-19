@@ -54,8 +54,7 @@ if(userAttrs != null && !(userAttrs.filter(function(el) {
             }
         }
         params['meta.types'] = jsonObj;
-        if(params.email != null && params.email != "")
-            params['meta.types'].email = "text";
+        
     }
 }
 delete params['userAttrs'];

@@ -176,9 +176,6 @@ function importIdentity(identityParams){
                         if(gridType == "device"){
                             if(params.description != null && params.description != "")
                                 params['meta.types'].description = "text";
-                        } else if(gridType == "user"){
-                            if(params.email != null && params.email != "")
-                                params['meta.types'].email = "string";
                         }
                     }
                 }
