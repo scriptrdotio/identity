@@ -81,7 +81,12 @@ tags-input .autocomplete .suggestion-item {font-family: 'Josefin Sans', sans-ser
 }
 
 .user-details {font-family: 'Josefin Sans', sans-serif;}
-
+main {
+    overflow: hidden;
+}
+.page-container {
+    overflow: auto;
+}
 
 @media (min-width:768px) {
   main {display: flex; min-height: 100vh;}
