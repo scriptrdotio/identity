@@ -148,11 +148,6 @@ main {
     border: none;
 }
 .contentContainer p {overflow: hidden;text-overflow: ellipsis;}
-.closeHeaderBtn {
-    right: 15px;
-    top: 21px;
-    background: none;
-}
 .closeHeaderBtn.md-button.md-ink-ripple:hover {
     background-color: #FFF!important;
 }
@@ -233,11 +228,12 @@ main {
 /* modal view and edit*/
 .closeHeaderBtn {
     position: absolute;
-    right: 0;
-    top: 7px;
+    right: 15px;
+    top: 21px;
     border-radius: 0;
     min-width: 30px;
     color: #FFF;
+    background: none;
 }
 
 .closeHeaderBtn:hover .material-icons {
