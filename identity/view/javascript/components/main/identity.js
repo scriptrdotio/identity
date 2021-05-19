@@ -41,6 +41,7 @@ angular
         self.identifierProperty = identityConfig.device.identifierProperty;
         self.deviceTabClass = "btnSelected";
         self.gridAPI = identityConfig.device.apis.list;
+        self.copyTooltip = "Copy Token";
         
         angular.element(document.querySelector("body")).addClass(identityConfig.theme)
         
@@ -212,12 +213,12 @@ angular
             cellRenderer: function(params) {
                 if(params.value) {
                     var eDiv = document.createElement('div');
-                    var copyHtml = '<span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="Copy Token" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
+                    var copyHtml = '<span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="'+self.copyTooltip+'" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';
                     var token = "..." + params.value.substr((params.value.length - 8),8);
                     eDiv.innerHTML = token + "&nbsp;&nbsp;&nbsp;" + copyHtml;
                     var copyBtn = eDiv.querySelectorAll('.icon')[0];
                     copyBtn.addEventListener('click', function(clickParams) { 
-                        self.copyToClipboard(params.value);
+                        self.copyToClipboard(params);
                     });
                     return eDiv;
                 } else {
@@ -757,9 +758,11 @@ angular
     };
 
     
-    self.copyToClipboard = function(text) {
-        navigator.clipboard.writeText(text).then(function() {
+    self.copyToClipboard = function(params) {
+        navigator.clipboard.writeText(params.value).then(function() {
           console.log('Copying to clipboard was successful');
+            self.copyTooltip = "Copied!";
+            params.refreshCell();
         }, function(err) {
           console.error('Could not copy text: ', err);
         });
@@ -851,6 +854,7 @@ angular
     vm.showTokenButtons = true;
     vm.deleteApi = identityConfig[vm.parent.gridId].apis.delete;
     vm.getApi = identityConfig[vm.parent.gridId].apis.get;
+    vm.copyTooltip = "Copy Token";
      /*vm.promptMessage = {
         content:'Fetching '+vm.parent.gridId+'...'
     };*/
@@ -922,7 +926,9 @@ angular
     
     vm.copyToken = function() {
         navigator.clipboard.writeText(vm.token).then(function() {
-            vm.showPromptMessage("success",false, "Copied!");
+            //vm.showPromptMessage("success",false, "Copied!");
+            vm.copyTooltip = "Copied!";
+
         }, function(err) {
             var errDesc = 'Unknown error';
             if (err.errorDetail) {
@@ -931,6 +937,12 @@ angular
             vm.showAlert("danger", "Could not copy token: "+errDesc);
             //vm.showPromptMessage("danger",false, "Could not copy text: "+err);
         });
+    }
+    
+    vm.resetCopyTooltip = function() {
+        $timeout(function(){
+            vm.copyTooltip = "Copy Token";
+        }, 500);
     }
     
     vm.regenerateToken = function() {

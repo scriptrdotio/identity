@@ -58,7 +58,7 @@
                                         <p>{{vm.token}}</p>
                                     </div>
                                     <div ng-if="vm.parent.gridId == 'device' && vm.showTokenButtons" class="col-xs-12 mb15">
-                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" class="btn btn-default mgr5">Copy</button>
+                                        <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" ng-mouseleave="vm.resetCopyTooltip()" class="btn btn-default mgr5" id="copyButton" uib-tooltip="{{vm.copyTooltip}}"  tooltip-placement="top" tooltip-append-to-body="true">Copy</button>
                                         <button ng-if="vm.token == 'N/A' && vm.status != 'Suspended'" ng-click="vm.generateToken()" class="btn btn-default mgr5">Generate</button>
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('regenerate')" class="btn btn-default mgr5">Regenerate</button>
                                         <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('delete')" class="btn btn-default mgr5">Delete</button>
