@@ -106,7 +106,7 @@ main {
 .side-bar .nav-pills>li a {padding: 10px 10px;}
   .side-bar .nav li strong {margin-left: 8px;}
 }
-
+.viewDeviceContainer .modal-lg {width: 100%;}
 .viewDeviceContainer .title-header {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
@@ -226,12 +226,13 @@ main {
 
 .ag-bootstrap .ag-row-selected {background-color: #5477a06b!important;}
 /* modal view and edit*/
+
 .closeHeaderBtn {
-    position: absolute;
+	position: absolute;
     right: 15px;
-    top: 21px;
-    border-radius: 0;
-    min-width: 30px;
+    top: 13px;
+    margin: 0!important;
+    padding: 0!important;
     color: #FFF;
     background: none;
 }
@@ -248,7 +249,8 @@ main {
     color: #5477a0;
 }
 .dialogContainer {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .modal-header {
     border-top-right-radius: 6px;
@@ -335,12 +337,11 @@ main {
 }
 
 /**md dialog**/
-.identityTheme md-dialog md-dialog-content:not([layout=row]) > *:first-child:not(.md-subheader) {margin-top: 10px;}
 .identityTheme md-dialog md-dialog-actions{padding: 15px;text-align: right;border-top: 1px solid #e5e5e5;}
 .identityTheme md-dialog md-dialog-actions .md-button {margin: 0 10px 0 0;}
 .identityTheme .md-button.md-default-theme:not([disabled]).md-focused, .identityTheme .md-button:not([disabled]).md-focused, .identityTheme .md-button.md-default-theme:not([disabled]):hover, .identityTheme .md-button:not([disabled]):hover {background-color: #a6cbd0;}
 .identityTheme md-dialog md-dialog-content {min-height: 100px;}
-.identityTheme md-dialog .title-header {padding: 20px;border-bottom: 1px solid #e5e5e5;}
+.identityTheme md-dialog .title-header {padding: 20px;border-bottom: 1px solid #e5e5e5; position: relative;}
 .identityTheme md-dialog h4 {margin: 0;}
 
 /**Basic styles**/
