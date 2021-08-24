@@ -147,6 +147,15 @@ module.exports = function(grunt) {
 
 	         clean : {
 		         folder : [ 'concat/', 'lib/' ]
+	         },
+	         
+	         less : {
+		         themes : {
+			         files : {
+			            'identity/view/css/identity.light.css' : 'identity/view/css/identity.light.less',
+			            'identity/view/css/identity.dark.css' : 'identity/view/css/identity.dark.less'
+			         }
+		         }
 	         }
 	      });
 
@@ -196,7 +205,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-strip-css-comments');
-
+	
 	// Run the tasks
 	grunt.registerTask('app', [ 
 	      'ngtemplates:app', 
@@ -217,4 +226,6 @@ module.exports = function(grunt) {
       'stripCssComments',
       'cssmin:app',
       'clean:folder']);
+	
+	grunt.registerTask('buildThemes', [ 'less:themes' ]);
 };
