@@ -1,10 +1,10 @@
-var paramsEvaluator = require("identity/entities/ParamsEvaluator");
-var errorHandler = require("identity/entities/ErrorHandler");
+var paramsEvaluator = require("../../entities/ParamsEvaluator");
+var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("identity/config/config");
-var aclEvaluator = require("identity/entities/AclEvaluator");
+var config = require ("../../config/config");
+var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
@@ -22,7 +22,7 @@ var buildCsvScriptPath = config.buildCsvScriptPath;
 switch (request.method) {
   case "GET":
         // if the request method is GET, it means we are checking on jobHandleId
-        var identityManager = require("identity/entities/identityManager");
+        var identityManager = require("../../entities/identityManager");
         return identityManager.getJobStatus(params, paramsEvaluator, errorHandler);
         break;
   case "POST":

@@ -1,6 +1,6 @@
 var log = require("log");
 log.setLevel("INFO");
-var utils = require("identity/entities/identityManager");
+var utils = require("../../../entities/identityManager");
 var deviceModule = require("device");
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;

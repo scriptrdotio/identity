@@ -1,11 +1,10 @@
 //This API is used to retrieve the CSV template for direct browser download
-var errorHandler = require("identity/entities/ErrorHandler");
-var config = require ("identity/config/config");
+var errorHandler = require("../../entities/ErrorHandler");
+var config = require("../../config/config");
 var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("identity/config/config");
-var aclEvaluator = require("identity/entities/AclEvaluator");
+var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api

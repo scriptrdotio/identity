@@ -5,10 +5,9 @@ var errorHandler = new errorHandler.ErrorHandler();
 var groups = require("group");
 var devices = require("device");
 var users = require("user");
-var config = require ("identity/config/config");
+var config = require("../config/config");
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("identity/config/config");
 var aclEvaluator = require("../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
@@ -23,10 +22,12 @@ if(!hasPermission) {
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info("Request normalized params: " + JSON.stringify(params));
+var deleteIdentityPath = config.deleteIdentityPath;
+
 switch (request.method) {
     case "GET":
         // if the request method is GET, it means we are checking on jobHandleId
-        var identityManager = require("identity/entities/identityManager");
+        var identityManager = require("../entities/identityManager");
         return identityManager.getJobStatus(params, paramsEvaluator, errorHandler);
         break;
     case "POST":
@@ -74,7 +75,7 @@ switch (request.method) {
         }else{
             //schedule job if the devices are multiple
             var data = {
-                "apsdb.scriptName": "identity/api/scripts/deleteIdentity",
+                "apsdb.scriptName": deleteIdentityPath,
                 "params": JSON.stringify(identityArr), 
                 "module": params.module
             };

@@ -1,12 +1,12 @@
-var _ = require("/modules/underscore/underscore.js")._;
+var _ = require("../../../modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../../entities/ParamsEvaluator");
 var errorHandler = require("../../../entities/ErrorHandler");
 var devices= require("device");
 var log = require("log")
 log.setLevel("INFO");
 var errorHandler = new errorHandler.ErrorHandler();
-var config = require ("identity/config/config");
-var identityManager = require("identity/entities/identityManager")
+var config = require ("../../../config/config");
+var identityManager = require("../../../entities/identityManager")
 
 
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);

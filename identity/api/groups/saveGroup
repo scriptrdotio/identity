@@ -4,7 +4,7 @@ var groups = require("group");
 var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("identity/config/config");
+var config = require ("../../config/config");
 var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
@@ -22,7 +22,7 @@ log.info("Request params: " + JSON.stringify(requestParams));
 switch (request.method) {
     case "GET":
         // if the request method is GET, it means we are checking on jobHandleId
-        var identityManager = require("identity/entities/identityManager");
+        var identityManager = require("../../entities/identityManager");
         return identityManager.getJobStatus(requestParams, paramsEvaluator, errorHandler);
         break;
     case "POST":

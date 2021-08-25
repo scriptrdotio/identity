@@ -1,7 +1,7 @@
 //this script is called form a scheduled job when deleting more than one identity
 var log = require("log");
 log.setLevel("INFO");
-var utils = require("identity/entities/identityManager");
+var utils = require("../../entities/identityManager");
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 params = typeof(params.params) == "string" ? JSON.parse(params.params) : params.params;

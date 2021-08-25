@@ -3,7 +3,7 @@ log.setLevel("INFO");
 var devices = require("device");
 var groups = require("group");
 var users = require("user");
-var config = require ("identity/config/config");
+var config = require ("../config/config");
 var queryDocsPerPage = config.queryDocsPerPage;
 var buildCsvSciptPath = config.buildCsvSciptPath;
 

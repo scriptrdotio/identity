@@ -3,10 +3,10 @@ var errorHandler = require("../../entities/ErrorHandler");
 var devices = require("device");
 var groups = require("group");
 var errorHandler = new errorHandler.ErrorHandler();
-var _ = require('modules/underscore/underscore.js')._;
+var _ = require("../../modules/underscore/underscore.js")._;
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("identity/config/config");
+var config = require("../../config/config");
 var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;

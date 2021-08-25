@@ -1,13 +1,13 @@
-var _ = require("/modules/underscore/underscore.js")._;
+var _ = require("../../modules/underscore/underscore.js")._;
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
 var devices= require("device");
 var log = require("log")
 log.setLevel("INFO");
 var errorHandler = new errorHandler.ErrorHandler();
-var config = require ("identity/config/config");
+var config = require ("../../config/config");
 var aclEvaluator = require("../../entities/AclEvaluator");
-var identityManager = require("identity/entities/identityManager");
+var identityManager = require("../../entities/identityManager");
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
 var aclEvaluator = new aclEvaluator.AclEvaluator();
@@ -24,6 +24,7 @@ log.info("parameters"+ request.parameters)
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var requestParams = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info("Request normalized params: " + JSON.stringify(requestParams));
+var generateTokensPath = config.generateTokensPath;
 
 switch (request.method) {
     case "GET":
@@ -51,7 +52,7 @@ switch (request.method) {
 
             //schedule job
             var data = {
-                "apsdb.scriptName": "identity/api/devices/scripts/generateTokens",
+                "apsdb.scriptName": generateTokensPath,
                 "params": JSON.stringify(params)
             };
             var result = apsdb.callApi("QueueScript", data, null);

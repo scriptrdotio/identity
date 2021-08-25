@@ -7,3 +7,5 @@ const importCsvScriptPath = 'identity/api/reports/importCSV';
 const deleteDevicesScriptPath = 'identity/api/devices/scripts/deleteDevices';
 const deleteGroupsScriptPath = 'identity/api/devices/scripts/deleteGroups';
 const updateDevicesGroups = 'identity/api/groups/scripts/updateDevicesGroups';
+const generateTokensPath = 'identity/api/devices/scripts/generateTokens';
+const deleteIdentityPath = 'identity/api/scripts/deleteIdentity';

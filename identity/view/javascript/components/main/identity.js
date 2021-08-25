@@ -27,17 +27,19 @@ angular
     'scriptrIdentityMain',
     { 
     	 bindings : {
+             "identityLayout" : "@", //can be "group", "device", or "user"
          },
         templateUrl : '/identity/view/javascript/components/main/identity.html',
         controller :  function($location,$scope,$rootScope,httpClient, identityForms, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay, identityFactory) {
          var self = this;
     
     this.$onInit = function() {
+        console.log(">>>>>>>>>>>>> identityLayout: " + this.identityLayout);
         var self = this;
         self.deviceTitle = "Identity Manager"; 
         self.renderGrid = true;
         self.identityForms = identityForms;
-        self.gridId =  "device";
+        self.gridId = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? this.identityLayout : "device";
         self.identifierProperty = identityConfig.device.identifierProperty;
         self.deviceTabClass = "btnSelected";
         self.gridAPI = identityConfig.device.apis.list;
