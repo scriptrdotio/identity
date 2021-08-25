@@ -106,13 +106,12 @@ module.exports = function(grunt) {
 
 	            css : {
 	               src : [
-                     'identity/view/javascript/components/grid/grid.css',
-                     'identity/view/css/style.css',
+                     'identity/view/javascript/components/grid/grid.css'
 	                     ],
-	               dest : 'build/css/identity.css'
+	               dest : 'build/css/identity.components.css'
 	            }
 	         },
-
+	         
 	         uglify : {
 	            app : {
 		            files : {
@@ -126,29 +125,6 @@ module.exports = function(grunt) {
 	            }
 	         },
 	         
-	         stripCssComments : {
-	         	options: {
-	               preserve: false 
-	             },
-	             dist: {
-	                files: {
-	                    'build/css/identity.stripped.css': 'build/css/identity.css'
-	                }
-	            }
-	         },
-		         
-	         cssmin : {
-	            app : {
-	               src : 'build/css/identity.stripped.css',
-	               dest : 'build/css/identity.min.css'
-	            }
-
-	         },
-
-	         clean : {
-		         folder : [ 'concat/', 'lib/' ]
-	         },
-	         
 	         less : {
 		         themes : {
 			         files : {
@@ -156,7 +132,42 @@ module.exports = function(grunt) {
 			            'identity/view/css/identity.dark.css' : 'identity/view/css/identity.dark.less'
 			         }
 		         }
+	         },
+	         
+	         stripCssComments : {
+	         	options: {
+	               preserve: false 
+	             },
+	             dist: {
+	                files: {
+	                    'build/css/identity.components.stripped.css': 'build/css/identity.components.css',
+	                    'build/css/identity.dark.stripped.css': 'identity/view/css/identity.dark.css',
+                  	  'build/css/identity.light.stripped.css': 'identity/view/css/identity.light.css'
+	                }
+	            }
+	         },
+	         
+	         cssmin : {
+	           components : {
+	               src : 'build/css/identity.components.stripped.css',
+	               dest : 'build/css/identity.components.min.css'
+	            },
+	            light : {
+	               src : 'build/css/identity.light.stripped.css',
+	               dest : 'build/css/identity.light.min.css'
+	            },
+	            dark : {
+	               src : 'build/css/identity.dark.stripped.css',
+	               dest : 'build/css/identity.dark.min.css'
+	            },
+
+	         },
+
+	         clean : {
+		         folder : [ 'concat/', 'lib/' ]
 	         }
+	         
+	        
 	      });
 
 	var fs = require('fs');
@@ -214,17 +225,22 @@ module.exports = function(grunt) {
 	      'concat:css',
 	      'uglify:app', 
 	      'stripCssComments',
-	      'cssmin:app',
+	      'cssmin:components',
+	      'cssmin:light',
+	      'cssmin:dark',
 	      'clean:folder']);
 	
 	grunt.registerTask('studio', [ 
       'ngtemplates:app', 
       'ngAnnotate:app', 
       'concat:studio',
+      'less:themes',
       'concat:css',
       'uglify:studio', 
       'stripCssComments',
-      'cssmin:app',
+      'cssmin:components',
+      'cssmin:light',
+      'cssmin:dark',
       'clean:folder']);
 	
 	grunt.registerTask('buildThemes', [ 'less:themes' ]);
