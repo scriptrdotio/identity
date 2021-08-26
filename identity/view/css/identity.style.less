@@ -376,8 +376,8 @@
             background-color: @secondaryColor;
             color: @lightBase;
         }
-        &:active {
-        	background-color: transaprent;
+        &:active,&.active {
+        	box-shadow: none;
         }
         }
     }
@@ -394,8 +394,8 @@
         }
         &[disabled] {
             cursor: default;
-            color: @gray3;
-            border-color: @gray3;
+            color: @gray2;
+            border-color: @gray2;
         &:hover {
             background-color: transparent;
         }
@@ -632,10 +632,12 @@
         color: @gray1;
     &:hover {
     	border-color: @primaryColor;
+        color: @gray1;
     }
     }
     &:hover {
     	border-bottom: 4px solid @primaryColor;
+        color: @gray2;
     }
     }
     .filter-bar .btn-default {
@@ -654,7 +656,7 @@
         margin-right: 10px;
         color: @primaryColor;
         float: right;
-        display: block;
+        display: inline-block;
         position: absolute;
         right: 30px;
     }
