@@ -558,11 +558,11 @@
 }
 .identityTheme .btn-group .btnContent.btnSelected {
   border-bottom: 4px solid #f48220;
-  color: #333;
+  color: #FFF;
 }
 .identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
-  color: #333;
+  color: #FFF;
 }
 .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;

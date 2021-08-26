@@ -81,7 +81,7 @@
   overflow: auto;
 }
 .identityTheme .page-content {
-  background-color: #2c343a;
+  background-color: #191919;
 }
 .identityTheme .search-text {
   position: relative;
@@ -110,7 +110,7 @@
   cursor: default;
 }
 .identityTheme .listing-search {
-  color: #64717f;
+  color: #4b4b4b;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -118,7 +118,7 @@
 .identityTheme .listing-search a {
   display: block;
   padding: 4px 12px;
-  color: #64717f;
+  color: #4b4b4b;
   cursor: pointer;
 }
 .identityTheme .listing-search a:hover {
@@ -191,7 +191,7 @@
 }
 .identityTheme tags-input .autocomplete .suggestion-item {
   font-family: "Josefin Sans", sans-serif;
-  background: #2c343a;
+  background: #191919;
   font-size: 13px;
 }
 .identityTheme .form-group tags-input {
@@ -298,7 +298,7 @@
   text-overflow: ellipsis;
 }
 .identityTheme .closeHeaderBtn.md-button.md-ink-ripple:hover {
-  background-color: #2c343a !important;
+  background-color: #191919 !important;
 }
 .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
 .identityTheme .md-button:not([disabled]).md-focused,
@@ -515,10 +515,10 @@
   padding-top: 10px;
 }
 .identityTheme .level-bg-0 {
-  background: #64717f;
+  background: #4b4b4b;
 }
 .identityTheme .logo {
-  background: #64717f;
+  background: #4b4b4b;
 }
 .identityTheme .logo img {
   width: 70%;
@@ -528,16 +528,16 @@
   border-left: 4px solid #f48220;
 }
 .identityTheme header {
-  background: #2c343a;
-  color: #64717f;
+  background: #191919;
+  color: #4b4b4b;
   border-bottom: thin solid #4a545e;
 }
 .identityTheme .username {
-  background-color: #2c343a;
+  background-color: #191919;
   border-left: 1px solid #4a545e;
 }
 .identityTheme #username-button {
-  color: #64717f;
+  color: #4b4b4b;
   line-height: 2.3;
 }
 .identityTheme h1 {
@@ -558,11 +558,11 @@
 }
 .identityTheme .btn-group .btnContent.btnSelected {
   border-bottom: 4px solid #f48220;
-  color: #64717f;
+  color: #22272b;
 }
 .identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
-  color: #64717f;
+  color: #22272b;
 }
 .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
