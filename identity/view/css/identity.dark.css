@@ -80,6 +80,9 @@
 .identityTheme .page-container {
   overflow: auto;
 }
+.identityTheme .page-content {
+  background-color: #2c343a;
+}
 .identityTheme .search-text {
   position: relative;
   z-index: 1;
