@@ -574,99 +574,98 @@
     }
 
     /**Basic styles**/
-	.identityTheme {
-        .tabContent {
-            background-color: @gray4;
-            padding-top: 10px;
+	
+    .tabContent {
+        background-color: @gray4;
+        padding-top: 10px;
+    }
+    .level-bg-0 {
+    	background: @gray1;
+    }
+    .logo {
+    	background: @gray1;
+        img {
+            width: 70%;
         }
-        .level-bg-0 {
-            background: @gray1;
-        }
-        .logo {
-            background: @gray1;
-            img {
-                width: 70%;
-            }
-        }
-        .side-bar .nav > li.active > a {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid @primaryColor;
-        }
-        header {
-            background: @gray5;
-            color: @gray1;
-            border-bottom: thin solid @gray2;
-        }
-        .username {
-            background-color: @gray5;
-            border-left: 1px solid @gray2;
-        }
-        #username-button {
-            color: @gray1;
-            line-height: 2.3;
-        }
-        h1 {
-            font-size: 25px;
-            margin: 35px 0;
-        }
-        .btn-group .btnContent {
-            width: auto;
-            margin: 0 15px;
-            padding: 0 0 5px;
-            background-color: transparent !important;
-            border: none;
-            border-radius: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: @gray2;
-            font-size: 1em;
-        &.btnSelected {
-            border-bottom: 4px solid @primaryColor;
-            color: @gray1;
-        &:hover {
-            border-color: @primaryColor;
-        }
-        }
-        &:hover {
-            border-bottom: 4px solid @primaryColor;
-        }
-        }
-        .filter-bar .btn-default {
-            background-color: transparent;
-            border-radius: 50%;
-            border: 1px solid @gray2;
-            color: @gray2;
-            margin: 0 2px;
-        &:hover {
-            border-color: @primaryColor;
-            color: @primaryColor;
-        }
-        }
-        .icon {
-            margin-left: 5px;
-            margin-right: 10px;
-            color: @primaryColor;
-            float: right;
-            display: block;
-            position: absolute;
-            right: 30px;
-        }
-        .ag-cell-value .btn-default {
-        &:hover,
-        &:active,
-        &:focus,
-        &:active.focus,
-        &:active:focus,
-        &:active:hover {
-            background: none;
-            color: @primaryColor;
-        }
-        }
-        .alert {
-            margin: 15px;
-        }
-        .alert-danger {
-            background-image: none;
-        }
+    }
+    .side-bar .nav > li.active > a {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid @primaryColor;
+    }
+    header {
+        background: @gray5;
+        color: @gray1;
+        border-bottom: thin solid @gray2;
+    }
+    .username {
+        background-color: @gray5;
+        border-left: 1px solid @gray2;
+    }
+    #username-button {
+        color: @gray1;
+        line-height: 2.3;
+    }
+    h1 {
+        font-size: 25px;
+        margin: 35px 0;
+    }
+    .btn-group .btnContent {
+        width: auto;
+        margin: 0 15px;
+        padding: 0 0 5px;
+        background-color: transparent !important;
+        border: none;
+        border-radius: 0;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: @gray2;
+        font-size: 1em;
+    &.btnSelected {
+        border-bottom: 4px solid @primaryColor;
+        color: @gray1;
+    &:hover {
+    	border-color: @primaryColor;
+    }
+    }
+    &:hover {
+    	border-bottom: 4px solid @primaryColor;
+    }
+    }
+    .filter-bar .btn-default {
+        background-color: transparent;
+        border-radius: 50%;
+        border: 1px solid @gray2;
+        color: @gray2;
+        margin: 0 2px;
+    &:hover {
+        border-color: @primaryColor;
+        color: @primaryColor;
+    }
+    }
+    .icon {
+        margin-left: 5px;
+        margin-right: 10px;
+        color: @primaryColor;
+        float: right;
+        display: block;
+        position: absolute;
+        right: 30px;
+    }
+    .ag-cell-value .btn-default {
+    &:hover,
+    &:active,
+    &:focus,
+    &:active.focus,
+    &:active:focus,
+    &:active:hover {
+        background: none;
+        color: @primaryColor;
+    }
+    }
+    .alert {
+    	margin: 15px;
+    }
+    .alert-danger {
+    	background-image: none;
     }
 }
