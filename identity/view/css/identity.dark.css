@@ -275,13 +275,13 @@
 .identityTheme .contentContainer .table {
   margin-top: 5px;
   width: 50%;
-  border: 1px solid #5477a0;
+  border: 1px solid #a4c2c7;
 }
 .identityTheme .contentContainer .table > thead > tr > th {
   border-right: none;
   color: #FFF;
   border-bottom: none;
-  background: #5477a0;
+  background: #a4c2c7;
 }
 .identityTheme .contentContainer .blockContent {
   float: left;
@@ -307,7 +307,7 @@
   background-color: rgb(84 119 160);
 }
 .identityTheme .filter-bar .btn-default {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
   margin-top: 0;
 }
 .identityTheme .btn.btn-md {
@@ -323,17 +323,17 @@
 .identityTheme .btn-group .btnContent {
   width: 260px;
   background-color: #FFF;
-  color: #5477a0;
-  border-color: #5477a0;
-  border: 1px solid #5477a0;
+  color: #a4c2c7;
+  border-color: #a4c2c7;
+  border: 1px solid #a4c2c7;
 }
 .identityTheme .btn-group .btnContent:hover {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
   color: #FFF;
-  border-color: #5477a0;
+  border-color: #a4c2c7;
 }
 .identityTheme .btn-group .btnContent.btnSelected {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
   color: #FFF;
 }
 .identityTheme .btn-group .btnContent:active,
@@ -363,7 +363,7 @@
   outline: none;
 }
 .identityTheme .ag-bootstrap .ag-header-icon {
-  fill: #5477a0 !important;
+  fill: #a4c2c7 !important;
 }
 .identityTheme .adminHome .btn-primary i {
   padding-right: 5px;
@@ -375,10 +375,10 @@
   cursor: pointer;
 }
 .identityTheme .btnToggle .ng-valid-parse {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
 }
 .identityTheme .ag-bootstrap .ag-row-selected {
-  background-color: #5477a0 !important;
+  background-color: #a4c2c7 !important;
 }
 .identityTheme .closeHeaderBtn {
   position: absolute;
@@ -392,7 +392,7 @@
 .identityTheme .closeHeaderBtn .material-icons {
   float: right;
   opacity: 0.5;
-  color: #5477a0;
+  color: #a4c2c7;
 }
 .identityTheme .closeHeaderBtn:hover .material-icons {
   opacity: 1;
