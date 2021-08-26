@@ -336,8 +336,9 @@
   background-color: #5477a0;
   color: #FFF;
 }
-.identityTheme .btn-group .btnContent:active {
-  background-color: transaprent;
+.identityTheme .btn-group .btnContent:active,
+.identityTheme .btn-group .btnContent.active {
+  box-shadow: none;
 }
 .identityTheme .ag-bootstrap .ag-paging-button {
   border: 1px solid #f48220;
@@ -352,8 +353,8 @@
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled] {
   cursor: default;
-  color: #DDD;
-  border-color: #DDD;
+  color: #999;
+  border-color: #999;
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled]:hover {
   background-color: transparent;
@@ -561,9 +562,11 @@
 }
 .identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
+  color: #333;
 }
 .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
+  color: #999;
 }
 .identityTheme .filter-bar .btn-default {
   background-color: transparent;
@@ -581,7 +584,7 @@
   margin-right: 10px;
   color: #f48220;
   float: right;
-  display: block;
+  display: inline-block;
   position: absolute;
   right: 30px;
 }
