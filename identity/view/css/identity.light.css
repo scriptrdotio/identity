@@ -503,41 +503,41 @@
 .identity .identityTheme .md-button:not([disabled]):hover {
   background-color: #f69d51;
 }
-.identity .tabContent {
+.identity .identityTheme .tabContent {
   background-color: #f5f5f5;
   padding-top: 10px;
 }
-.identity .level-bg-0 {
+.identity .identityTheme .level-bg-0 {
   background: #333;
 }
-.identity .logo {
+.identity .identityTheme .logo {
   background: #333;
 }
-.identity .logo img {
+.identity .identityTheme .logo img {
   width: 70%;
 }
-.identity .side-bar .nav > li.active > a {
+.identity .identityTheme .side-bar .nav > li.active > a {
   background-color: rgba(255, 255, 255, 0.05);
   border-left: 4px solid #f48220;
 }
-.identity header {
+.identity .identityTheme header {
   background: #FFF;
   color: #333;
   border-bottom: thin solid #999;
 }
-.identity .username {
+.identity .identityTheme .username {
   background-color: #FFF;
   border-left: 1px solid #999;
 }
-.identity #username-button {
+.identity .identityTheme #username-button {
   color: #333;
   line-height: 2.3;
 }
-.identity h1 {
+.identity .identityTheme h1 {
   font-size: 25px;
   margin: 35px 0;
 }
-.identity .btn-group .btnContent {
+.identity .identityTheme .btn-group .btnContent {
   width: auto;
   margin: 0 15px;
   padding: 0 0 5px;
@@ -549,28 +549,28 @@
   color: #999;
   font-size: 1em;
 }
-.identity .btn-group .btnContent.btnSelected {
+.identity .identityTheme .btn-group .btnContent.btnSelected {
   border-bottom: 4px solid #f48220;
   color: #333;
 }
-.identity .btn-group .btnContent.btnSelected:hover {
+.identity .identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
 }
-.identity .btn-group .btnContent:hover {
+.identity .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
 }
-.identity .filter-bar .btn-default {
+.identity .identityTheme .filter-bar .btn-default {
   background-color: transparent;
   border-radius: 50%;
   border: 1px solid #999;
   color: #999;
   margin: 0 2px;
 }
-.identity .filter-bar .btn-default:hover {
+.identity .identityTheme .filter-bar .btn-default:hover {
   border-color: #f48220;
   color: #f48220;
 }
-.identity .icon {
+.identity .identityTheme .icon {
   margin-left: 5px;
   margin-right: 10px;
   color: #f48220;
@@ -579,18 +579,18 @@
   position: absolute;
   right: 30px;
 }
-.identity .ag-cell-value .btn-default:hover,
-.identity .ag-cell-value .btn-default:active,
-.identity .ag-cell-value .btn-default:focus,
-.identity .ag-cell-value .btn-default:active.focus,
-.identity .ag-cell-value .btn-default:active:focus,
-.identity .ag-cell-value .btn-default:active:hover {
+.identity .identityTheme .ag-cell-value .btn-default:hover,
+.identity .identityTheme .ag-cell-value .btn-default:active,
+.identity .identityTheme .ag-cell-value .btn-default:focus,
+.identity .identityTheme .ag-cell-value .btn-default:active.focus,
+.identity .identityTheme .ag-cell-value .btn-default:active:focus,
+.identity .identityTheme .ag-cell-value .btn-default:active:hover {
   background: none;
   color: #f48220;
 }
-.identity .alert {
+.identity .identityTheme .alert {
   margin: 15px;
 }
-.identity .alert-danger {
+.identity .identityTheme .alert-danger {
   background-image: none;
 }
