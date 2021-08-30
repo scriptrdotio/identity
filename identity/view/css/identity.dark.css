@@ -26,6 +26,9 @@
   /**md dialog**/
   /**Basic styles**/
 }
+.identityTheme body {
+  color: #4b4b4b;
+}
 .identityTheme .mb15 {
   margin-bottom: 15px;
 }
@@ -81,7 +84,7 @@
   overflow: auto;
 }
 .identityTheme .page-content {
-  background-color: #191919;
+  background-color: #2e2e2e;
 }
 .identityTheme .search-text {
   position: relative;
@@ -101,7 +104,7 @@
   color: #4a545e;
 }
 .identityTheme #searchTextResults {
-  background: #374148;
+  background: #191919;
   height: calc(100vh - 115px);
   min-height: 30px;
   overflow-y: auto;
@@ -191,7 +194,7 @@
 }
 .identityTheme tags-input .autocomplete .suggestion-item {
   font-family: "Josefin Sans", sans-serif;
-  background: #191919;
+  background: #2e2e2e;
   font-size: 13px;
 }
 .identityTheme .form-group tags-input {
@@ -256,7 +259,7 @@
 }
 .identityTheme .viewDeviceContainer .title-header {
   padding: 20px;
-  border-bottom: 1px solid #374148;
+  border-bottom: 1px solid #191919;
 }
 .identityTheme .viewDeviceContainer .box-header {
   height: auto !important;
@@ -298,7 +301,7 @@
   text-overflow: ellipsis;
 }
 .identityTheme .closeHeaderBtn.md-button.md-ink-ripple:hover {
-  background-color: #191919 !important;
+  background-color: #2e2e2e !important;
 }
 .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
 .identityTheme .md-button:not([disabled]).md-focused,
@@ -446,7 +449,7 @@
 }
 .identityTheme .ui-select-choices-row span:focus,
 .identityTheme .ui-select-choices-row span:hover {
-  background: #374148;
+  background: #191919;
 }
 .identityTheme .ui-select-choices-row.active span {
   background-color: #f48220;
@@ -486,7 +489,7 @@
 .identityTheme .identityTheme md-dialog md-dialog-actions {
   padding: 15px;
   text-align: right;
-  border-top: 1px solid #374148;
+  border-top: 1px solid #191919;
 }
 .identityTheme .identityTheme md-dialog md-dialog-actions .md-button {
   margin: 0 10px 0 0;
@@ -498,7 +501,7 @@
 }
 .identityTheme .identityTheme md-dialog .title-header {
   padding: 20px;
-  border-bottom: 1px solid #374148;
+  border-bottom: 1px solid #191919;
   position: relative;
 }
 .identityTheme .identityTheme md-dialog h4 {
@@ -511,7 +514,7 @@
   background-color: #f69d51;
 }
 .identityTheme .tabContent {
-  background-color: #374148;
+  background-color: #191919;
   padding-top: 10px;
 }
 .identityTheme .level-bg-0 {
@@ -528,12 +531,12 @@
   border-left: 4px solid #f48220;
 }
 .identityTheme header {
-  background: #191919;
+  background: #2e2e2e;
   color: #4b4b4b;
   border-bottom: thin solid #4a545e;
 }
 .identityTheme .username {
-  background-color: #191919;
+  background-color: #2e2e2e;
   border-left: 1px solid #4a545e;
 }
 .identityTheme #username-button {

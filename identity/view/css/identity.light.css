@@ -26,6 +26,9 @@
   /**md dialog**/
   /**Basic styles**/
 }
+.identityTheme body {
+  color: #333;
+}
 .identityTheme .mb15 {
   margin-bottom: 15px;
 }
