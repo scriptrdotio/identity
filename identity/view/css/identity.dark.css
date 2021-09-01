@@ -4,7 +4,7 @@
   /**#FFF**/
   /**#000**/
   /**#333**/
-  /**#9c9c9c**/
+  /**#999**/
   /**#DDD**/
   /**#f5f5f5**/
   /**#FFF**/
@@ -64,7 +64,7 @@
   font-family: "Montserrat", sans-serif;
 }
 .identityTheme .box-title {
-  color: #4a545e;
+  color: #999;
   letter-spacing: -1px;
   display: inline-block;
   width: 100%;
@@ -102,7 +102,7 @@
   font-size: 0.75em;
   top: 13px;
   cursor: pointer;
-  color: #4a545e;
+  color: #999;
 }
 .identityTheme #searchTextResults {
   background: #191919;
@@ -130,7 +130,7 @@
 }
 .identityTheme .user-list {
   padding: 8px 10px;
-  border-top: 1px dotted #4a545e;
+  border-top: 1px dotted #999;
 }
 .identityTheme .user-list a {
   display: inline-block;
@@ -366,8 +366,8 @@
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled] {
   cursor: default;
-  color: #4a545e;
-  border-color: #4a545e;
+  color: #999;
+  border-color: #999;
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled]:hover {
   background-color: transparent;
@@ -541,11 +541,11 @@
 .identityTheme header {
   background: #2e2e2e;
   color: #4b4b4b;
-  border-bottom: thin solid #4a545e;
+  border-bottom: thin solid #999;
 }
 .identityTheme .username {
   background-color: #2e2e2e;
-  border-left: 1px solid #4a545e;
+  border-left: 1px solid #999;
 }
 .identityTheme #username-button {
   color: #4b4b4b;
@@ -564,7 +564,7 @@
   border-radius: 0;
   font-weight: bold;
   text-transform: uppercase;
-  color: #4a545e;
+  color: #999;
   font-size: 1em;
 }
 .identityTheme .btn-group .btnContent.btnSelected {
@@ -577,13 +577,13 @@
 }
 .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
-  color: #4a545e;
+  color: #999;
 }
 .identityTheme .filter-bar .btn-default {
   background-color: transparent;
   border-radius: 50%;
-  border: 1px solid #4a545e;
-  color: #4a545e;
+  border: 1px solid #999;
+  color: #999;
   margin: 0 2px;
 }
 .identityTheme .filter-bar .btn-default:hover {
