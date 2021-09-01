@@ -235,6 +235,10 @@
         border-bottom: thin solid @gray3;
         color: @grayBase;
     }
+    
+    .ag-bootstrap .ag-row {
+        border-bottom: 1px solid @grayBase!important;
+    }
 
     @media (min-width: 320px) and (max-width: 767px) {
     header {
@@ -385,7 +389,7 @@
         }
         &.btnSelected {
             background-color: @secondaryColor;
-            color: @lightBase;
+            color: @grayBase;
         }
         &:active,
         &.active {
