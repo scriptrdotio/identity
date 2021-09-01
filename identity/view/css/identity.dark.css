@@ -205,8 +205,17 @@
   border-bottom: thin solid #16191c;
   color: #f2f2f2;
 }
+.identityTheme .ag-bootstrap .ag-header {
+  border-bottom: 2px solid #16191c !important;
+}
 .identityTheme .ag-bootstrap .ag-row {
   border-bottom: 1px solid #4b4b4b !important;
+}
+.identityTheme .ag-bootstrap .ag-row.ag-row-even,
+.identityTheme .ag-bootstrap .ag-row.ag-row-odd {
+  background-color: #191919;
+  border-bottom: thin solid #16191c;
+  color: #f2f2f2;
 }
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
