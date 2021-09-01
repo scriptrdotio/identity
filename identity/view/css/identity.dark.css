@@ -27,7 +27,7 @@
   /**md dialog**/
   /**Basic styles**/
 }
-.identityTheme body {
+.identityTheme .page-content {
   color: #4b4b4b;
 }
 .identityTheme .mb15 {
@@ -569,11 +569,11 @@
 }
 .identityTheme .btn-group .btnContent.btnSelected {
   border-bottom: 4px solid #f48220;
-  color: #22272b;
+  color: #f2f2f2;
 }
 .identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
-  color: #22272b;
+  color: #f2f2f2;
 }
 .identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
