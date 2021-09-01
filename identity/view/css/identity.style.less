@@ -234,9 +234,18 @@
         color: @grayBase;
     }
     
-    .ag-bootstrap .ag-row {
-        border-bottom: 1px solid @gray1!important;
-    }
+    .ag-bootstrap {
+    	.ag-header {
+            border-bottom: 2px solid @gray3!important;
+        }
+        .ag-row {
+            border-bottom: 1px solid @gray1!important;
+        &.ag-row-even,&.ag-row-odd {
+            background-color: @gray4;
+            border-bottom: thin solid @gray3;
+            color: @grayBase;
+        }
+        }
 
     @media (min-width: 320px) and (max-width: 767px) {
     header {
