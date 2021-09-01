@@ -27,9 +27,6 @@
   /**md dialog**/
   /**Basic styles**/
 }
-.identityTheme .page-content {
-  color: #333;
-}
 .identityTheme .mb15 {
   margin-bottom: 15px;
 }
@@ -86,6 +83,7 @@
 }
 .identityTheme .page-content {
   background-color: #FFF;
+  color: #000;
 }
 .identityTheme .search-text {
   position: relative;
@@ -208,7 +206,7 @@
   color: #000;
 }
 .identityTheme .ag-bootstrap .ag-row {
-  border-bottom: 1px solid #000 !important;
+  border-bottom: 1px solid #333 !important;
 }
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
