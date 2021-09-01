@@ -207,6 +207,9 @@
   border-bottom: thin solid #DDD;
   color: #000;
 }
+.identityTheme .ag-bootstrap .ag-row {
+  border-bottom: 1px solid #000 !important;
+}
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
     position: relative !important;
@@ -344,7 +347,7 @@
 }
 .identityTheme .btn-group .btnContent.btnSelected {
   background-color: #a4c2c7;
-  color: #FFF;
+  color: #000;
 }
 .identityTheme .btn-group .btnContent:active,
 .identityTheme .btn-group .btnContent.active {
