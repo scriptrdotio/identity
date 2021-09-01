@@ -124,7 +124,7 @@
   cursor: pointer;
 }
 .identityTheme .listing-search a:hover {
-  background: #16191c;
+  background: #2e2e2e;
 }
 .identityTheme .user-list {
   padding: 8px 10px;
@@ -174,7 +174,7 @@
   color: #4FCD8A;
 }
 .identityTheme tags-input .tags {
-  border: 1px solid #16191c;
+  border: 1px solid #2e2e2e;
   border-radius: 4px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   overflow-y: auto;
@@ -203,15 +203,15 @@
   color: #f2f2f2;
 }
 .identityTheme .ag-bootstrap .ag-header {
-  border-bottom: 2px solid #16191c !important;
+  border-bottom: 2px solid #2e2e2e !important;
 }
 .identityTheme .ag-bootstrap .ag-row {
-  border-bottom: 1px solid #16191c !important;
+  border-bottom: 1px solid #2e2e2e !important;
 }
 .identityTheme .ag-bootstrap .ag-row.ag-row-even,
 .identityTheme .ag-bootstrap .ag-row.ag-row-odd {
   background-color: #191919;
-  border-bottom: thin solid #16191c;
+  border-bottom: thin solid #2e2e2e;
   color: #f2f2f2;
 }
 @media (min-width: 320px) and (max-width: 767px) {
