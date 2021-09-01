@@ -206,7 +206,7 @@
   border-bottom: 2px solid #DDD !important;
 }
 .identityTheme .ag-bootstrap .ag-row {
-  border-bottom: 1px solid #333 !important;
+  border-bottom: 1px solid #DDD !important;
 }
 .identityTheme .ag-bootstrap .ag-row.ag-row-even,
 .identityTheme .ag-bootstrap .ag-row.ag-row-odd {
