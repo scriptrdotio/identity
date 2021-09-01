@@ -21,6 +21,7 @@
   /*** Override boostrap button styles ***/
   /**Prompt messages**/
   /*** angular input ***/
+  /**Grid**/
   /* device manager*/
   /* modal view and edit*/
   /**md dialog**/
@@ -200,6 +201,12 @@
 .identityTheme .form-group tags-input {
   height: 100px;
 }
+.identityTheme .ag-bootstrap .ag-row-even,
+.identityTheme .ag-bootstrap .ag-row-odd {
+  background-color: #f5f5f5;
+  border-bottom: thin solid #DDD;
+  color: #000;
+}
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
     position: relative !important;
@@ -250,7 +257,7 @@
   }
 }
 @media screen and (max-width: 768px) {
-  .identityTheme .identityTheme .icon {
+  .identityTheme .icon {
     right: 0px;
   }
 }
@@ -413,16 +420,14 @@
 }
 .identityTheme .textWrap {
   overflow: hidden !important;
-}
-.identityTheme .form-control {
   min-height: 30px;
   height: auto;
 }
-.identityTheme .identityTheme > .ui-select-search {
+.identityTheme .ui-select-search {
   padding: 0 10px;
   box-sizing: border-box;
 }
-.identityTheme .identityTheme > .ui-select-bootstrap.open {
+.identityTheme .ui-select-bootstrap.open {
   z-index: 10050;
 }
 .identityTheme .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
@@ -486,31 +491,31 @@
 .identityTheme .file-upload .btn.btn-block {
   margin-top: 10px;
 }
-.identityTheme .identityTheme md-dialog md-dialog-actions {
+.identityTheme md-dialog md-dialog-actions {
   padding: 15px;
   text-align: right;
   border-top: 1px solid #f5f5f5;
 }
-.identityTheme .identityTheme md-dialog md-dialog-actions .md-button {
+.identityTheme md-dialog md-dialog-actions .md-button {
   margin: 0 10px 0 0;
 }
-.identityTheme .identityTheme md-dialog md-dialog-content {
+.identityTheme md-dialog md-dialog-content {
   min-height: 100px;
   overflow-x: hidden;
   overflow-y: auto;
 }
-.identityTheme .identityTheme md-dialog .title-header {
+.identityTheme md-dialog .title-header {
   padding: 20px;
   border-bottom: 1px solid #f5f5f5;
   position: relative;
 }
-.identityTheme .identityTheme md-dialog h4 {
+.identityTheme md-dialog h4 {
   margin: 0;
 }
-.identityTheme .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
-.identityTheme .identityTheme .md-button:not([disabled]).md-focused,
-.identityTheme .identityTheme .md-button.md-default-theme:not([disabled]):hover,
-.identityTheme .identityTheme .md-button:not([disabled]):hover {
+.identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
+.identityTheme .md-button:not([disabled]).md-focused,
+.identityTheme .md-button.md-default-theme:not([disabled]):hover,
+.identityTheme .md-button:not([disabled]):hover {
   background-color: #f69d51;
 }
 .identityTheme .tabContent {
