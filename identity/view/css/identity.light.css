@@ -82,7 +82,7 @@
   overflow: auto;
 }
 .identityTheme .page-content {
-  background-color: #F2F2F2;
+  background-color: #FFF;
   color: #000;
 }
 .identityTheme .search-text {
@@ -193,16 +193,13 @@
 }
 .identityTheme tags-input .autocomplete .suggestion-item {
   font-family: "Josefin Sans", sans-serif;
-  background: #F2F2F2;
+  background: #FFF;
   font-size: 13px;
 }
 .identityTheme .form-group tags-input {
   height: 100px;
 }
-.identityTheme .ag-bootstrap .ag-row-even,
-.identityTheme .ag-bootstrap .ag-row-odd {
-  background-color: #f5f5f5;
-  border-bottom: thin solid #DDD;
+.identityTheme .ag-bootstrap {
   color: #000;
 }
 .identityTheme .ag-bootstrap .ag-header {
@@ -318,7 +315,7 @@
   text-overflow: ellipsis;
 }
 .identityTheme .closeHeaderBtn.md-button.md-ink-ripple:hover {
-  background-color: #F2F2F2 !important;
+  background-color: #FFF !important;
 }
 .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
 .identityTheme .md-button:not([disabled]).md-focused,
@@ -546,12 +543,12 @@
   border-left: 4px solid #f48220;
 }
 .identityTheme header {
-  background: #F2F2F2;
+  background: #FFF;
   color: #333;
   border-bottom: thin solid #999;
 }
 .identityTheme .username {
-  background-color: #F2F2F2;
+  background-color: #FFF;
   border-left: 1px solid #999;
 }
 .identityTheme #username-button {

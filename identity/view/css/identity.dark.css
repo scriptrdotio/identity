@@ -199,10 +199,7 @@
 .identityTheme .form-group tags-input {
   height: 100px;
 }
-.identityTheme .ag-bootstrap .ag-row-even,
-.identityTheme .ag-bootstrap .ag-row-odd {
-  background-color: #191919;
-  border-bottom: thin solid #16191c;
+.identityTheme .ag-bootstrap {
   color: #f2f2f2;
 }
 .identityTheme .ag-bootstrap .ag-header {
