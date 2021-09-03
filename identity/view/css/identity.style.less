@@ -1,11 +1,11 @@
 /* CSS Document */
 /****** Less color variables **********/
-.colorDefs(@c1: #FFF, @c2: #000, @c3: #333, @c4: #999, @c5: #DDD, @c6: #f5f5f5, @c7: #FFF, @c8: #f48220, @c9: #ffac47, @c10: #4fcd8a, @c11: #FFF, @c12: #DDD,@c13: #FFF,@c14: #a4c2c7) {
+.colorDefs(@c1: #FFF, @c2: #000, @c3: #333, @c4: #999, @c5: #DDD, @c6: #f5f5f5, @c7: #F2F2F2, @c8: #f48220, @c9: #ffac47, @c10: #4fcd8a, @c11: #FFF, @c12: #DDD,@c13: #FFF,@c14: #a4c2c7) {
   @themeBase: @c1; /**#FFF**/
 
   @grayBase: @c2; /**#000**/
   @gray1: @c3; /**#333**/
-  @gray2: @c4; /**#9c9c9c**/
+  @gray2: @c4; /**#999**/
   @gray3: @c5; /**#DDD**/
   @gray4: @c6; /**#f5f5f5**/
   @gray5: @c7; /**#FFF**/
@@ -32,31 +32,30 @@
 }
 
 .themeProperties() {
-	body {color: @gray1;}
     /**Margins & paddings**/
     .mb15 {
-        margin-bottom: 15px;
+    margin-bottom: 15px;
     }
     .mt5 {
-        margin-top: 5px;
+    margin-top: 5px;
     }
     .mgr5 {
-        margin-right: 5px;
+    margin-right: 5px;
     }
     .mgl5 {
-        margin-left: 5px;
+    margin-left: 5px;
     }
     .mt10 {
-        margin-top: 10px;
+    margin-top: 10px;
     }
     .mt15 {
-        margin-top: 15px;
+    margin-top: 15px;
     }
     .pt15 {
-        padding-top: 15px;
+    padding-top: 15px;
     }
     .pb15 {
-        padding-bottom: 15px;
+    padding-bottom: 15px;
     }
 
     /**Generic styles**/
@@ -92,9 +91,10 @@
     .page-container {
         overflow: auto;
     }
-    
+
     .page-content {
-    	background-color: @gray5;
+        background-color: @gray5;
+        color: @grayBase;
     }
 
     /*** search box ***/
@@ -197,100 +197,109 @@
 
     /*** angular input ***/
     tags-input {
-        .tags {
-            border: 1px solid @gray3;
-            border-radius: 4px;
-            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-            overflow-y: auto;
-            .tag-item {
-                height: auto;
-                word-break: break-all;
-                font-family: "Josefin Sans", sans-serif;
-                font-size: 13px;
-                background: @secondaryLighter;
-                border: 1px solid @secondaryDarker;
-                color: @lightBase;
-                .remove-button:active {
-                    color: @secondaryDarker;
-                }
-            }
-        }
-        .autocomplete .suggestion-item {
+    .tags {
+        border: 1px solid @gray3;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        overflow-y: auto;
+        .tag-item {
+            height: auto;
+            word-break: break-all;
             font-family: "Josefin Sans", sans-serif;
-            background: @gray5;
             font-size: 13px;
+            background: @secondaryLighter;
+            border: 1px solid @secondaryDarker;
+            color: @lightBase;
+        .remove-button:active {
+            color: @secondaryDarker;
         }
+        }
+    }
+    .autocomplete .suggestion-item {
+        font-family: "Josefin Sans", sans-serif;
+        background: @gray5;
+        font-size: 13px;
+    }
     }
 
     .form-group tags-input {
         height: 100px;
     }
-    
-    /**Grid**/
-    .ag-bootstrap .ag-row-even, .ag-bootstrap .ag-row-odd {
-        background-color: @gray4;
-        border-bottom: thin solid @gray3;
-        color: @grayBase;
+
+    /**Grid**/ 
+    .ag-bootstrap {
+    	color: @grayBase;
+    	.ag-header {
+            border-bottom: 2px solid @gray3!important;
+        }
+        .ag-row {
+            border-bottom: 1px solid @gray3!important;
+        &.ag-row-even,&.ag-row-odd {
+            background-color: @gray4;
+            border-bottom: thin solid @gray3;
+            color: @grayBase;
+        }
+        }
     }
 
     @media (min-width: 320px) and (max-width: 767px) {
-        header {
-            position: relative !important;
+    header {
+        position: relative !important;
+    }
+    main > section {
+        display: inline-block;
+        width: 100%;
+    }
+    .side-bar {
+        position: fixed !important;
+        width: 100%;
+        z-index: 100;
+        height: auto !important;
+        top: 45px;
+    }
+    .page-content {
+        margin-top: 70px;
+    }
+    .side-bar {
+        nav-pills > li a {
+            padding: 10px 10px;
         }
-        main > section {
-            display: inline-block;
-            width: 100%;
+        .nav li strong {
+            margin-left: 8px;
         }
-        .side-bar {
-            position: fixed !important;
-            width: 100%;
-            z-index: 100;
-            height: auto !important;
-            top: 45px;
-        }
-        .page-content {
-            margin-top: 70px;
-        }
-        .side-bar {
-            nav-pills > li a {
-                padding: 10px 10px;
-            }
-            .nav li strong {
-                margin-left: 8px;
-            }
-        }
+    }
     }
 
     @media (min-width: 768px) {
-        main {
-            display: flex;
-            min-height: 100vh;
-            > section {
-                flex: 1;
-            }
-        }
-
-        .menu-wrap {
-            margin-top: 45px !important;
-            display: flex;
-            height: auto !important;
-        }
-        .page-content {
-            margin-top: 45px;
-            overflow-y: auto;
-            height: calc(100vh - 45px);
-            position: relative;
-        }
-        .side-bar .nav-pills {
-            position: fixed;
-            overflow-y: auto;
+    main {
+        display: flex;
+        min-height: 100vh;
+        > section {
+            flex: 1;
         }
     }
 
+    .menu-wrap {
+        margin-top: 45px !important;
+        display: flex;
+        height: auto !important;
+    }
+    .page-content {
+        margin-top: 45px;
+        overflow-y: auto;
+        height: calc(100vh - 45px);
+        position: relative;
+    }
+    .side-bar .nav-pills {
+        position: fixed;
+        overflow-y: auto;
+    }
+    }
+
     @media screen and (max-width: 768px) {
-        .identityTheme .icon {
-            right: 0px;
-        }
+    .icon {
+        right: 0px;
+    }
     }
 
     .modal-lg {
@@ -333,9 +342,9 @@
             padding: 6px 10px;
             margin-right: 10px;
             margin-bottom: 10px;
-        &.noBorder {
-            border: none;
-        }
+            &.noBorder {
+                border: none;
+            }
         }
         p {
             overflow: hidden;
@@ -382,10 +391,11 @@
         }
         &.btnSelected {
             background-color: @secondaryColor;
-            color: @lightBase;
+            color: @grayBase;
         }
-        &:active,&.active {
-        	box-shadow: none;
+        &:active,
+        &.active {
+            box-shadow: none;
         }
         }
     }
@@ -396,21 +406,21 @@
         color: @primaryColor;
         background: transparent;
         padding: 2px 6px;
-        &:hover {
-            background: @primaryDarker;
-            color: @lightBase;
-        }
-        &[disabled] {
-            cursor: default;
-            color: @gray2;
-            border-color: @gray2;
+    &:hover {
+        background: @primaryDarker;
+        color: @lightBase;
+    }
+    &[disabled] {
+        cursor: default;
+        color: @gray2;
+        border-color: @gray2;
         &:hover {
             background-color: transparent;
         }
-        }
-        &:focus {
-            outline: none;
-        }
+    }
+    &:focus {
+        outline: none;
+    }
     }
 
     .ag-bootstrap .ag-header-icon {
@@ -452,9 +462,9 @@
             opacity: 0.5;
             color: @secondaryColor;
         }
-        &:hover .material-icons {
-            opacity: 1;
-        }
+    &:hover .material-icons {
+        opacity: 1;
+    }
         .tooltip.left {
             display: none;
         }
@@ -470,19 +480,15 @@
     }
     .textWrap {
         overflow: hidden !important;
-    }
         min-height: 30px;
         height: auto;
     }
-
-    .identityTheme {
-        > .ui-select-search {
-            padding: 0 10px;
-            box-sizing: border-box;
-        }
-        > .ui-select-bootstrap.open {
-            z-index: 10050;
-        }
+    .ui-select-search {
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .ui-select-bootstrap.open {
+        z-index: 10050;
     }
 
     .ui-select-multiple.ui-select-bootstrap {
@@ -500,9 +506,9 @@
         font-weight: bold;
     }
     .ui-select-choices-row {
-        &:hover {
-            background: @primaryLighter;
-        }
+    &:hover {
+        background: @primaryLighter;
+    }
         div {
             color: @grayBase;
             text-indent: 10px;
@@ -510,14 +516,14 @@
         }
         span {
             padding: 3px;
-        &:focus,
-        &:hover {
+            &:focus,
+            &:hover {
             background: @gray4;
+            }
         }
-        }
-        &.active span {
-            background-color: @primaryColor;
-        }
+    &.active span {
+        background-color: @primaryColor;
+    }
     }
 
     .ui-select-bootstrap .ui-select-match-text span {
@@ -528,11 +534,11 @@
         background: @primaryColor;
         color: @lightBase;
         border-color: @lightBase;
-        &:hover,
-        &:focus,
-        &:active {
-            border-color: @lightBase !important;
-        }
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: @lightBase !important;
+    }
         .close {
             opacity: 1;
             color: @lightBase;
@@ -556,13 +562,13 @@
     }
 
     /**md dialog**/
-    .identityTheme md-dialog {
+    md-dialog {
         md-dialog-actions {
             padding: 15px;
             text-align: right;
             border-top: 1px solid @gray4;
             .md-button {
-                margin: 0 10px 0 0;
+            margin: 0 10px 0 0;
             }
         }
         md-dialog-content {
@@ -580,24 +586,24 @@
         }
     }
 
-    .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
-    .identityTheme .md-button:not([disabled]).md-focused,
-    .identityTheme .md-button.md-default-theme:not([disabled]):hover,
-    .identityTheme .md-button:not([disabled]):hover {
+    .md-button.md-default-theme:not([disabled]).md-focused,
+    .md-button:not([disabled]).md-focused,
+    .md-button.md-default-theme:not([disabled]):hover,
+    .md-button:not([disabled]):hover {
         background-color: @secondaryLighter;
     }
 
     /**Basic styles**/
-	
+
     .tabContent {
         background-color: @gray4;
         padding-top: 10px;
     }
     .level-bg-0 {
-    	background: @gray1;
+        background: @gray1;
     }
     .logo {
-    	background: @gray1;
+        background: @gray1;
         img {
             width: 70%;
         }
@@ -636,14 +642,14 @@
         font-size: 1em;
     &.btnSelected {
         border-bottom: 4px solid @primaryColor;
-        color: @themeBase;
-    &:hover {
-    	border-color: @primaryColor;
-        color: @themeBase;
+        color: @grayBase;
+        &:hover {
+        border-color: @primaryColor;
+        color: @grayBase;
+        }
     }
-    }
     &:hover {
-    	border-bottom: 4px solid @primaryColor;
+        border-bottom: 4px solid @primaryColor;
         color: @gray2;
     }
     }
@@ -679,9 +685,10 @@
     }
     }
     .alert {
-    	margin: 15px;
+        margin: 15px;
     }
     .alert-danger {
-    	background-image: none;
+        background-image: none;
     }
+
 }
