@@ -97,8 +97,7 @@ module.exports = function(grunt) {
 			               'concat/min-safe/overlayForm.js',
 			               'concat/min-safe/uploadFile.js',
 			               'concat/min-safe/grid.js' ,
-			               'concat/min-safe/formDefinitions.js',
-			               'concat/min-safe/config.js' ,
+			               'concat/min-safe/formDefinitions.js'
 		              ],
 		               dest : 'build/studio/js/identity.js'
 	            },
