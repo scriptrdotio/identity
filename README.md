@@ -12,7 +12,7 @@ Below are the main guidelines to follow in order to integrate this component int
 
 ##### Dependencies
 - Make sure you have the following installed:
-	- UIComponents ---  HEAD SHA 6e17cf32ae09bdfa6462e940848253f9d9106071
+	- UIComponents ---  rc1.0
 	- Login (custom installation)
 	- Underscore and momentjs (under modules)
 - Run **identity/install/auto.install.scriptr** once, the script will:
