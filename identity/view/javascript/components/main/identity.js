@@ -34,15 +34,15 @@ angular
          var self = this;
     
     this.$onInit = function() {
-        console.log(">>>>>>>>>>>>> identityLayout: " + this.identityLayout);
+        console.log("identityLayout: " + this.identityLayout);
         var self = this;
         self.deviceTitle = "Identity Manager"; 
         self.renderGrid = true;
         self.identityForms = identityForms;
         self.gridId = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? this.identityLayout : "device";
-        self.identifierProperty = identityConfig.device.identifierProperty;
+        self.identifierProperty = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? identityConfig[this.identityLayout].identifierProperty : identityConfig["device"].identifierProperty;
         self.deviceTabClass = "btnSelected";
-        self.gridAPI = identityConfig.device.apis.list;
+        self.gridAPI = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? identityConfig[this.identityLayout].apis.list : identityConfig["device"].apis.list;
         self.copyTooltip = "Copy Token";
         
         angular.element(document.querySelector("body")).addClass(identityConfig.theme)

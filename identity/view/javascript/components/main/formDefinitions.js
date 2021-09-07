@@ -35,7 +35,7 @@ angular
                                 "multiple": true,
                                 "closeOnSelect": true,
                                 "httpGet":{
-                                    "url":"identity/api/devices/listDevices",
+                                    "url":identityConfig.device.apis.list,
                                     "parameter": "{\"count\": false, \"fields\": \"id,name\"}"
                                 } ,
                                 "map": {valueProperty: "id", nameProperty: "name"},
@@ -213,7 +213,7 @@ angular
                                     'key': 'groups',
                                     "options": {
                                         "httpGet":{
-                                            "url":"identity/api/groups/listGroups",
+                                            "url":identityConfig.group.apis.list,
                                             "parameter": "{\"count\": false}"
                                         } ,
                                         "map": {valueProperty: "name", nameProperty: "name"} 
@@ -529,7 +529,7 @@ angular
                                     'key': 'groups',
                                     "options": {
                                         "httpGet":{
-                                            "url":"identity/api/groups/listGroups",
+                                            "url":identityConfig.group.apis.list,
                                             "parameter": "{\"count\": false}"
                                         } ,
                                         "map": {valueProperty: "name", nameProperty: "name"} 
