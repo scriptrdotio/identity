@@ -1,10 +1,10 @@
 var paramsEvaluator = require("../../entities/ParamsEvaluator");
 var errorHandler = require("../../entities/ErrorHandler");
-var config = require ("../../config/config");
+var config = require ("../../config/properties");
 var errorHandler = new errorHandler.ErrorHandler();
 var log = require("log")
 log.setLevel("INFO");
-var config = require ("../../config/config");
+var config = require ("../../config/properties");
 var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;

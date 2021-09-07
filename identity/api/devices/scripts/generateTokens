@@ -5,7 +5,7 @@ var devices= require("device");
 var log = require("log")
 log.setLevel("INFO");
 var errorHandler = new errorHandler.ErrorHandler();
-var config = require ("../../../config/config");
+var config = require ("../../../config/properties");
 var identityManager = require("../../../entities/identityManager")
 
 

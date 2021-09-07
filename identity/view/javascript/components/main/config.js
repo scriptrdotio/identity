@@ -1,6 +1,4 @@
-angular
-    .module("Identity").constant(
-    "identityConfig",
+var identityConfig =
     {
         theme: "identityTheme",
         group: {
@@ -41,4 +39,4 @@ angular
             },
             identifierProperty: "id"
         }
-    })
+    }
