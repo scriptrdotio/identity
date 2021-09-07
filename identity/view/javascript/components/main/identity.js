@@ -30,7 +30,7 @@ angular
              "identityLayout" : "@", //can be "group", "device", or "user"
          },
         templateUrl : '/identity/view/javascript/components/main/identity.html',
-        controller :  function($location,$scope,$rootScope,httpClient, identityForms, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay, identityFactory) {
+        controller :  function($location,$scope,$rootScope,httpClient, identityForms, $routeParams, $timeout, $mdDialog, $uibModal, $route, $loadingOverlay, identityFactory) {
          var self = this;
     
     this.$onInit = function() {
@@ -786,7 +786,7 @@ angular
         }
 });
 angular
-    .module("Identity").controller('confirmDeleteDialogCtrl', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
+    .module("Identity").controller('confirmDeleteDialogCtrl', function(httpClient, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
     var vm = this;
     vm.parent = parent;
     vm.identifier = dataObject[vm.parent.identifierProperty];
@@ -842,7 +842,7 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig, identityInfo) {
+    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityInfo) {
    
     var vm = this;
    
@@ -1121,7 +1121,7 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig, groupInfo) {
+    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, groupInfo) {
     var vm = this;
     /*vm.promptMessage = {
         content:'Fetching group...'

@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
+    controller: function ($scope, httpClient, $q, $loadingOverlay,identityFactory) {
         var self = this;
         
         self.showLoading = false;
