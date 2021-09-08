@@ -18,13 +18,22 @@ if(!hasPermission) {
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info(JSON.stringify(params));
-
+/*
 var defaultStore = require('document').getInstance('DefaultStore');
 var attachmentResult = defaultStore.getAttachment(params.templateKey, params.attachment, {"versionNumber": "1"});
 log.info(JSON.stringify(attachmentResult));
 var content = attachmentResult.content;
-if(content != null && content != ""){
-    response.setHeader("content-disposition", "attachment;filename="+params.attachment);
+*/
+
+var content = "";
+if(params.type == "device"){
+    content = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\ndev1,Device1,This is the device description,active,stringAttr,,123\r\ndev2,Device2,,active,stringAttr,textAttr,\r\ndev3,Device3,,suspended,,,555";
+}else if(params.type == "user"){
+    content = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\nuser1,User1,user1@gmail.com,active,stringAttr,,123\r\nuser2,User2,,active,stringAttr,textAttr,\r\nuser3,User3,,suspended,,,555";
+}
+
+if(content != ""){
+    response.setHeader("content-disposition", "attachment;filename="+params.fileName);
     response.setHeader("content-type","text/csv");
     response.addHeaders(configuration.crossDomainHeaders);
     response.setStatus(200);
