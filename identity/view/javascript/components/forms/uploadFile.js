@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
+    controller: function ($scope, httpClient, $q, $loadingOverlay,identityFactory) {
         var self = this;
         
         self.showLoading = false;
@@ -110,16 +110,9 @@ angular
         }
         
         this.downloadTemplate = function(){
-            var params;
-            if(self.gridType == "device")
-                params = {
-                    templateKey: "devicesTemplate",
-                    attachment: "devicesTemplate.csv"
-                };
-            else if(self.gridType == "user")
-                params = {
-                    templateKey: "usersTemplate",
-                    attachment: "usersTemplate.csv"
+            var params = {
+                    type: self.gridType,
+                    fileName: self.gridType+"sTemplate.csv"
                 };
             httpClient.post(identityConfig.reports.apis.template, params).then(
                 function(data, response) {
@@ -130,7 +123,7 @@ angular
                         self.showAlert("success", "Template downloaded successfully");
                         var element = document.createElement('a');
                         element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
-                        element.setAttribute('download', params.attachment);
+                        element.setAttribute('download', params.fileName);
                         element.style.display = 'none';
                         document.body.appendChild(element);
                         element.click();

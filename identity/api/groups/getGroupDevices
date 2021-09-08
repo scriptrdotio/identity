@@ -6,7 +6,7 @@ var errorHandler = new errorHandler.ErrorHandler();
 var _ = require("../../modules/underscore/underscore.js")._;
 var log = require("log")
 log.setLevel("INFO");
-var config = require("../../config/config");
+var config = require("../../config/properties");
 var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;

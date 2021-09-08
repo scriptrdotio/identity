@@ -5,7 +5,7 @@ var errorHandler = new errorHandler.ErrorHandler();
 var groups = require("group");
 var devices = require("device");
 var users = require("user");
-var config = require("../config/config");
+var config = require("../config/properties");
 var log = require("log")
 log.setLevel("INFO");
 var aclEvaluator = require("../entities/AclEvaluator");

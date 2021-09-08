@@ -4,7 +4,7 @@ var errorHandler = require("../../entities/ErrorHandler");
 var errorHandler = new errorHandler.ErrorHandler();
 var identityManager = require("../../entities/identityManager");
 log.setLevel("INFO");
-var config = require ("../../config/config");
+var config = require ("../../config/properties");
 var aclEvaluator = require("../../entities/AclEvaluator");
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;

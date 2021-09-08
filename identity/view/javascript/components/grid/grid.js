@@ -112,7 +112,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
+        controller : function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, $loadingOverlay) {
 
             var self = this;
 			
