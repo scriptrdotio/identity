@@ -28,17 +28,19 @@ angular
     'scriptrIdentityMain',
     { 
     	 bindings : {
+             "identityLayout" : "@", //can be "group", "device", or "user"
          },
         templateUrl : '/identity/view/javascript/components/main/identity.html',
-        controller :  ['$location', '$scope', '$rootScope', 'httpClient', 'identityForms', '$routeParams', '$timeout', '$mdDialog', '$uibModal', '$route', 'identityConfig', '$loadingOverlay', 'identityFactory', function($location,$scope,$rootScope,httpClient, identityForms, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay, identityFactory) {
+        controller :  ['$location', '$scope', '$rootScope', 'httpClient', 'identityForms', '$routeParams', '$timeout', '$mdDialog', '$uibModal', '$route', '$loadingOverlay', 'identityFactory', function($location,$scope,$rootScope,httpClient, identityForms, $routeParams, $timeout, $mdDialog, $uibModal, $route, identityConfig, $loadingOverlay, identityFactory) {
          var self = this;
     
     this.$onInit = function() {
+        console.log(">>>>>>>>>>>>> identityLayout: " + this.identityLayout);
         var self = this;
         self.deviceTitle = "Identity Manager"; 
         self.renderGrid = true;
         self.identityForms = identityForms;
-        self.gridId =  "device";
+        self.gridId = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? this.identityLayout : "device";
         self.identifierProperty = identityConfig.device.identifierProperty;
         self.deviceTabClass = "btnSelected";
         self.gridAPI = identityConfig.device.apis.list;
@@ -785,7 +787,7 @@ angular
         }]
 });
 angular
-    .module("Identity").controller('confirmDeleteDialogCtrl', ['httpClient', 'identityConfig', 'dataObject', 'grid', '$scope', 'parent', '$mdDialog', '$loadingOverlay', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
+    .module("Identity").controller('confirmDeleteDialogCtrl', ['httpClient', 'dataObject', 'grid', '$scope', 'parent', '$mdDialog', '$loadingOverlay', function(httpClient, identityConfig, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
     var vm = this;
     vm.parent = parent;
     vm.identifier = dataObject[vm.parent.identifierProperty];
@@ -841,7 +843,7 @@ angular
 }]);
 
 angular
-    .module("Identity").controller('viewIdentityDialogCtrl', ['$timeout', 'httpClient', 'identityData', 'grid', 'parent', '$mdDialog', '$scope', 'identityConfig', 'identityInfo', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig, identityInfo) {
+    .module("Identity").controller('viewIdentityDialogCtrl', ['$timeout', 'httpClient', 'identityData', 'grid', 'parent', '$mdDialog', '$scope', 'identityInfo', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityConfig, identityInfo) {
    
     var vm = this;
    
@@ -1120,7 +1122,7 @@ angular
 }]);
 
 angular
-    .module("Identity").controller('viewGroupDialogCtrl', ['$timeout', 'grid', 'httpClient', 'parent', 'groupData', '$mdDialog', '$scope', 'identityConfig', 'groupInfo', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig, groupInfo) {
+    .module("Identity").controller('viewGroupDialogCtrl', ['$timeout', 'grid', 'httpClient', 'parent', 'groupData', '$mdDialog', '$scope', 'groupInfo', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, identityConfig, groupInfo) {
     var vm = this;
     /*vm.promptMessage = {
         content:'Fetching group...'
@@ -1336,7 +1338,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: ['$scope', 'httpClient', '$q', 'identityConfig', '$loadingOverlay', 'identityFactory', function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
+    controller: ['$scope', 'httpClient', '$q', '$loadingOverlay', 'identityFactory', function ($scope, httpClient, $q, identityConfig, $loadingOverlay,identityFactory) {
         var self = this;
         
         self.showLoading = false;
@@ -1599,7 +1601,7 @@ angular
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
-        controller : ['$scope', '$window', '$uibModal', '$timeout', 'identityForms', 'wsClient', 'dataStore', 'identityFactory', '$routeParams', 'httpClient', '$route', '$timeout', '$q', 'identityConfig', '$loadingOverlay', function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
+        controller : ['$scope', '$window', '$uibModal', '$timeout', 'identityForms', 'wsClient', 'dataStore', 'identityFactory', '$routeParams', 'httpClient', '$route', '$timeout', '$q', '$loadingOverlay', function($scope, $window, $uibModal, $timeout, identityForms, wsClient, dataStore, identityFactory, $routeParams,httpClient, $route, $timeout, $q, identityConfig, $loadingOverlay) {
 
             var self = this;
 			
@@ -3266,47 +3268,3 @@ angular
         }
     }
 )
-angular
-    .module("Identity").constant(
-    "identityConfig",
-    {
-        theme: "identityTheme",
-        group: {
-            apis: {
-                "list": "identity/api/groups/listGroups",
-                "delete":"identity/api/deleteIdentity",
-                "save": "identity/api/groups/saveGroup",
-                "getGroupDevices": "identity/api/groups/getGroupDevices",
-                "getGroupDevicesToView": "identity/api/groups/getGroupDevicesToView"
-            },
-            identifierProperty: "name"
-        },
-        device: {
-            apis: {
-                "list" : "identity/api/devices/listDevices",
-                "delete" : "identity/api/deleteIdentity",
-                "save" : "identity/api/devices/saveDevice",
-                "get" : "identity/api/getIdentity",
-                "generate" : "identity/api/devices/generateTokens",
-                "revoke" : "identity/api/devices/revokeToken"
-            },
-            identifierProperty: "id"
-        },
-        reports: {
-            apis: {
-                "export": "identity/api/reports/scheduleExport",
-                "import": "identity/api/reports/scheduleImport",
-                "getCSV": "identity/api/reports/getCSVFile",
-                "template": "identity/api/reports/getCSVTemplate"
-            }
-        },
-        user: {
-            apis: {
-                "delete" : "identity/api/deleteIdentity",
-                "get" : "identity/api/getIdentity",
-                "list" : "identity/api/users/listUsers",
-                "save" : "identity/api/users/saveUser",
-            },
-            identifierProperty: "id"
-        }
-    })

@@ -25,6 +25,7 @@
   
   
   
+  
 }
 .identityTheme .mb15 {
   margin-bottom: 15px;
@@ -79,6 +80,10 @@
 }
 .identityTheme .page-container {
   overflow: auto;
+}
+.identityTheme .page-content {
+  background-color: #FFF;
+  color: #000;
 }
 .identityTheme .search-text {
   position: relative;
@@ -194,6 +199,21 @@
 .identityTheme .form-group tags-input {
   height: 100px;
 }
+.identityTheme .ag-bootstrap {
+  color: #000;
+}
+.identityTheme .ag-bootstrap .ag-header {
+  border-bottom: 2px solid #DDD !important;
+}
+.identityTheme .ag-bootstrap .ag-row {
+  border-bottom: 1px solid #DDD !important;
+}
+.identityTheme .ag-bootstrap .ag-row.ag-row-even,
+.identityTheme .ag-bootstrap .ag-row.ag-row-odd {
+  background-color: #f5f5f5;
+  border-bottom: thin solid #DDD;
+  color: #000;
+}
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
     position: relative !important;
@@ -244,7 +264,7 @@
   }
 }
 @media screen and (max-width: 768px) {
-  .identityTheme .identityTheme .icon {
+  .identityTheme .icon {
     right: 0px;
   }
 }
@@ -272,13 +292,13 @@
 .identityTheme .contentContainer .table {
   margin-top: 5px;
   width: 50%;
-  border: 1px solid #5477a0;
+  border: 1px solid #a4c2c7;
 }
 .identityTheme .contentContainer .table > thead > tr > th {
   border-right: none;
   color: #FFF;
   border-bottom: none;
-  background: #5477a0;
+  background: #a4c2c7;
 }
 .identityTheme .contentContainer .blockContent {
   float: left;
@@ -304,7 +324,7 @@
   background-color: rgb(84 119 160);
 }
 .identityTheme .filter-bar .btn-default {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
   margin-top: 0;
 }
 .identityTheme .btn.btn-md {
@@ -320,18 +340,22 @@
 .identityTheme .btn-group .btnContent {
   width: 260px;
   background-color: #FFF;
-  color: #5477a0;
-  border-color: #5477a0;
-  border: 1px solid #5477a0;
+  color: #a4c2c7;
+  border-color: #a4c2c7;
+  border: 1px solid #a4c2c7;
 }
 .identityTheme .btn-group .btnContent:hover {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
   color: #FFF;
-  border-color: #5477a0;
+  border-color: #a4c2c7;
 }
 .identityTheme .btn-group .btnContent.btnSelected {
-  background-color: #5477a0;
-  color: #FFF;
+  background-color: #a4c2c7;
+  color: #000;
+}
+.identityTheme .btn-group .btnContent:active,
+.identityTheme .btn-group .btnContent.active {
+  box-shadow: none;
 }
 .identityTheme .ag-bootstrap .ag-paging-button {
   border: 1px solid #f48220;
@@ -346,8 +370,8 @@
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled] {
   cursor: default;
-  color: #DDD;
-  border-color: #DDD;
+  color: #999;
+  border-color: #999;
 }
 .identityTheme .ag-bootstrap .ag-paging-button[disabled]:hover {
   background-color: transparent;
@@ -356,7 +380,7 @@
   outline: none;
 }
 .identityTheme .ag-bootstrap .ag-header-icon {
-  fill: #5477a0 !important;
+  fill: #a4c2c7 !important;
 }
 .identityTheme .adminHome .btn-primary i {
   padding-right: 5px;
@@ -368,10 +392,10 @@
   cursor: pointer;
 }
 .identityTheme .btnToggle .ng-valid-parse {
-  background-color: #5477a0;
+  background-color: #a4c2c7;
 }
 .identityTheme .ag-bootstrap .ag-row-selected {
-  background-color: #5477a0 !important;
+  background-color: #a4c2c7 !important;
 }
 .identityTheme .closeHeaderBtn {
   position: absolute;
@@ -385,7 +409,7 @@
 .identityTheme .closeHeaderBtn .material-icons {
   float: right;
   opacity: 0.5;
-  color: #5477a0;
+  color: #a4c2c7;
 }
 .identityTheme .closeHeaderBtn:hover .material-icons {
   opacity: 1;
@@ -403,16 +427,14 @@
 }
 .identityTheme .textWrap {
   overflow: hidden !important;
-}
-.identityTheme .form-control {
   min-height: 30px;
   height: auto;
 }
-.identityTheme .identityTheme > .ui-select-search {
+.identityTheme .ui-select-search {
   padding: 0 10px;
   box-sizing: border-box;
 }
-.identityTheme .identityTheme > .ui-select-bootstrap.open {
+.identityTheme .ui-select-bootstrap.open {
   z-index: 10050;
 }
 .identityTheme .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
@@ -476,71 +498,68 @@
 .identityTheme .file-upload .btn.btn-block {
   margin-top: 10px;
 }
-.identityTheme .identityTheme md-dialog md-dialog-actions {
+.identityTheme md-dialog md-dialog-actions {
   padding: 15px;
   text-align: right;
   border-top: 1px solid #f5f5f5;
 }
-.identityTheme .identityTheme md-dialog md-dialog-actions .md-button {
+.identityTheme md-dialog md-dialog-actions .md-button {
   margin: 0 10px 0 0;
 }
-.identityTheme .identityTheme md-dialog md-dialog-content {
+.identityTheme md-dialog md-dialog-content {
   min-height: 100px;
   overflow-x: hidden;
   overflow-y: auto;
 }
-.identityTheme .identityTheme md-dialog .title-header {
+.identityTheme md-dialog .title-header {
   padding: 20px;
   border-bottom: 1px solid #f5f5f5;
   position: relative;
 }
-.identityTheme .identityTheme md-dialog h4 {
+.identityTheme md-dialog h4 {
   margin: 0;
 }
-.identityTheme .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
-.identityTheme .identityTheme .md-button:not([disabled]).md-focused,
-.identityTheme .identityTheme .md-button.md-default-theme:not([disabled]):hover,
-.identityTheme .identityTheme .md-button:not([disabled]):hover {
+.identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
+.identityTheme .md-button:not([disabled]).md-focused,
+.identityTheme .md-button.md-default-theme:not([disabled]):hover,
+.identityTheme .md-button:not([disabled]):hover {
   background-color: #f69d51;
 }
-.identityTheme .identityTheme {
-  background-color: #FFF;
-}
-.identityTheme .identityTheme .tabContent {
+.identityTheme .tabContent {
   background-color: #f5f5f5;
   padding-top: 10px;
 }
-.identityTheme .identityTheme .level-bg-0 {
+.identityTheme .level-bg-0 {
   background: #333;
 }
-.identityTheme .identityTheme .logo {
+.identityTheme .logo {
   background: #333;
 }
-.identityTheme .identityTheme .logo img {
+.identityTheme .logo img {
   width: 70%;
 }
-.identityTheme .identityTheme .side-bar .nav > li.active > a {
+.identityTheme .side-bar .nav > li.active > a {
   background-color: rgba(255, 255, 255, 0.05);
   border-left: 4px solid #f48220;
 }
-.identityTheme .identityTheme header {
+.identityTheme header {
   background: #FFF;
   color: #333;
   border-bottom: thin solid #999;
 }
-.identityTheme .identityTheme .username {
+.identityTheme .username {
   background-color: #FFF;
   border-left: 1px solid #999;
 }
-.identityTheme .identityTheme #username-button {
+.identityTheme #username-button {
   color: #333;
   line-height: 2.3;
 }
-.identityTheme .identityTheme h1 {
+.identityTheme h1 {
   font-size: 25px;
   margin: 35px 0;
 }
-.identityTheme .identityTheme .btn-group .btnContent {
+.identityTheme .btn-group .btnContent {
   width: auto;
   margin: 0 15px;
   padding: 0 0 5px;
@@ -552,48 +571,50 @@
   color: #999;
   font-size: 1em;
 }
-.identityTheme .identityTheme .btn-group .btnContent.btnSelected {
+.identityTheme .btn-group .btnContent.btnSelected {
   border-bottom: 4px solid #f48220;
-  color: #333;
+  color: #000;
 }
-.identityTheme .identityTheme .btn-group .btnContent.btnSelected:hover {
+.identityTheme .btn-group .btnContent.btnSelected:hover {
   border-color: #f48220;
+  color: #000;
 }
-.identityTheme .identityTheme .btn-group .btnContent:hover {
+.identityTheme .btn-group .btnContent:hover {
   border-bottom: 4px solid #f48220;
+  color: #999;
 }
-.identityTheme .identityTheme .filter-bar .btn-default {
+.identityTheme .filter-bar .btn-default {
   background-color: transparent;
   border-radius: 50%;
   border: 1px solid #999;
   color: #999;
   margin: 0 2px;
 }
-.identityTheme .identityTheme .filter-bar .btn-default:hover {
+.identityTheme .filter-bar .btn-default:hover {
   border-color: #f48220;
   color: #f48220;
 }
-.identityTheme .identityTheme .icon {
+.identityTheme .icon {
   margin-left: 5px;
   margin-right: 10px;
   color: #f48220;
   float: right;
-  display: block;
+  display: inline-block;
   position: absolute;
   right: 30px;
 }
-.identityTheme .identityTheme .ag-cell-value .btn-default:hover,
-.identityTheme .identityTheme .ag-cell-value .btn-default:active,
-.identityTheme .identityTheme .ag-cell-value .btn-default:focus,
-.identityTheme .identityTheme .ag-cell-value .btn-default:active.focus,
-.identityTheme .identityTheme .ag-cell-value .btn-default:active:focus,
-.identityTheme .identityTheme .ag-cell-value .btn-default:active:hover {
+.identityTheme .ag-cell-value .btn-default:hover,
+.identityTheme .ag-cell-value .btn-default:active,
+.identityTheme .ag-cell-value .btn-default:focus,
+.identityTheme .ag-cell-value .btn-default:active.focus,
+.identityTheme .ag-cell-value .btn-default:active:focus,
+.identityTheme .ag-cell-value .btn-default:active:hover {
   background: none;
   color: #f48220;
 }
-.identityTheme .identityTheme .alert {
+.identityTheme .alert {
   margin: 15px;
 }
-.identityTheme .identityTheme .alert-danger {
+.identityTheme .alert-danger {
   background-image: none;
 }
