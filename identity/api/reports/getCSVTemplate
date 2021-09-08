@@ -18,12 +18,6 @@ if(!hasPermission) {
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
 log.info(JSON.stringify(params));
-/*
-var defaultStore = require('document').getInstance('DefaultStore');
-var attachmentResult = defaultStore.getAttachment(params.templateKey, params.attachment, {"versionNumber": "1"});
-log.info(JSON.stringify(attachmentResult));
-var content = attachmentResult.content;
-*/
 
 var content = "";
 if(params.type == "device"){
