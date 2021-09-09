@@ -157,9 +157,7 @@
         color: #fff;
         text-shadow: none;
         border-radius: 6px;
-    &:hover {
-    	color: @primaryDarker;
-    }
+    &:hover,
     &:active,
     &:focus,
     &:active.focus,
@@ -167,7 +165,7 @@
     &:active:hover {
         background: @primaryDarker;
         color: #fff;
-        border: none;
+        border: none;f
         outline: 0;
     }
     }
@@ -187,7 +185,6 @@
     .md-button.md-default-theme:not([disabled]):hover,
     .md-button:not([disabled]):hover {
         background-color: @primaryDarker!important;
-        color: #FFF;
     }
 
     /**Prompt messages**/
@@ -666,6 +663,8 @@
         border-color: @primaryColor;
         color: @primaryColor;
     }
+    &:active:hover {
+    	color: #FFF;
     }
     .icon {
         margin-left: 5px;
