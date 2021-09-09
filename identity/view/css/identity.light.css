@@ -168,6 +168,7 @@
 .identityTheme .md-button.md-default-theme:not([disabled]):hover,
 .identityTheme .md-button:not([disabled]):hover {
   background-color: #d6690b !important;
+  color: #FFF;
 }
 .identityTheme .promptMessage-danger {
   color: #ff0000;
