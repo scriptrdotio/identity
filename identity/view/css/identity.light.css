@@ -141,7 +141,9 @@
   text-shadow: none;
   border-radius: 6px;
 }
-.identityTheme .btn-default:hover,
+.identityTheme .btn-default:hover {
+  color: #d6690b;
+}
 .identityTheme .btn-default:active,
 .identityTheme .btn-default:focus,
 .identityTheme .btn-default:active.focus,
