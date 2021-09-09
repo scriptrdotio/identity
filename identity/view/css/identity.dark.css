@@ -141,9 +141,7 @@
   text-shadow: none;
   border-radius: 6px;
 }
-.identityTheme .btn-default:hover {
-  color: #d6690b;
-}
+.identityTheme .btn-default:hover,
 .identityTheme .btn-default:active,
 .identityTheme .btn-default:focus,
 .identityTheme .btn-default:active.focus,
@@ -152,7 +150,7 @@
   background: #d6690b;
   color: #fff;
   border: none;
-  outline: 0;
+  foutline: 0;
 }
 .identityTheme .btn-primary {
   background: #f48220;
@@ -168,7 +166,6 @@
 .identityTheme .md-button.md-default-theme:not([disabled]):hover,
 .identityTheme .md-button:not([disabled]):hover {
   background-color: #d6690b !important;
-  color: #FFF;
 }
 .identityTheme .promptMessage-danger {
   color: #ff0000;
@@ -596,6 +593,9 @@
 .identityTheme .filter-bar .btn-default:hover {
   border-color: #f48220;
   color: #f48220;
+}
+.identityTheme .filter-bar .btn-default:active:hover {
+  color: #FFF;
 }
 .identityTheme .icon {
   margin-left: 5px;
