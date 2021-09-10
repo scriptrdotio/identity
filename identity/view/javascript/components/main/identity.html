@@ -1,5 +1,5 @@
 <div ng-init="$ctrl.$onInit();">
-    <h1 ng-if="!$ctrl.identityLayout" class="col-xs-12">{{$ctrl.deviceTitle}}</h1>
+    <h1 class="col-xs-12">{{$ctrl.deviceTitle}}</h1>
     <div class="col-xs-12" ng-if="$ctrl.showError"><div class="alert" ng-class="'alert-' + ( $ctrl.message.type || 'warning')">{{$ctrl.message.content}}</div></div>
     <div>
         <div ng-if="!$ctrl.identityLayout" class="btn-group btnToggle" data-toggle="buttons">

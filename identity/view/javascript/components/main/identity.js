@@ -36,7 +36,7 @@ angular
     this.$onInit = function() {
         console.log("identityLayout: " + this.identityLayout);
         var self = this;
-        self.deviceTitle = "Identity Manager"; 
+        self.deviceTitle = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? this.identityLayout.charAt(0).toUpperCase() + this.identityLayout.slice(1)+"s" : "Identity Manager"; 
         self.renderGrid = true;
         self.identityForms = identityForms;
         self.gridId = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? this.identityLayout : "device";
