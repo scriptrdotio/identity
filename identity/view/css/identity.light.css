@@ -608,10 +608,7 @@
 }
 .identityTheme .ag-cell-value .btn-default:hover,
 .identityTheme .ag-cell-value .btn-default:active,
-.identityTheme .ag-cell-value .btn-default:focus,
-.identityTheme .ag-cell-value .btn-default:active.focus,
-.identityTheme .ag-cell-value .btn-default:active:focus,
-.identityTheme .ag-cell-value .btn-default:active:hover {
+.identityTheme .ag-cell-value .btn-default:focus {
   background: none;
   color: #f48220;
 }
