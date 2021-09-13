@@ -165,7 +165,7 @@
     &:active:hover {
         background: @primaryDarker;
         color: #fff;
-        border: none;f
+        border: none;
         outline: 0;
     }
     }
@@ -653,7 +653,7 @@
         color: @gray2;
     }
     }
-    .filter-bar .btn-default {
+    .filter-bar .btn {
         background-color: transparent;
         border-radius: 50%;
         border: 1px solid @gray2;
@@ -664,7 +664,7 @@
         color: @primaryColor;
     }
     &:active:hover {
-    	color: #FFF;
+    	color: @lightBase;
     }
     }
     .icon {
@@ -679,7 +679,10 @@
     .ag-cell-value .btn-default {
     &:hover,
     &:active,
-    &:focus {
+    &:focus,
+    &:active.focus,
+    &:active:focus,
+    &:active:hover {
         background: none;
         color: @primaryColor;
     }
