@@ -397,6 +397,10 @@
 .identityTheme .ag-bootstrap .ag-row-selected {
   background-color: #a4c2c7 !important;
 }
+.identityTheme .modal-content {
+  background-color: #FFF;
+  color: #000;
+}
 .identityTheme .closeHeaderBtn {
   position: absolute;
   right: 15px;
