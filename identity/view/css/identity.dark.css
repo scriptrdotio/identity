@@ -150,7 +150,7 @@
   background: #d6690b;
   color: #fff;
   border: none;
-  foutline: 0;
+  outline: 0;
 }
 .identityTheme .btn-primary {
   background: #f48220;
@@ -583,18 +583,18 @@
   border-bottom: 4px solid #f48220;
   color: #999;
 }
-.identityTheme .filter-bar .btn-default {
+.identityTheme .filter-bar .btn {
   background-color: transparent;
   border-radius: 50%;
   border: 1px solid #999;
   color: #999;
   margin: 0 2px;
 }
-.identityTheme .filter-bar .btn-default:hover {
+.identityTheme .filter-bar .btn:hover {
   border-color: #f48220;
   color: #f48220;
 }
-.identityTheme .filter-bar .btn-default:active:hover {
+.identityTheme .filter-bar .btn:active:hover {
   color: #FFF;
 }
 .identityTheme .icon {
@@ -608,7 +608,10 @@
 }
 .identityTheme .ag-cell-value .btn-default:hover,
 .identityTheme .ag-cell-value .btn-default:active,
-.identityTheme .ag-cell-value .btn-default:focus {
+.identityTheme .ag-cell-value .btn-default:focus,
+.identityTheme .ag-cell-value .btn-default:active.focus,
+.identityTheme .ag-cell-value .btn-default:active:focus,
+.identityTheme .ag-cell-value .btn-default:active:hover {
   background: none;
   color: #f48220;
 }
