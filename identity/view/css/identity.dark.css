@@ -218,6 +218,9 @@
   border-bottom: thin solid #2e2e2e;
   color: #f2f2f2;
 }
+.identityTheme .ag-bootstrap .ag-overlay-no-rows-center {
+  background-color: #22272b !important;
+}
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
     position: relative !important;
