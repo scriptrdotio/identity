@@ -274,6 +274,7 @@
 }
 .identityTheme .modal-lg {
   width: 800px;
+  background-color: #22272b;
 }
 .identityTheme .viewDeviceContainer .title-header {
   padding: 20px;
@@ -427,6 +428,10 @@
 }
 .identityTheme .closeHeaderBtn .tooltip.left {
   display: none;
+}
+.identityTheme md-dialog {
+  background: #22272b;
+  color: #f2f2f2;
 }
 .identityTheme .dialogContainer {
   overflow-x: hidden;
