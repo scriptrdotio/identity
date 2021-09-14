@@ -404,13 +404,16 @@
   background-color: #22272b;
   color: #f2f2f2;
 }
+.identityTheme .close {
+  color: #f2f2f2;
+}
 .identityTheme .closeHeaderBtn {
   position: absolute;
   right: 15px;
   top: 13px;
   margin: 0 !important;
   padding: 0 !important;
-  color: #fff;
+  color: #22272b;
   background: none;
 }
 .identityTheme .closeHeaderBtn .material-icons {
@@ -535,6 +538,9 @@
 .identityTheme .tabContent {
   background-color: #191919;
   padding-top: 10px;
+}
+.identityTheme .filter-bar {
+  background-color: #191919;
 }
 .identityTheme .level-bg-0 {
   background: #4b4b4b;
