@@ -199,6 +199,9 @@
 .identityTheme .form-group tags-input {
   height: 100px;
 }
+.identityTheme .list-group-item {
+  background-color: transparent;
+}
 .identityTheme .ag-bootstrap {
   color: #f2f2f2;
 }
