@@ -221,6 +221,9 @@
 .identityTheme .ag-bootstrap .ag-overlay-no-rows-center {
   background-color: #FFF !important;
 }
+.identityTheme .box .box-header {
+  background-color: #FFF !important;
+}
 @media (min-width: 320px) and (max-width: 767px) {
   .identityTheme header {
     position: relative !important;
