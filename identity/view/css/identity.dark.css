@@ -77,6 +77,7 @@
 }
 .identityTheme main {
   overflow: hidden;
+  background-color: #2e2e2e;
 }
 .identityTheme .page-container {
   overflow: auto;
