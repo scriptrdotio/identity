@@ -319,7 +319,7 @@
   text-overflow: ellipsis;
 }
 .identityTheme .closeHeaderBtn.md-button.md-ink-ripple:hover {
-  background-color: #FFF !important;
+  background-color: transparent!important;
 }
 .identityTheme .md-button.md-default-theme:not([disabled]).md-focused,
 .identityTheme .md-button:not([disabled]).md-focused,
