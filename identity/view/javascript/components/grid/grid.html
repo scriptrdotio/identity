@@ -13,13 +13,12 @@
     </div>  
    
    <div class="col-xs-4 pull-right text-right">
-      <button ng-if= "$ctrl.gridEventsId == 'device'" ng-click="$ctrl.confirmRefreshTokensPopUp()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Generate/Regenerate token(s)"><i class="glyphicon glyphicon-refresh" aria-hidden="true"></i></button>
-     <button ng-hide={{$ctrl.disableAddRow}} ng-click="$ctrl.onAddRow()" class="btn btn-default mt4" tooltip-placement="auto" uib-tooltip="Add {{$ctrl.gridEventsId}}"><i class="fa fa-plus" aria-hidden="true"></i></button>
-        <button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Delete selected {{$ctrl.gridEventsId}}(s)"><i class="fa fa-close" aria-hidden="true"></i></button>
-
-        <button ng-click="$ctrl.exportData()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Export to CSV"><i class="glyphicon glyphicon-export" aria-hidden="true"></i></button>
-         <button ng-if= "$ctrl.gridEventsId == 'device' || $ctrl.gridEventsId == 'user'" ng-click="$ctrl.loadImportOverlay()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Import {{$ctrl.gridEventsId}}s"><i class="glyphicon glyphicon-import" aria-hidden="true"></i></button>
-    </div>
+   		<button ng-if= "$ctrl.gridEventsId == 'device'" ng-click="$ctrl.confirmRefreshTokensPopUp()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Generate/Regenerate token(s)"><i class="glyphicon glyphicon-refresh" aria-hidden="true"></i></button>
+   		<button ng-hide={{$ctrl.disableAddRow}} ng-click="$ctrl.onAddRow()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Add {{$ctrl.gridEventsId}}"><i class="fa fa-plus" aria-hidden="true"></i></button>
+   		<button ng-hide={{$ctrl.disableDeleteRow}} ng-click="$ctrl.openConfirmationPopUp()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Delete selected {{$ctrl.gridEventsId}}(s)"><i class="fa fa-close" aria-hidden="true"></i></button>
+   		<button ng-click="$ctrl.exportData()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Export to CSV"><i class="glyphicon glyphicon-export" aria-hidden="true"></i></button>
+   		<button ng-if= "$ctrl.gridEventsId == 'device' || $ctrl.gridEventsId == 'user'" ng-click="$ctrl.loadImportOverlay()" class="btn mt4" tooltip-placement="auto" uib-tooltip="Import {{$ctrl.gridEventsId}}s"><i class="glyphicon glyphicon-import" aria-hidden="true"></i></button>
+   </div>
    </form>  
     </div>
 </div>
