@@ -79,6 +79,9 @@
   overflow: hidden;
   background-color: #2e2e2e;
 }
+.identityTheme .bg-white {
+  background-color: #22272b;
+}
 .identityTheme .page-container {
   overflow: auto;
 }
@@ -513,6 +516,9 @@
 .identityTheme .has-success.checkbox-inline label,
 .identityTheme .has-success.radio label,
 .identityTheme .has-success.radio-inline label {
+  color: #f2f2f2;
+}
+.identityTheme .file-upload .dragAndDropDescription p {
   color: #f2f2f2;
 }
 .identityTheme .file-upload .btn.btn-block {
