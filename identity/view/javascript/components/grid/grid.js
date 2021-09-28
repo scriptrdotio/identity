@@ -14,6 +14,8 @@ angular
             "columnsDefinition" : "<columnsDefinition",
             
             "rowHeight": "<?",
+            
+            "headerHeight": "<?",
 
             "enableServerSideSorting" : "<?", // Note that Client side sorting & filtering does not make sense in virtual paging and is just not supported, only Server side sorting & filtering is supported
 
@@ -225,6 +227,7 @@ angular
                     angularCompileRows: true,
                     domLayout: "autoHeight",
                     rowHeight : (this.rowHeight) ? this.rowHeight : 25,
+                    headerHeight: (this.headerHeight) ? this.headerHeight : 25,
                     enableSorting: (typeof this.enableClientSideSorting != 'undefined')? this.enableClientSideSorting : true,
                     enableServerSideSorting : (typeof this.enableServerSideSorting != 'undefined')? this.enableServerSideSorting : true,
                     enableServerSideFilter : (typeof this.enableServerSideFilter != 'undefined') ? this.enableServerSideFilter : true,
