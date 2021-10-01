@@ -528,7 +528,7 @@ angular
                         }
                     }); 
                 }else {
-                    self.showAlert("danger", "No row(s) selected");
+                    self.showAlert("danger", "No "+self.gridEventsId+"(s) selected");
                 }
             }
             
@@ -677,7 +677,7 @@ angular
             this.onRemoveRow = function(key) {
                 if(self.gridOptions.rowModelType == "infinite"){
                     if(self.removeRowConfig && self.removeRowConfig.api){
-                        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting row(s)...</b>');
+                        $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Deleting '+self.gridEventsId+'(s)...</b>');
                         var api = self.removeRowConfig.api;
                         var selectedNodes = self.gridOptions.api.getSelectedNodes();
                         var selectedKeys = [];
@@ -697,38 +697,38 @@ angular
                                 function(data, response) {
                                     if(selectedKeys.length > 1){
                                         if(data.status == "failure") {
-                                            self.showAlert("danger", "Unable to delete row(s), please try again");
+                                            self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
                                         } else {
                                             identityFactory.getJobStatus(api, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
                                                 self.gridOptions.api.hideOverlay();     
                                                 if (res && (res.result == "success" || res.status == "success")) {
-                                                    self.showAlert("success", "Row(s) deleted successfully");
+                                                    self.showAlert("success", self.gridEventsId.charAt(0).toUpperCase() + self.gridEventsId.substring(1) + "(s) deleted successfully");
                                                     self.onServerCall();
                                                     self.gridOptions.api.deselectAll();
                                                 } else {
                                                     if(res && res.errorDetail){
                                                         self.showAlert("danger", res.errorDetail);
                                                     }else{
-                                                        self.showAlert("danger", "Unable to delete row(s), please try again");
+                                                        self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
                                                     }
                                                 }
                                             },function(err){
                                                 self.gridOptions.api.hideOverlay();
                                                 console.log("failure", err);
-                                                self.showAlert("danger", "Unable to delete row(s), please try again");
+                                                self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
                                             })
                                         }
                                     }else{
                                         self.gridOptions.api.hideOverlay();     
                                         if (data && (data.result == "success" || data.status == "success")) {
-                                            self.showAlert("success", "Row(s) deleted successfully");
+                                            self.showAlert("success", self.gridEventsId.charAt(0).toUpperCase() + self.gridEventsId.substring(1) + "(s) deleted successfully");
                                             self.onServerCall();
                                             self.gridOptions.api.deselectAll();
                                         } else {
                                             if(data && data.errorDetail){
                                                 self.showAlert("danger", data.errorDetail);
                                             }else{
-                                                self.showAlert("danger", "Unable to delete row(s), please try again");
+                                                self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
                                             }
                                         }
                                     }
@@ -956,7 +956,7 @@ angular
     controller: function ($scope) {
   this.$onInit = function () {
        this.title = "Delete";
-      this.bodyMessage = "Are you sure you want to delete the selected row(s)?"
+      this.bodyMessage = "Are you sure you want to delete the selected "+this.resolve.grid.gridEventsId+"(s)?"
         this.onSubmit = function() {
             this.resolve.grid.onRemoveRow();
             this.close({$value: true});
@@ -981,7 +981,7 @@ angular
     controller: function ($scope) {
   this.$onInit = function () {
        this.title = "Generate/Regenerate Token(s)";
-      this.bodyMessage = "Are you sure you want to generate/regenerate the tokens of the selected row(s)?"
+      this.bodyMessage = "Are you sure you want to generate/regenerate the tokens of the selected device(s)?"
         this.onSubmit = function() {
             this.resolve.grid.refreshTokens();
             this.close({$value: true});
