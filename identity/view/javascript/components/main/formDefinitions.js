@@ -113,9 +113,9 @@ angular
                                 "onChange": function(modelValue, form, model, scope) {
                                     console.log(model)
                                     if(modelValue != model["confirmPassword"])
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',false);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',false);
                                     else {
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                     }
                                 }
@@ -135,7 +135,7 @@ angular
                                     if(modelValue != model["password"])
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
                                     else {
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                     }
                                 }
@@ -150,7 +150,7 @@ angular
                                                  if(modelValue != model["password"])
                                                     scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
                                                  else {
-                                                     scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                                     scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                                      scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                                  }
                                              }*/
@@ -429,9 +429,9 @@ angular
                                 "onChange": function(modelValue, form, model, scope) {
                                     console.log(model)
                                     if(modelValue != model["confirmPassword"])
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',false);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',false);
                                     else {
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                     }
                                 }
@@ -451,7 +451,7 @@ angular
                                     if(modelValue != model["password"])
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
                                     else {
-                                        scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                        scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                     }
                                 }
@@ -466,7 +466,7 @@ angular
                                                      if(modelValue != model["password"])
                                                         scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',false);
                                                      else {
-                                                         scope.$root.$broadcast('schemaForm.error.newPassword','doNotMatch',true);
+                                                         scope.$root.$broadcast('schemaForm.error.password','doNotMatch',true);
                                                          scope.$root.$broadcast('schemaForm.error.confirmPassword','doNotMatch',true);
                                                      }
                                                  }

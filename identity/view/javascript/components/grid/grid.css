@@ -25,8 +25,8 @@
 .ag-bootstrap .ag-paging-row-summary-panel {color: #888;}
 .ag-bootstrap .ag-menu {font-family: "Josefin Sans",sans-serif!important; border: 1px solid #ddd!important;}
 .ag-bootstrap .ag-filter-select {width: 95%; height: 25px;}
-.ag-bootstrap .ag-overlay-loading-wrapper {background: rgba(0,0,0,0.2)!important;}
-.ag-bootstrap .ag-overlay-loading-center {padding: 20px!important; color: #323232!important;}
+.ag-bootstrap .ag-overlay-loading-wrapper {background: transparent!important;}
+.ag-bootstrap .ag-overlay-loading-center {padding: 20px!important; color: #323232!important;background: transparent!important;}
 .ag-bootstrap .ag-paging-panel {border-top: 1px solid #ddd!important; padding: 10px!important;}
 .ag-bootstrap .ag-paging-page-summary-panel {float: right;}
 .ag-bootstrap button[disabled] {opacity: 0.4;}
@@ -38,6 +38,8 @@
 .ag-bootstrap .ag-row-selected {background-color: #ffc278!important;}
 .ag-bootstrap .ag-paging-button {}
 .ag-bootstrap .ag-header-icon {fill: #5477a0!important;}
+.ag-bl-overlay {top: 25px!important;}
+.ag-bootstrap .ag-overlay-no-rows-center {background-color: transparent!important;}
 
 .ag-cell {overflow: visible!important;}
 

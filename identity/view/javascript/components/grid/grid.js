@@ -110,7 +110,9 @@ angular
             "removeRowConfig": "<?",
             
             "saveRowConfig": "<?",
-            "customNoRowsLabel": "@"
+            "customLoadingLabel": "@",
+            "customNoRowsLabel": "@",
+            "showLoadingOverlay": "<?"
         },
 
         templateUrl : '/identity/view/javascript/components/grid/grid.html',
@@ -148,6 +150,8 @@ angular
                             return self.onFormatData()(data); // Or we can have it as self.onFormatData({"data":data}) and pass it in the on-format-update as: vm.callback(data)
                         }
                     }
+                    if(self.showLoadingOverlay)
+                    	self.gridOptions.api.showLoadingOverlay();
                     dataStore.getGridData(api, APIParams, transport, tmp).then(
                         function(data, response) {
                             if (data && data.documents) {
@@ -221,7 +225,10 @@ angular
                 
                 this._dataIdentifierProperty = (this.gridDataIdentifierProperty) ? this.gridDataIdentifierProperty : "key";
                 this.useWindowParams = (this.useWindowParams) ? this.useWindowParams : "true";
-                this.noRowsLabel = this.customNoRowsLabel ? this.customNoRowsLabel : "No Results To Show"
+                this.loadingLabel = this.customLoadingLabel ? this.customLoadingLabel : "Loading " + self.gridEventsId + "s";
+                this.noRowsLabel = this.customNoRowsLabel ? this.customNoRowsLabel : "No Results To Show";
+                this.showLoadingOverlay = (this.showLoadingOverlay !== undefined) ? this.showLoadingOverlay : false;
+                
                 this.sizeColumnsToFit = (this.sizeColumnsToFit !== undefined) ? this.sizeColumnsToFit : true; //backward compatibility default true
                 this.gridOptions = {
                     angularCompileRows: true,
@@ -244,7 +251,7 @@ angular
                     suppressCellSelection : (this.suppressCellSelection) ? this.suppressCellSelection : true,
                     paginationPageSize : (this.paginationPageSize) ? this.paginationPageSize : 50,
                     overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">'+this.noRowsLabel+'</span>',
-                    overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>Loading...</span>',
+                    overlayLoadingTemplate: '<span class="ag-overlay-loading-center"><i class="fa fa-spinner fa-spin fa-fw fa-2x"></i> '+this.loadingLabel+'</span>',
                     defaultColDef : {
                         filter: false,
                         filterParams : {
