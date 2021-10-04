@@ -672,7 +672,7 @@ angular
        of.title = "Edit "+of.title;
        var form = angular.copy(of.form);
        //form[0].items[1].readonly = true;
-       var required = ["name","id"];
+       var required = angular.copy(of.schema.required);
        var schema = angular.copy(of.schema);
        schema.required = required;
        schema.properties.id.readonly = true;
