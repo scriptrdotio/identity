@@ -109,6 +109,7 @@ angular
                             'items': [{
                                 "key" : "password",
                                 "type": "password",
+                                "condition":"!model.hidePasswordFields",
                                 "ngModelOptions": { allowInvalid: true },
                                 "onChange": function(modelValue, form, model, scope) {
                                     console.log(model)
@@ -127,7 +128,7 @@ angular
                             'items': [{
                                 "key" : "confirmPassword",
                                 "type": "password",
-                                "condition":"model.password",
+                                "condition":"!model.hidePasswordFields && model.password",
                                 "required":true,
                                 "ngModelOptions": { allowInvalid: true },
                                 "onChange": function(modelValue, form, model, scope) {
@@ -143,7 +144,7 @@ angular
                                       {
                                           "key" : "confirmPassword",
                                           "type": "password",
-                                          "condition":"!model.password",
+                                          "condition":"!model.hidePasswordFields && !model.password",
                                           "ngModelOptions": { allowInvalid: true },
                                           /* "onChange": function(modelValue, form, model, scope) {
                                                 console.log(model)
@@ -301,6 +302,9 @@ angular
                 'type': 'object',
                 'title': 'deviceSchema',
                 'properties': {
+                    'hidePasswordFields': {
+                      "type": "hidden"  
+                    },
                     'name': {
                         'title': 'Device',
                         'type': 'string',
@@ -425,6 +429,7 @@ angular
                             'items': [{
                                 "key" : "password",
                                 "type": "password",
+                                "condition":"!model.hidePasswordFields",
                                 "ngModelOptions": { allowInvalid: true },
                                 "onChange": function(modelValue, form, model, scope) {
                                     console.log(model)
@@ -443,7 +448,7 @@ angular
                             'items': [{
                                 "key" : "confirmPassword",
                                 "type": "password",
-                                "condition":"model.password",
+                                "condition":"!model.hidePasswordFields && model.password",
                                 "required":true,
                                 "ngModelOptions": { allowInvalid: true },
                                 "onChange": function(modelValue, form, model, scope) {
@@ -459,7 +464,7 @@ angular
                                       {
                                           "key" : "confirmPassword",
                                           "type": "password",
-                                          "condition":"!model.password",
+                                          "condition":"!model.hidePasswordFields && !model.password",
                                           "ngModelOptions": { allowInvalid: true },
                                           "onChange": function(modelValue, form, model, scope) {
                                                     console.log(model)
@@ -617,6 +622,9 @@ angular
                 'type': 'object',
                 'title': 'userSchema',
                 'properties': {
+                    'hidePasswordFields': {
+                      "type": "hidden"  
+                    },
                     'name': {
                         'title': 'User Name',
                         'type': 'string',

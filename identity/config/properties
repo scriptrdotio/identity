@@ -1,5 +1,7 @@
 const identityManagementGroups = ["identity-managers", "administrators"];
 
+const hideEditUsersPasswordFields = false;
+const hideEditDevicesPasswordFields = false;
 const templateKey = 'devicesTemplate';
 const queryDocsPerPage = 50;
 const buildCsvScriptPath = 'identity/api/reports/buildCSV';

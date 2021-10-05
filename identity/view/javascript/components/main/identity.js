@@ -643,7 +643,7 @@ angular
            groupsArr = [data.groups];
        };
        
-       var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
+       var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState", "hidePasswordFields"];
        var backendApi;
        if(self.gridId == "device"){
            defaultAttrs.push("auth_token", "description")
@@ -672,7 +672,7 @@ angular
        of.title = "Edit "+of.title;
        var form = angular.copy(of.form);
        //form[0].items[1].readonly = true;
-       var required = angular.copy(of.schema.required);
+       var required = ["name","id"];
        var schema = angular.copy(of.schema);
        schema.required = required;
        schema.properties.id.readonly = true;
@@ -683,6 +683,9 @@ angular
            'form': form,
            'model': {"name": identityData.name, "id": identityData.id, "isSuspended": data.isSuspended, "groups":groupsArr}
        }
+       if(data.hidePasswordFields)
+           formWidget.model.hidePasswordFields = data.hidePasswordFields;
+           
       if(self.gridId == "device"){
            formWidget.model.deviceAttrs = identityAttrsArray;
            formWidget.model.description = identityData.description;
@@ -891,7 +894,7 @@ angular
         vm.status = status;
 
         vm.hasAttrs = false;
-        var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState"];
+        var defaultAttrs = ["name", "groups", "creator", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "id", "meta.types", "workflowState", "hidePasswordFields"];
         var backendApi;
         if(vm.parent.gridId == "device"){
             defaultAttrs.push("auth_token", "description")

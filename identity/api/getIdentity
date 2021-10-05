@@ -40,6 +40,13 @@ if(response.metadata.status == "failure") {
     return response.metadata;
 } else {
     var result = response.result;
+    if(params.module == "device"){
+        if(config.hideEditDevicesPasswordFields)
+    		response.result.hidePasswordFields = true;
+    }else if(params.module == "user"){
+        if(config.hideEditUsersPasswordFields)
+    		response.result.hidePasswordFields = true;
+    }
     return response.result;
 }
 
