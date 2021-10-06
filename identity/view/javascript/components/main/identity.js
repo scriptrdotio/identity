@@ -799,7 +799,7 @@ angular
     vm.header = "Confirm Delete";
     
     vm.init = function() {
-        vm.promptMessage = "Are you sure you want to delete '"+ vm.identifier +"'?"
+        vm.promptMessage = "Are you sure you want to delete "+ dataObject.name +" ("+ vm.identifier +")?"
     }
     
     vm.deleteIdentity = function(){
