@@ -21,9 +21,9 @@ log.info(JSON.stringify(params));
 
 var content = "";
 if(params.type == "device"){
-    content = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\ndev1,Device1,This is the device description,active,stringAttr,,123\r\ndev2,Device2,,active,stringAttr,textAttr,\r\ndev3,Device3,,suspended,,,555";
+    content = "name,id,description,status,Attribute1:string,Attribute2:text,Attribute3:numeric%0D%0Adev1,Device1,This is the device description,active,stringAttr,,123%0D%0Adev2,Device2,,active,stringAttr,textAttr,%0D%0Adev3,Device3,,suspended,,,555";
 }else if(params.type == "user"){
-    content = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric\r\nuser1,User1,user1@gmail.com,active,stringAttr,,123\r\nuser2,User2,,active,stringAttr,textAttr,\r\nuser3,User3,,suspended,,,555";
+    content = "login,name,email,status,Attribute1:string,Attribute2:text,Attribute3:numeric%0D%0Auser1,User1,user1@gmail.com,active,stringAttr,,123%0D%0Auser2,User2,,active,stringAttr,textAttr,%0D%0Auser3,User3,,suspended,,,555";
 }
 
 if(content != ""){

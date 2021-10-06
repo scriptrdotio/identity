@@ -36,7 +36,7 @@ switch (request.method) {
             };
             var result = apsdb.callApi("QueueScript", data, null);
 
-            if (result.status == "failure") {
+            if ( (result.status && result.status == "failure") || (result.metadata && result.metadata.status && result.metadata.status == "failure")  )  {
                 var errorMsg = "[scheduleImport] An error occurred while queueing job [" + JSON.stringify(result) + "]";
                 return { "status": "failure", "errorDetail": errorMsg };
             } else {

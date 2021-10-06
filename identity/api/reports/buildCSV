@@ -15,7 +15,7 @@ function ConvertToCSV(params) {
     if(gridType == "group"){
         var fileName = "groups";
         var object  = identityManager.getGroups({"queryFilter" : params.queryFilter});
-        str += "Group Name,Number of Devices\r\n";
+        str += "Group Name,Number of Devices%0D%0A";
         var array = typeof object != 'object' ? JSON.parse(object) : object;
         array = array.documents;
         if(array!= null && array.length >0){
@@ -24,7 +24,7 @@ function ConvertToCSV(params) {
                 line += ((array[i].name != undefined && array[i].name!= null) ? array[i].name : "N/A") + ","; 
                 line += ((array[i].count != undefined && array[i].count!=null) ? array[i].count : "N/A") + ","; 
 
-                str += line + '\r\n';            
+                str += line + '%0D%0A';            
             }
         }
     }
@@ -81,12 +81,12 @@ function ConvertToCSV(params) {
                 });
                 str += line;
                 if(i != array.length-1)
-                    str += '\r\n';
+                    str += '%0D%0A';
             }
             if(gridType == "device")
-                str = "name,id,description,token,status,lastModified" + headerStr + "\r\n" + str;
+                str = "name,id,description,token,status,lastModified" + headerStr + "%0D%0A" + str;
             else if(gridType == "user")
-                str = "name,id,email,status,lastModified" + headerStr + "\r\n" + str;
+                str = "name,id,email,status,lastModified" + headerStr + "%0D%0A" + str;
 
         }
     }

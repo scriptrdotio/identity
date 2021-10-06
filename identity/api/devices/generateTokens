@@ -57,7 +57,7 @@ switch (request.method) {
             };
             var result = apsdb.callApi("QueueScript", data, null);
             log.info(JSON.stringify(result));
-            if (result.status == "failure") {
+            if ( (result.status && result.status == "failure") || (result.metadata && result.metadata.status && result.metadata.status == "failure")  )  {
                 var errorMsg = "[traceContact] An error occurred while queueing job [" + JSON.stringify(result) + "]";
                 return { "status": "failure", "errorCode": "error_queueing_job", "errorDetail": errorMsg };
             } else {
