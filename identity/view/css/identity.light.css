@@ -486,8 +486,14 @@
 .identityTheme .ui-select-choices-row span:hover {
   background: #f5f5f5;
 }
+.identityTheme .ui-select-choices-row span:focus div,
+.identityTheme .ui-select-choices-row span:hover div {
+  color: #000;
+}
 .identityTheme .ui-select-choices-row.active span {
   background-color: #f48220;
+}
+.identityTheme .ui-select-choices-row.active span div {
   color: #FFF;
 }
 .identityTheme .ui-select-bootstrap .ui-select-match-text span {
