@@ -460,6 +460,10 @@
 .identityTheme .ui-select-bootstrap.open {
   z-index: 10050;
 }
+.identityTheme .ui-select-bootstrap .ui-select-choices,
+.identityTheme .ui-select-bootstrap .ui-select-no-choice {
+  background-color: #2e2e2e;
+}
 .identityTheme .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
   width: auto !important;
 }
