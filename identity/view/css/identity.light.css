@@ -460,10 +460,6 @@
 .identityTheme .ui-select-bootstrap.open {
   z-index: 10050;
 }
-.identityTheme .ui-select-bootstrap > .ui-select-choices,
-.identityTheme .ui-select-bootstrap > .ui-select-no-choice {
-  background-color: #FFF;
-}
 .identityTheme .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
   width: auto !important;
 }
@@ -479,7 +475,7 @@
   background: #f69d51;
 }
 .identityTheme .ui-select-choices-row div {
-  color: #000;
+  color: #22272b;
   text-indent: 10px;
   font-size: 13px;
 }
@@ -492,6 +488,7 @@
 }
 .identityTheme .ui-select-choices-row.active span {
   background-color: #f48220;
+  color: #FFF;
 }
 .identityTheme .ui-select-bootstrap .ui-select-match-text span {
   line-height: 1.1em;
