@@ -538,12 +538,17 @@
             padding: 3px;
             &:focus,
             &:hover {
-            background: @gray4;
+            	background: @gray4;
+                div {
+                	color: @grayBase;
+                }
             }
         }
     &.active span {
         background-color: @primaryColor;
-        color: @lightBase;
+        div {
+        	color: @lightBase;
+        }
     }
     }
 
