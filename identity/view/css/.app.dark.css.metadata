@@ -1,1 +1,1 @@
-{"acl":{},"contentType":"text/css"}
+{"acl":{"read":"anonymous","write":"nobody","execute":"nobody"},"contentType":"text/css"}
