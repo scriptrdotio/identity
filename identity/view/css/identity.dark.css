@@ -15,7 +15,6 @@
   /**#4FCD8A**/
   /**Margins & paddings**/
   /**Generic styles**/
-  /**Generic elements styling**/
   /*** search box ***/
   /*** Listing search ***/
   /*** Override boostrap button styles ***/
@@ -74,20 +73,6 @@
 }
 .identityTheme .user-details {
   font-family: "Josefin Sans", sans-serif;
-}
-.identityTheme main {
-  overflow: hidden;
-  background-color: #2e2e2e;
-}
-.identityTheme .bg-white {
-  background-color: #22272b;
-}
-.identityTheme .page-container {
-  overflow: auto;
-}
-.identityTheme .page-content {
-  background-color: #2e2e2e;
-  color: #f2f2f2;
 }
 .identityTheme .search-text {
   position: relative;
@@ -223,60 +208,6 @@
 }
 .identityTheme .ag-bootstrap .ag-overlay-no-rows-center {
   background-color: #22272b !important;
-}
-@media (min-width: 320px) and (max-width: 767px) {
-  .identityTheme header {
-    position: relative !important;
-  }
-  .identityTheme main > section {
-    display: inline-block;
-    width: 100%;
-  }
-  .identityTheme .side-bar {
-    position: fixed !important;
-    width: 100%;
-    z-index: 100;
-    height: auto !important;
-    top: 45px;
-  }
-  .identityTheme .page-content {
-    margin-top: 70px;
-  }
-  .identityTheme .side-bar nav-pills > li a {
-    padding: 10px 10px;
-  }
-  .identityTheme .side-bar .nav li strong {
-    margin-left: 8px;
-  }
-}
-@media (min-width: 768px) {
-  .identityTheme main {
-    display: flex;
-    min-height: 100vh;
-  }
-  .identityTheme main > section {
-    flex: 1;
-  }
-  .identityTheme .menu-wrap {
-    margin-top: 45px !important;
-    display: flex;
-    height: auto !important;
-  }
-  .identityTheme .page-content {
-    margin-top: 45px;
-    overflow-y: auto;
-    height: calc(100vh - 45px);
-    position: relative;
-  }
-  .identityTheme .side-bar .nav-pills {
-    position: fixed;
-    overflow-y: auto;
-  }
-}
-@media screen and (max-width: 768px) {
-  .identityTheme .icon {
-    right: 0px;
-  }
 }
 .identityTheme .modal-lg {
   width: 800px;
@@ -564,32 +495,6 @@
 }
 .identityTheme .filter-bar {
   background-color: #191919;
-}
-.identityTheme .level-bg-0 {
-  background: #4b4b4b;
-}
-.identityTheme .logo {
-  background: #4b4b4b;
-}
-.identityTheme .logo img {
-  width: 70%;
-}
-.identityTheme .side-bar .nav > li.active > a {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left: 4px solid #f48220;
-}
-.identityTheme header {
-  background: #2e2e2e;
-  color: #4b4b4b;
-  border-bottom: thin solid #999;
-}
-.identityTheme .username {
-  background-color: #2e2e2e;
-  border-left: 1px solid #999;
-}
-.identityTheme #username-button {
-  color: #4b4b4b;
-  line-height: 2.3;
 }
 .identityTheme h1 {
   font-size: 25px;

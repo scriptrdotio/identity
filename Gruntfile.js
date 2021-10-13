@@ -128,7 +128,9 @@ module.exports = function(grunt) {
 		         themes : {
 			         files : {
 			            'identity/view/css/identity.light.css' : 'identity/view/css/identity.light.less',
-			            'identity/view/css/identity.dark.css' : 'identity/view/css/identity.dark.less'
+			            'identity/view/css/identity.dark.css' : 'identity/view/css/identity.dark.less',
+			            'identity/view/css/identity.app.light.css' : 'identity/view/css/identity.app.light.less',
+			            'identity/view/css/identity.app.dark.css' : 'identity/view/css/identity.app.dark.less'
 			         }
 		         }
 	         },

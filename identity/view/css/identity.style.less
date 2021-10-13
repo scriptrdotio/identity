@@ -84,23 +84,6 @@
         font-family: "Josefin Sans", sans-serif;
     }
 
-    /**Generic elements styling**/
-    main {
-        overflow: hidden;
-        background-color: @gray5;
-    }
-    
-    .bg-white {background-color: @themeBase;}
-    
-    .page-container {
-        overflow: auto;
-    }
-
-    .page-content {
-        background-color: @gray5;
-        color: @grayBase;
-    }
-
     /*** search box ***/
     .search-text {
         position: relative;
@@ -251,66 +234,6 @@
     }
     
     .ag-bootstrap .ag-overlay-no-rows-center {background-color: @themeBase!important;}
-
-    @media (min-width: 320px) and (max-width: 767px) {
-    header {
-        position: relative !important;
-    }
-    main > section {
-        display: inline-block;
-        width: 100%;
-    }
-    .side-bar {
-        position: fixed !important;
-        width: 100%;
-        z-index: 100;
-        height: auto !important;
-        top: 45px;
-    }
-    .page-content {
-        margin-top: 70px;
-    }
-    .side-bar {
-        nav-pills > li a {
-            padding: 10px 10px;
-        }
-        .nav li strong {
-            margin-left: 8px;
-        }
-    }
-    }
-
-    @media (min-width: 768px) {
-    main {
-        display: flex;
-        min-height: 100vh;
-        > section {
-            flex: 1;
-        }
-    }
-
-    .menu-wrap {
-        margin-top: 45px !important;
-        display: flex;
-        height: auto !important;
-    }
-    .page-content {
-        margin-top: 45px;
-        overflow-y: auto;
-        height: calc(100vh - 45px);
-        position: relative;
-    }
-    .side-bar .nav-pills {
-        position: fixed;
-        overflow-y: auto;
-    }
-    }
-
-    @media screen and (max-width: 768px) {
-    .icon {
-        right: 0px;
-    }
-    }
 
     .modal-lg {
         width: 800px;
@@ -633,32 +556,6 @@
     }
     .filter-bar {
     	background-color: @gray4;
-    }
-    .level-bg-0 {
-        background: @gray1;
-    }
-    .logo {
-        background: @gray1;
-        img {
-            width: 70%;
-        }
-    }
-    .side-bar .nav > li.active > a {
-        background-color: rgba(255, 255, 255, 0.05);
-        border-left: 4px solid @primaryColor;
-    }
-    header {
-        background: @gray5;
-        color: @gray1;
-        border-bottom: thin solid @gray2;
-    }
-    .username {
-        background-color: @gray5;
-        border-left: 1px solid @gray2;
-    }
-    #username-button {
-        color: @gray1;
-        line-height: 2.3;
     }
     h1 {
         font-size: 25px;
