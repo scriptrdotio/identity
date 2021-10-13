@@ -45,7 +45,7 @@ angular
         self.gridAPI = (typeof this.identityLayout != 'undefined' && this.identityLayout != null && this.identityLayout != '')? identityConfig[this.identityLayout].apis.list : identityConfig["device"].apis.list;
         self.copyTooltip = "Copy Token";
         
-        angular.element(document.querySelector("body")).addClass(identityConfig.theme)
+        //angular.element(document.querySelector("body")).addClass(identityConfig.theme)
         
         self.removeDeviceConfig = {
             api: identityConfig.device.apis.delete,
@@ -545,7 +545,8 @@ angular
                         widget: function() {
                             return formWidget;
                         }
-                    }
+                    },
+                    appendTo: angular.element(document.querySelector(".identityTheme"))
                 });
 
                 modalInstance.result.then(function (wdgModel) {
@@ -707,7 +708,8 @@ angular
                widget: function() {
                    return formWidget;
                }
-           }
+           },
+           appendTo: angular.element(document.querySelector(".identityTheme"))
        });
 
        modalInstance.result.then(function (wdgModel) {

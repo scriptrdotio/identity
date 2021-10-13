@@ -446,7 +446,8 @@ angular
                         widget: function() {
                             return formWidget;
                         }
-                    }
+                    },
+                    appendTo: angular.element(document.querySelector(".identityTheme"))
                 });
 
                 modalInstance.result.then(function (wdgModel) {
@@ -532,7 +533,8 @@ angular
                             grid: function () {
                                 return self;
                             }
-                        }
+                        },
+                        appendTo: angular.element(document.querySelector(".identityTheme"))
                     }); 
                 }else {
                     self.showAlert("danger", "No "+self.gridEventsId+"(s) selected");
@@ -550,7 +552,8 @@ angular
                             grid: function () {
                                 return self;
                             }
-                        }
+                        },
+                        appendTo: angular.element(document.querySelector(".identityTheme"))
                     }); 
                 }
                 else {
@@ -669,7 +672,8 @@ angular
                         widget: function() {
                             return formWidget;
                         }
-                    }
+                    },
+                    appendTo: angular.element(document.querySelector(".identityTheme"))
                 });
 
                 modalInstance.result.then(function (wdgModel) {
