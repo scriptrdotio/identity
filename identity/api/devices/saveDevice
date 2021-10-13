@@ -14,7 +14,7 @@ var aclEvaluator = new aclEvaluator.AclEvaluator();
 //user needs to be in the identityManagementGroups
 var hasPermission = aclEvaluator.hasPermissions(request.user, identityManagementGroups);
 if(!hasPermission) {
-  return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
+    return errorHandler.buildError("no_permission", "You do not have enough permissions to manage devices.");
 }
 
 var requiredParams = ["id", "name"];
@@ -63,22 +63,54 @@ delete params['_oldDeviceAttrs'];
 delete confirmPassword;
 log.info("Request normalized params: " + JSON.stringify(params));
 
-var response;
-if(update){
-    //check if any attribute was removed
-    var newDeviceAttrs = _.pluck(deviceAttrs, "name");
-    var removedAttrs = _.difference(oldDeviceAttrs, newDeviceAttrs);
-    if(removedAttrs && removedAttrs.length > 0){
-        removedAttrs.forEach(function(removedAttr) {
-            params[removedAttr] = "";
-        })
+var ts = apsdb.beginTransaction();
+var responseObj = {};
+try{
+    var response;
+    if(update){
+        //check if any attribute was removed
+        var newDeviceAttrs = _.pluck(deviceAttrs, "name");
+        var removedAttrs = _.difference(oldDeviceAttrs, newDeviceAttrs);
+        if(removedAttrs && removedAttrs.length > 0){
+            removedAttrs.forEach(function(removedAttr) {
+                params[removedAttr] = "";
+            })
+        }
+        response = devices.save(params);
+    }else{
+        //if no password is passed, generate a random one
+        if(params["password"] == null || params["password"] == undefined || params["password"] == "")
+            params["password"] = Math.random().toString(36).substring(2);
+
+        response = devices.create(params);
     }
-    response = devices.save(params);
-}else
-    response = devices.create(params);
-log.info("response"+JSON.stringify(response));
-if(response.metadata.status == "failure") {
-    return response.metadata;
-} else {
-    return response.metadata;
+    log.info("device save response: "+JSON.stringify(response));
+    if(response.metadata.status == "failure") {
+        throw response.metadata;
+    } else {
+        responseObj =  response.metadata;
+        //generate token after successfull device creation AND if device is not suspended
+        if(!update && params.isSuspended == "false"){
+            var tokenResponse = devices.generateToken(response.result.device.id);
+            log.info("Generating token response: " + JSON.stringify(tokenResponse));
+            if(tokenResponse.metadata.status == "failure") {
+                log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
+                responseObj = tokenResponse.metadata;
+                throw {
+                    errorCode: tokenResponse.metadata.errorCode,
+                    errorDetail: tokenResponse.metadata.errorDetail
+                };
+            } else {
+                responseObj = {"status": "success"};
+            }
+        }
+    }
+    
+    ts.commit();
+}catch(e){
+    log.error("Exception while saving device with error: " + JSON.stringify(e));
+    responseObj = errorHandler.buildError(e.errorCode, e.errorDetail);
+    ts.rollback();
 }
+return responseObj;
+
