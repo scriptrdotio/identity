@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="/UIComponents/dashboardBuilder/lib/schemaForm/schema-form-file.css">
         <link rel="stylesheet" href="/UIComponents/dashboardBuilder/css/media.css">
          <link rel="stylesheet" href="/identity/view/javascript/components/grid/grid.css">
+        <link rel="stylesheet" href="/identity/view/css/app.light.css"> 
         <link rel="stylesheet" href="/identity/view/css/identity.light.css"> 
         
         <!-- JQUERY Material  To use jQuery, simply ensure it is loaded before the angular.js file. -->
@@ -132,21 +133,28 @@
         
   	  myApp.config(httpsConfig);
   
-       myApp.controller('appCtrl', function($scope, headerItemsJson, menuItemsJson, $routeParams) {
+       myApp.controller('appCtrl', function($scope, headerItemsJson, menuItemsJson, $routeParams, httpClient, wsClient) {
             var vm = this;
             vm.scope = $scope;
             vm.headerItems = headerItemsJson;
             vm.menuItems = menuItemsJson;
+            vm.user = JSON.parse($.cookie('user'));
 
             vm.init = function() {
+				wsClient.onInvalidAuthentication.then(function(e) {
+                    authorization.onTokenInvalid() 
+                });
 
+                httpClient.onInvalidAuthentication.then(function(e) {
+                    authorization.onTokenInvalid() 
+                });
             }
 
         });
 </script>
-    <body  ng-controller="appCtrl as vm" ng-init="vm.init()" ng-cloak lang="en" class="identity">
+    <body  ng-controller="appCtrl as vm" ng-init="vm.init()" ng-cloak lang="en" class="identityAppTheme">
         <div>
-            <header-top header-items="vm.headerItems"></header-top>
+            <header-top header-items="vm.headerItems" user="vm.user"></header-top>
             <main>
                 <menu user="vm.user" class="menu-wrap" on-menu-item-click="vm.onMenuItemClick" menu-items="vm.menuItems"></menu>
                 <section class="page-container">
