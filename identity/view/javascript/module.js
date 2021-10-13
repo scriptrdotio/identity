@@ -1,4 +1,5 @@
 var httpsConfig = ["httpClientProvider",function (httpClientProvider) {
+    httpClientProvider.setTokenRenewInterval(600000); //in ms, If time remaining for token to expire is less than this value a renewToken will be invoked. i.e 600000 we will try to renew token before 10 minutes of its expiry. Set it to > than token expiry time to never renew.
 }]
 
 //var wssConfig = ["wsClientProvider",function (wsClientProvider) {
