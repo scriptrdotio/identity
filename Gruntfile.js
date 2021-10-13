@@ -129,8 +129,8 @@ module.exports = function(grunt) {
 			         files : {
 			            'identity/view/css/identity.light.css' : 'identity/view/css/identity.light.less',
 			            'identity/view/css/identity.dark.css' : 'identity/view/css/identity.dark.less',
-			            'identity/view/css/identity.app.light.css' : 'identity/view/css/identity.app.light.less',
-			            'identity/view/css/identity.app.dark.css' : 'identity/view/css/identity.app.dark.less'
+			            'identity/view/css/app.light.css' : 'identity/view/css/app.light.less',
+			            'identity/view/css/app.dark.css' : 'identity/view/css/app.dark.less'
 			         }
 		         }
 	         },
@@ -143,7 +143,9 @@ module.exports = function(grunt) {
 	                files: {
 	                    'build/css/identity.components.stripped.css': 'build/css/identity.components.css',
 	                    'build/css/identity.dark.stripped.css': 'identity/view/css/identity.dark.css',
-                  	  'build/css/identity.light.stripped.css': 'identity/view/css/identity.light.css'
+                  	  'build/css/identity.light.stripped.css': 'identity/view/css/identity.light.css',
+                  	  'build/css/app.light.stripped.css': 'identity/view/css/app.light.css',
+                  	  'build/css/app.dark.stripped.css': 'identity/view/css/app.dark.css'
 	                }
 	            }
 	         },
@@ -161,7 +163,14 @@ module.exports = function(grunt) {
 	               src : 'build/css/identity.dark.stripped.css',
 	               dest : 'build/css/identity.dark.min.css'
 	            },
-
+	            appLight: {
+	            	src : 'build/css/app.light.stripped.css',
+		            dest : 'build/css/app.light.min.css'
+	            },
+	            appDark: {
+	            	src : 'build/css/app.dark.stripped.css',
+		            dest : 'build/css/app.dark.min.css'
+	            }
 	         },
 
 	         clean : {
@@ -229,6 +238,8 @@ module.exports = function(grunt) {
 	      'cssmin:components',
 	      'cssmin:light',
 	      'cssmin:dark',
+	      'cssmin:appLight',
+	      'cssmin:appDark',
 	      'clean:folder']);
 	
 	grunt.registerTask('studio', [ 
