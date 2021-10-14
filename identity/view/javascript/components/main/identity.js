@@ -652,7 +652,7 @@ angular
            
        }
        else if(self.gridId == "user"){
-           defaultAttrs.push("email", "token", "login")
+           defaultAttrs.push("email", "token", "login", "lang", "tokens")
            backendApi = identityConfig.user.apis.save;
        }
        var identityAttrsArray = [];
@@ -690,6 +690,7 @@ angular
       if(self.gridId == "device"){
            formWidget.model.deviceAttrs = identityAttrsArray;
            formWidget.model.description = identityData.description;
+           //formWidget.model.editMode = "true";
        }
        else if(self.gridId == "user"){
            formWidget.model.userAttrs = identityAttrsArray;
@@ -902,7 +903,7 @@ angular
             defaultAttrs.push("auth_token", "description")
         }
         else if(vm.parent.gridId == "user"){
-            defaultAttrs.push("email", "token", "login")
+            defaultAttrs.push("email", "token", "login", "lang", "tokens")
         }
         var identityAttrsArray = [];
         var metaTypes = identityInfo["meta.types"];

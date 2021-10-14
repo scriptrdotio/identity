@@ -43,7 +43,7 @@ function ConvertToCSV(params) {
         var headerStr = "";
         var array = typeof object != 'object' ? JSON.parse(object) : object;
         if(array!= null && array.length >0){
-            var defaultAttrs = ["name", "groups", "creator","email", "workflowState", "tokens","login", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types"];
+            var defaultAttrs = ["name", "groups", "creator","email", "workflowState", "tokens","login", "auth_token", "versionNumber", "latest", "lastModifiedBy", "creationDate", "lastModifiedDate", "isSuspended", "description", "id", "meta.types", "lang", "tokens"];
             var deviceAttrsObj = {};
             for (var i = 0; i < array.length; i++) {
                 var data = array[i];
