@@ -260,7 +260,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-view" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-view" onclick="this.blur();" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="View Device"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-view')[0];
                 vButton.addEventListener('click', function() {
@@ -278,7 +278,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-edit" tooltip-append-to-body="true" onclick="this.blur();" tooltip-placement="auto" uib-tooltip="Edit Device"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-edit')[0];
                 vButton.addEventListener('click', function(clickParams) {
@@ -295,7 +295,7 @@ angular
             cellRenderer: function(params){
                 var eDiv = document.createElement('div');
                 var vButton;
-                eDiv.innerHTML = '<button class="btn btn-default btn-delete" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                eDiv.innerHTML = '<button class="btn btn-default btn-delete" onclick="this.blur();" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete Device"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
 
                 vButton = eDiv.querySelectorAll('.btn-delete')[0];
                 vButton.addEventListener('click', function() {
@@ -394,7 +394,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit User"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" onclick="this.blur();" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Edit User"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var editBtn = eDiv.querySelectorAll('.btn')[0];
                 editBtn.addEventListener('click', function(clickParams) { 
@@ -410,7 +410,7 @@ angular
             editable : false,
             cellRenderer: function(params) {
                 var eDiv = document.createElement('div');
-                var btn = '<button class="btn btn-default btn-block" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete User"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
+                var btn = '<button class="btn btn-default btn-block" onclick="this.blur();" tooltip-append-to-body="true" tooltip-placement="auto" uib-tooltip="Delete User"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button>';
                 eDiv.innerHTML = btn;
                 var deleteBtn = eDiv.querySelectorAll('.btn')[0];
                 deleteBtn.addEventListener('click', function(clickParams) { 

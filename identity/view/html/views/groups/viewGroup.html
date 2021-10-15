@@ -48,13 +48,13 @@
     </md-dialog-content>
     <md-dialog-actions class="col-md-12  pb15 pt15">
         <div ng-if="vm.showActionButtons">
-            <md-button ng-click="vm.editGroup()" class="btn btn-default">Edit</md-button>
-            <md-button ng-click="vm.confirmationDeleteGroup()" class="btn btn-default">Delete</md-button>
+            <md-button ng-click="vm.editGroup()" class="btn btn-default" onclick="this.blur();">Edit</md-button>
+            <md-button ng-click="vm.confirmationDeleteGroup()" class="btn btn-default" onclick="this.blur();">Delete</md-button>
         </div>
         <div ng-if="!vm.showActionButtons" class="col-xs-12 mb15">
             <span>Are you sure you want to delete this group?</span>
-            <md-button ng-click="vm.cancelActionButtons()" class="btn btn-default mgr5">No</md-button>
-            <md-button  ng-click="vm.deleteGroup()" class="btn btn-default mgr5" >Yes</md-button>
+            <md-button ng-click="vm.cancelActionButtons()" class="btn btn-default mgr5" onclick="this.blur();">No</md-button>
+            <md-button  ng-click="vm.deleteGroup()" class="btn btn-default mgr5" onclick="this.blur();">Yes</md-button>
         </div>
     </md-dialog-actions>
 </md-dialog> 

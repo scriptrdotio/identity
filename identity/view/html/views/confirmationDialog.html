@@ -8,7 +8,7 @@
         </div>
    	</md-dialog-content>
     <md-dialog-actions class="col-md-12  pb15 pt15" ng-hide="vm.isLoading">
-        <md-button ng-click="vm.closeDialog()" class="btn btn-default btn-md">No</md-button>
-        <md-button ng-click="vm.deleteIdentity()" class="btn btn-default btn-md">Yes</md-button>
+        <md-button ng-click="vm.closeDialog()" class="btn btn-default btn-md" onclick="this.blur();">No</md-button>
+        <md-button ng-click="vm.deleteIdentity()" class="btn btn-default btn-md" onclick="this.blur();">Yes</md-button>
     </md-dialog-actions>
 </md-dialog>
