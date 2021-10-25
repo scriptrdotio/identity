@@ -1,7 +1,5 @@
 var log = require("log");
 log.setLevel("INFO");
-var headingName = "name";
-var attrHead = headingName.split(":");
 var utils = require("../../entities/identityManager");
 var body = request.body ? request.body : ((request.rawBody) ? request.rawBody : request.parameters);
 var params = typeof(body) == "string" ? JSON.parse(body) : body;
@@ -28,7 +26,7 @@ for (var h=0; h<headings.length; h++){
         statusPos = h;
     else if (headingName == "email" && gridType == "user")
         emailPos = h;
-	else{
+    else{
         var attrHead = headingName.split(":");
         if(attrHead.length > 0){
             var attrHeadObj = {};
@@ -36,7 +34,7 @@ for (var h=0; h<headings.length; h++){
             //if the attribute type is not provided, default to string
             //handle following scenarios [name:type, name: , name]
             if(attrHead.length > 1)
-            	attrHeadObj.type = attrHead[1].trim() != "" ? attrHead[1].toLowerCase().trim() : "string";
+                attrHeadObj.type = attrHead[1].trim() != "" ? attrHead[1].toLowerCase().trim() : "string";
             else
                 attrHeadObj.type = "string";
             attrHeadObj.attrPos = h;
@@ -48,35 +46,38 @@ if(idPos == null || namePos == null)
     return {"status": "failure", "errorDetail": "ID and Name columns are required"};
 log.info("headings: " + headings.length);
 for (var i=1; i<lines.length; i++) {
-    var values = lines[i].split(','); // Split up the comma seperated values
-    var identity = {};
-    identity.id = values[idPos];
-    identity.name = values[namePos];
-    if(descPos != null && gridType == "device")
-        identity.description = values[descPos];
-    if(emailPos != null && gridType == "user")
-        identity.email = values[emailPos];
-    if(statusPos != null){
-        var status = values[statusPos] != null ? values[statusPos].toLowerCase() : "";
-        identity.isSuspended = (status == "active" ? "false" : (status == "suspended" ? "true" : "false"));
-    }
-    if(attributesArr.length > 0){
-        var identityAttrs = [];
-        for(j=0; j<attributesArr.length; j++){
-            var attrPos = attributesArr[j].attrPos;
-            if(values[attrPos] != null && values[attrPos] != ""){
-                var attrObj = {};
-                attrObj.name = attributesArr[j].name;
-                attrObj.value = values[attrPos];
-                attrObj.type = attributesArr[j].type;
-                identityAttrs.push(attrObj);
-            }
+    var parsedline = utils.parseCSV(lines[i]); // Split up the comma seperated values
+    if(parsedline.length > 0){
+        var values = parsedline[0];
+        var identity = {};
+        identity.id = values[idPos];
+        identity.name = values[namePos];
+        if(descPos != null && gridType == "device")
+            identity.description = values[descPos];
+        if(emailPos != null && gridType == "user")
+            identity.email = values[emailPos];
+        if(statusPos != null){
+            var status = values[statusPos] != null ? values[statusPos].toLowerCase() : "";
+            identity.isSuspended = (status == "active" ? "false" : (status == "suspended" ? "true" : "false"));
         }
-        if(identityAttrs.length > 0)
-            identity.identityAttrs = identityAttrs;
-    }
+        if(attributesArr.length > 0){
+            var identityAttrs = [];
+            for(j=0; j<attributesArr.length; j++){
+                var attrPos = attributesArr[j].attrPos;
+                if(values[attrPos] != null && values[attrPos] != ""){
+                    var attrObj = {};
+                    attrObj.name = attributesArr[j].name;
+                    attrObj.value = values[attrPos];
+                    attrObj.type = attributesArr[j].type;
+                    identityAttrs.push(attrObj);
+                }
+            }
+            if(identityAttrs.length > 0)
+                identity.identityAttrs = identityAttrs;
+        }
 
-    identityArr.push(identity);
+        identityArr.push(identity);
+    }
 }
 
 log.info("identityArr: " + JSON.stringify(identityArr));
