@@ -6,6 +6,7 @@ var params = typeof(body) == "string" ? JSON.parse(body) : body;
 params = typeof(params.params) == "string" ? JSON.parse(params.params) : params.params;
 log.info("params: " + JSON.stringify(params.file[0]));
 
+var fileName = params.file[0].fileName;
 var content = params.file[0].content;
 var gridType = params.gridType;
 var lines = content.split(/\r\n|\n/);
@@ -43,7 +44,7 @@ for (var h=0; h<headings.length; h++){
     }
 }
 if(idPos == null || namePos == null)
-    return {"status": "failure", "errorDetail": "ID and Name columns are required"};
+    return {"status": "failure", "errorDetail": '"' + fileName + '" does not have all the mandatory columns.'};
 log.info("headings: " + headings.length);
 for (var i=1; i<lines.length; i++) {
     var parsedline = utils.parseCSV(lines[i]); // Split up the comma seperated values
