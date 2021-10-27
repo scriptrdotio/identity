@@ -449,11 +449,11 @@ angular
                         var templateUrl = "";
                         var localsObj = {};
                         if(self.gridId == "device" || self.gridId == "user"){
-                            localsObj = {grid: params.api, identityData: params.data, parent: self, identityInfo: data};
+                            localsObj = {grid: params.api, identityData: params.data, parentWdg: self, identityInfo: data};
                             controller = 'viewIdentityDialogCtrl';
                             templateUrl = '/identity/view/html/views/viewIdentity.html';
                         } else if (self.gridId == "group"){
-                            localsObj = {grid: params.api, groupData: params.data, parent: self, groupInfo: data};
+                            localsObj = {grid: params.api, groupData: params.data, parentWdg: self, groupInfo: data};
                             controller = 'viewGroupDialogCtrl';
                             templateUrl = '/identity/view/html/views/groups/viewGroup.html';
                         } 
@@ -464,7 +464,8 @@ angular
                             clickOutsideToClose:true,
                             escapeToClose: true,
                             locals: localsObj,
-                            ok: 'Close'
+                            ok: 'Close',
+            				parent: angular.element(document.querySelector(".identityTheme"))
                         });
                     },
                     function(err) {
@@ -784,17 +785,18 @@ angular
             templateUrl: '/identity/view/html/views/confirmationDialog.html',
             clickOutsideToClose:true,
             escapeToClose: true,
-            locals: {dataObject: params.data, grid: params.api, parent: self},
-            ok: 'Close'
+            locals: {dataObject: params.data, grid: params.api, parentWdg: self},
+            ok: 'Close',
+            parent: angular.element(document.querySelector(".identityTheme"))
         });
     }
     
         }
 });
 angular
-    .module("Identity").controller('confirmDeleteDialogCtrl', function(httpClient, dataObject, grid,$scope, parent, $mdDialog, $loadingOverlay) {
+    .module("Identity").controller('confirmDeleteDialogCtrl', function(httpClient, dataObject, grid,$scope, parentWdg, $mdDialog, $loadingOverlay) {
     var vm = this;
-    vm.parent = parent;
+    vm.parent = parentWdg;
     vm.identifier = dataObject[vm.parent.identifierProperty];
     vm.grid = grid;
     vm.config = identityConfig;
@@ -848,13 +850,13 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parent, $mdDialog, $scope, identityInfo) {
+    .module("Identity").controller('viewIdentityDialogCtrl', function($timeout, httpClient, identityData, grid, parentWdg, $mdDialog, $scope, identityInfo) {
    
     var vm = this;
    
     vm.identityData = identityData;
     vm.identityId = identityData.id;
-    vm.parent = parent;
+    vm.parent = parentWdg;
     vm.gridId =  vm.parent.gridId.charAt(0).toUpperCase() + vm.parent.gridId.substring(1);
     vm.grid = grid;
     vm.identityFetched = false;
@@ -1127,7 +1129,7 @@ angular
 });
 
 angular
-    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parent, groupData, $mdDialog, $scope, groupInfo) {
+    .module("Identity").controller('viewGroupDialogCtrl', function($timeout, grid, httpClient, parentWdg, groupData, $mdDialog, $scope, groupInfo) {
     var vm = this;
     /*vm.promptMessage = {
         content:'Fetching group...'
@@ -1136,7 +1138,7 @@ angular
     vm.grid = grid;
     vm.groupInfo = groupInfo;
     vm.groupName = groupData.name;
-    vm.parent = parent;
+    vm.parent = parentWdg;
     vm.showActionButtons = true;
     vm.groupFetched = false;
     vm.init = function() {
