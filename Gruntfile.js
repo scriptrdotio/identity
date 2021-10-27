@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 		            dest :'build/js/identity.templates.js',
 		            options : {
 		               bootstrap : function(module, script) {
-			               return 'var appCachedTemplates = (["$templateCache", function($templateCache) {'
+			               return 'var identityCachedTemplates = (["$templateCache", function($templateCache) {'
 			                     + script + '}])';
 		               },
 		               htmlmin : {
@@ -106,7 +106,7 @@ module.exports = function(grunt) {
 	            css : {
 	               src : [
                      'identity/view/javascript/components/grid/grid.css'
-	                     ],
+	               ],
 	               dest : 'build/css/identity.components.css'
 	            }
 	         },
@@ -232,6 +232,7 @@ module.exports = function(grunt) {
 	      'ngtemplates:app', 
 	      'ngAnnotate:app', 
 	      'concat:app',
+	      'less:themes',
 	      'concat:css',
 	      'uglify:app', 
 	      'stripCssComments',
