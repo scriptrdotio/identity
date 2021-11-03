@@ -25,6 +25,9 @@
   /* modal view and edit*/
   /**md dialog**/
   /**Basic styles**/
+  /*** filter ***/
+  /*** Grid ***/
+  /**pagination**/
 }
 .identityTheme .mb15 {
   margin-bottom: 15px;
@@ -561,4 +564,120 @@
 }
 .identityTheme .alert-danger {
   background-image: none;
+}
+.identityTheme .filter-bar {
+  padding: 4px 0;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.identityTheme .ag-bootstrap .ag-cell-label-container {
+  display: flex;
+  height: 100%;
+}
+.identityTheme .ag-bootstrap .ag-header-cell-label {
+  padding: 2px 2px!important;
+  display: flex;
+  color: #5477a0;
+}
+.identityTheme .gridClickable .ag-bootstrap .ag-row {
+  cursor: pointer;
+}
+.identityTheme .ag-bootstrap .ag-cell-not-inline-editing i.fa-ban {
+  color: #e2475e;
+}
+.identityTheme .ag-bootstrap .ag-cell .btn {
+  border-radius: 10px;
+}
+.identityTheme .ag-bootstrap .ag-cell .btn-default {
+  background-color: #8590a7;
+  color: #FFF;
+  border-color: #8590a7;
+}
+.identityTheme .ag-bootstrap .ag-cell .btn-danger {
+  background-color: #e06364;
+  border-color: #e06364;
+}
+.identityTheme .ag-bootstrap .ag-cell .btn-danger:hover,
+.identityTheme .ag-bootstrap .ag-cell .btn-danger:focus,
+.identityTheme .ag-bootstrap .ag-cell .btn-danger:active {
+  background-color: #e2475e;
+  border-color: #e06364;
+}
+.identityTheme .ag-bootstrap .ag-cell-not-inline-editing img {
+  margin: auto 0;
+}
+.identityTheme .ag-bootstrap .ag-overlay-loading-wrapper {
+  background: transparent!important;
+}
+.identityTheme .ag-bootstrap .ag-overlay-loading-center {
+  padding: 20px!important;
+  color: #323232 !important;
+  background: transparent!important;
+}
+.identityTheme .ag-bootstrap .ag-cell-focus .ag-cell-edit-input {
+  color: #000;
+}
+.identityTheme .ag-bootstrap .ag-header-icon {
+  fill: #5477a0 !important;
+}
+.identityTheme .ag-bl-overlay {
+  top: 25px!important;
+}
+.identityTheme .ag-bootstrap .ag-overlay-no-rows-center {
+  background-color: transparent!important;
+}
+.identityTheme .ag-cell-edit-input {
+  height: 30px!important;
+  background-color: #72abb7;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 10px;
+  color: #FFF !important;
+}
+.identityTheme .ag-body-viewport {
+  background-color: #F2F2F2;
+}
+.identityTheme .ag-bootstrap .ag-body {
+  background-color: transparent;
+}
+.identityTheme .ag-bootstrap .ag-row:hover {
+  background: #FFF;
+}
+.identityTheme .ag-bootstrap .ag-row-even,
+.identityTheme .ag-bootstrap .ag-row-odd {
+  background-color: #F2F2F2;
+  border-bottom: thin solid #ccc;
+}
+.identityTheme .ag-cell-value .btn-default {
+  background-color: transparent;
+  padding: 0;
+  color: #ff8c00;
+  box-shadow: none;
+  border-radius: 0;
+}
+.identityTheme .ag-cell-value .btn-default:hover {
+  color: #e4710d;
+}
+.identityTheme .ag-bootstrap .ag-header-cell-label {
+  padding: 4px 2px 10px 2px;
+  text-align: left;
+  text-transform: uppercase;
+}
+.identityTheme .ag-bootstrap .ag-header {
+  color: #FFF;
+  background: #333;
+  border-bottom: none;
+  font-weight: 600;
+}
+.identityTheme .icon {
+  color: #ff8c00;
+  cursor: pointer;
+}
+.identityTheme .ag-bootstrap .ag-paging-panel {
+  display: inline-block;
+  width: 100%;
+}
+.identityTheme .ag-bootstrap .ag-paging-page-summary-panel {
+  float: right;
 }

@@ -103,12 +103,12 @@ module.exports = function(grunt) {
 	            },
 	            
 
-	            css : {
+	           /** css : {
 	               src : [
                      'identity/view/javascript/components/grid/grid.css'
 	               ],
 	               dest : 'build/css/identity.components.css'
-	            }
+	            }**/
 	         },
 	         
 	         uglify : {
@@ -141,7 +141,7 @@ module.exports = function(grunt) {
 	             },
 	             dist: {
 	                files: {
-	                    'build/css/identity.components.stripped.css': 'build/css/identity.components.css',
+	                   /** 'build/css/identity.components.stripped.css': 'build/css/identity.components.css',**/
 	                    'build/css/identity.dark.stripped.css': 'identity/view/css/identity.dark.css',
                   	  'build/css/identity.light.stripped.css': 'identity/view/css/identity.light.css',
                   	  'build/css/app.light.stripped.css': 'identity/view/css/app.light.css',
@@ -151,10 +151,10 @@ module.exports = function(grunt) {
 	         },
 	         
 	         cssmin : {
-	           components : {
+	          /** components : {
 	               src : 'build/css/identity.components.stripped.css',
 	               dest : 'build/css/identity.components.min.css'
-	            },
+	            },**/
 	            light : {
 	               src : 'build/css/identity.light.stripped.css',
 	               dest : 'build/css/identity.light.min.css'
@@ -233,10 +233,10 @@ module.exports = function(grunt) {
 	      'ngAnnotate:app', 
 	      'concat:app',
 	      'less:themes',
-	      'concat:css',
+	     /** 'concat:css',**/
 	      'uglify:app', 
 	      'stripCssComments',
-	      'cssmin:components',
+	      /**'cssmin:components',**/
 	      'cssmin:light',
 	      'cssmin:dark',
 	      'cssmin:appLight',
@@ -248,10 +248,10 @@ module.exports = function(grunt) {
       'ngAnnotate:app', 
       'concat:studio',
       'less:themes',
-      'concat:css',
+     /** 'concat:css',**/
       'uglify:studio', 
       'stripCssComments',
-      'cssmin:components',
+      /**'cssmin:components',**/
       'cssmin:light',
       'cssmin:dark',
       'clean:folder']);
