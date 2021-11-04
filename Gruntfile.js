@@ -64,7 +64,6 @@ module.exports = function(grunt) {
 		            	'concat/min-safe/config.js' : [ 'identity/view/javascript/components/main/config.js'],
 		               'concat/min-safe/layout.js' : [ 'identity/view/javascript/layout.js' ],
 		               'concat/min-safe/module.js' : [ 'identity/view/javascript/module.js' ],
-		               'concat/min-safe/loadingOverlay.js' : [ 'identity/view/javascript/components/loadingOverlay/loadingOverlay.min.js' ],
 		               'concat/min-safe/overlayForm.js' : [ 'identity/view/javascript/components/forms/overlayForm.js'],
 		               'concat/min-safe/uploadFile.js' : [ 'identity/view/javascript/components/forms/uploadFile.js'],
 		               'concat/min-safe/grid.js' : [ 'identity/view/javascript/components/grid/grid.js'],

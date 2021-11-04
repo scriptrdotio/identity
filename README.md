@@ -94,7 +94,6 @@ Below are the main guidelines to follow in order to integrate this component int
 	    <script src="/identity/view/javascript/components/forms/overlayForm.js"></script>
 	    <script src="/identity/view/javascript/components/forms/uploadFile.js"></script>
 	    <script src="/identity/view/javascript/components/main/formDefinitions.js"></script>
-	    <script src="/identity/view/javascript/components/loadingOverlay/loadingOverlay.min.js"></script>
 	```
 - In modules.js make sure to add the component dependency: "Identity"
 
