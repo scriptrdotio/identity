@@ -1,6 +1,6 @@
 /* CSS Document */
 /****** Less color variables **********/
-.colorDefs(@c1: #FFF, @c2: #000, @c3: #333, @c4: #999, @c5: #DDD, @c6: #f5f5f5, @c7: #F2F2F2, @c8: #f48220, @c9: #ffac47, @c10: #4fcd8a, @c11: #FFF, @c12: #DDD,@c13: #FFF,@c14: #a4c2c7) {
+.colorDefs(@c1: #FFF, @c2: #000, @c3: #333, @c4: #999, @c5: #DDD, @c6: #f5f5f5, @c7: #F2F2F2, @c8: #f48220, @c9: #ffac47, @c10: #4fcd8a, @c11: #FFF, @c12: #DDD,@c13: #FFF,@c14: #a4c2c7,@c15: #a94442,@c16:#f2dede) {
   @themeBase: @c1; /**#FFF**/
 
   @grayBase: @c2; /**#000**/
@@ -24,7 +24,11 @@
   @warningLighter: lighten(@warning, 10%);
 
   @success: @c10; /**#4FCD8A**/
-
+  @successLighter: lighten(@success, 40%);
+  
+  @danger: @c15;
+  @dangerLighter: lighten(@danger, 40%);
+  
   @formBG: @lightBase;
   @formBorder: @c12;
 
@@ -216,25 +220,153 @@
     .list-group-item {
     	background-color: transparent;
     }
-
-    /**Grid**/ 
-    .ag-bootstrap {
-    	color: @grayBase;
-    	.ag-header {
-            border-bottom: 2px solid @gray3!important;
-        }
-        .ag-row {
-            border-bottom: 1px solid @gray3!important;
-        &.ag-row-even,&.ag-row-odd {
-            background-color: @gray4;
-            border-bottom: thin solid @gray3;
-            color: @grayBase;
-        }
-        }
-    }
-    
-    .ag-bootstrap .ag-overlay-no-rows-center {background-color: @themeBase!important;}
-
+	
+    /*** Grid ***/
+	.ag-bootstrap {
+		color: @grayBase;
+		.ag-header {
+			color: @themeBase;
+			background: @gray1;
+			border-bottom: none;
+			font-weight: 600;
+			border-bottom: 2px solid @gray3!important;
+		}
+		.ag-cell-label-container {
+			display: flex;
+			height: 100%;
+			.ag-header-cell-label {
+				display: flex;
+				color: @themeBase;
+				padding: 4px 2px 10px 2px;
+				text-align: left;
+                align-self: center;
+				text-transform: uppercase;
+			}
+		}
+		.ag-row {
+			cursor: pointer;
+			border-bottom: 1px solid @gray3!important;
+			display: flex;
+			align-items: center;
+		&:hover {
+			background: @themeBase;
+		}
+		&.ag-row-even,&.ag-row-odd {
+			background-color: @gray4;
+	        border-bottom: thin solid @gray3;
+	        color: @grayBase;
+	        .rag-alert {
+	    		background-color: @danger;
+	  		}
+		}
+		&.ag-row-selected {
+			background-color: @gray3!important;
+		}
+		}
+		.ag-cell-not-inline-editing {
+			i.fa-ban {
+				color: @danger;
+			}
+			img {
+				margin: auto 0;
+			}
+		}
+		.ag-cell {
+			flex: 1;
+			.btn {
+				border-radius: 10px;
+			&.btn-default {
+				background-color: transparent;
+				padding: 0;
+				color: @primaryColor;
+				box-shadow: none;
+				border-radius: 0;
+			&:hover {
+				color: @primaryDarker;
+			}
+			}
+			&.btn-danger {
+				background-color: @danger;
+				border-color: @danger;
+			&:hover,&:focus,&:active {
+				background-color: @dangerLighter;
+				border-color: @dangerLighter;
+			}
+			}
+			}
+			.ag-cell-wrapper {
+				width: 100%;
+			    height: 100%;
+			    align-items: center;
+			    display: flex;
+			    justify-content: center;
+			}
+		}
+		.ag-overlay-loading-wrapper {
+			background: transparent!important;
+		}
+		.ag-overlay-loading-center {
+			padding: 20px!important;
+			color: @gray1!important;
+			background: transparent!important;
+		}
+		.ag-cell-focus .ag-cell-edit-input {
+			color: @grayBase;
+		}
+		.ag-header-icon {
+			fill: @secondaryColor!important;
+		}
+		.ag-bl-overlay {
+			top: 25px!important;
+		}
+		.ag-overlay-no-rows-center {
+	      background-color: @themeBase!important;
+	    }
+		.ag-cell-edit-input {
+		    height: 30px!important;
+		    background-color: @primaryLighter;
+		    margin-top: 4px;
+		    border: 0;
+		    border-radius: 10px;
+		    color: @themeBase!important;
+		}
+		.ag-body {
+			background-color: transparent!important;
+		}
+		.ag-paging-panel {
+			border: none!important;
+			height: 50px;
+    		display: flex;
+		}
+		.ag-paging-button {
+	      	border: 1px solid @primaryColor;
+			border-radius: 5px;
+			color: @primaryColor;
+			background: transparent;
+			padding: 2px 6px;
+	      &:hover {
+	        background: @primaryDarker;
+	        color: @lightBase;
+	      }
+	      &[disabled] {
+	        cursor: default;
+	        color: @gray2;
+	        border-color: @gray2;
+	        &:hover {
+	          background-color: transparent;
+	        }
+	      }
+	      &:focus {
+	        outline: none;
+	      }
+	    }
+	    .ag-paging-row-summary-panel {
+		    margin: auto;
+		    color: @grayBase;
+		    flex: 1;
+		}
+	  }
+   
     .modal-lg {
         width: 800px;
         background-color: @themeBase;
@@ -625,56 +757,5 @@
     .alert-danger {
         background-image: none;
     }
-    
-    
-    /*** filter ***/
-	.filter-bar {padding: 4px 0; display: inline-block; width: 100%; margin-bottom: 8px;}
-	
-	/*** Grid ***/
-	
-	.ag-bootstrap .ag-cell-label-container {display: flex; height: 100%;}
-	.ag-bootstrap .ag-header-cell-label {padding: 2px 2px!important; display: flex; color: #5477a0;}
-	.gridClickable .ag-bootstrap .ag-row {cursor: pointer;}
-	.ag-bootstrap .ag-cell-not-inline-editing i.fa-ban {color: #e2475e;}
-	.ag-bootstrap .ag-cell .btn {border-radius: 10px;}
-	.ag-bootstrap .ag-cell .btn-default {background-color: #8590a7; color: #FFF; border-color: #8590a7;}
-	.ag-bootstrap .ag-cell .btn-danger {background-color: #e06364; border-color: #e06364;}
-	.ag-bootstrap .ag-cell .btn-danger:hover, .ag-bootstrap .ag-cell .btn-danger:focus, .ag-bootstrap .ag-cell .btn-danger:active {background-color: #e2475e; border-color: #e06364;}
-	.ag-bootstrap .ag-cell-not-inline-editing img {margin: auto 0;}
-	
-	.ag-bootstrap .ag-overlay-loading-wrapper {background: transparent!important;}
-	.ag-bootstrap .ag-overlay-loading-center {padding: 20px!important; color: #323232!important;background: transparent!important;}
-	
-	.ag-bootstrap .ag-cell-focus .ag-cell-edit-input {color: #000;}
-	
-	.ag-bootstrap .ag-header-icon {fill: #5477a0!important;}
-	.ag-bl-overlay {top: 25px!important;}
-	.ag-bootstrap .ag-overlay-no-rows-center {background-color: transparent!important;}
-	
-	.ag-cell-edit-input {
-	    height: 30px!important;
-	    background-color: #72abb7;
-	    margin-top: 4px;
-	    border: 0;
-	    border-radius: 10px;
-	    color: #FFF!important;
-	}
-	
-	.ag-body-viewport {background-color: #F2F2F2;}
-	.ag-bootstrap .ag-body {background-color: transparent;}
-	.ag-bootstrap .ag-row:hover {background: #FFF;}
-	.ag-bootstrap .ag-row-even,.ag-bootstrap .ag-row-odd {background-color: #F2F2F2;border-bottom: thin solid #ccc}
-	.ag-cell-value .btn-default {background-color: transparent; padding: 0;color: #ff8c00;box-shadow: none;border-radius: 0;}
-	.ag-cell-value .btn-default:hover {color: #e4710d;}
-	.ag-bootstrap .ag-header-cell-label {padding: 4px 2px 10px 2px;text-align: left;text-transform: uppercase;}
-	.ag-bootstrap .ag-header {color: #FFF;background: #333;border-bottom: none;font-weight: 600;}
-	
-	.icon {color: #ff8c00;cursor: pointer;}
-	
-	
-	/**pagination**/
-	.ag-bootstrap .ag-paging-panel {display: inline-block;width: 100%;}
-	.ag-bootstrap .ag-paging-page-summary-panel {float: right;}
-    
 
 }
