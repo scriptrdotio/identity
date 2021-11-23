@@ -246,7 +246,8 @@ angular
         },
         {
             headerName: "Last Modified", 
-            field: "lastModifiedDate", 
+            field: "lastModifiedDate",
+            width: 200,
             cellClass: "textWrap", 
             editable : false,
             cellRenderer: function(params) {
