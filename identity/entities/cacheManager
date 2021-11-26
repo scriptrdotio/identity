@@ -1,0 +1,12 @@
+function get(){
+	return null;   
+}
+
+function set(){}
+
+function update(){
+    invalidate();
+    set();
+}
+
+function invalidate(){}

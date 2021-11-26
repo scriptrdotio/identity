@@ -7,6 +7,13 @@ var log = require("log")
 log.setLevel("INFO");
 var config = require ("../../config/properties");
 var aclEvaluator = require("../../entities/AclEvaluator");
+
+if(config.cacheManager) {
+    var cacheManager = require(config.cacheManager);
+} else {
+    var cacheManager = require("../entities/cacheManager");
+}
+
 //Check permissions
 var identityManagementGroups = config.identityManagementGroups;
 //Check if user has rights to access this api
@@ -106,6 +113,7 @@ try{
         }
     }
     
+    cacheManager.invalidate();
     ts.commit();
 }catch(e){
     log.error("Exception while saving device with error: " + JSON.stringify(e));

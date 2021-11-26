@@ -6,6 +6,19 @@ var users = require("user");
 var config = require ("../config/properties");
 var queryDocsPerPage = config.queryDocsPerPage;
 var buildCsvSciptPath = config.buildCsvSciptPath;
+var config = require("../config/properties");
+
+if(config.cacheManager) {
+    var cacheManager = require(config.cacheManager);
+} else {
+    var cacheManager = require("../entities/cacheManager");
+}
+
+//list all devices with their locations, plans and zones, it gets the values from the cache
+function listCachedDevices(){
+    //Cache implementation should be added here
+    return cacheManager.get();
+}
 
 function getDevices(params){
     log.info("getDevices params: " + JSON.stringify(params));
@@ -217,6 +230,8 @@ function importIdentity(identityParams){
                 }
             }
         });
+        
+        cacheManager.invalidate();
         ts.commit();
     } catch(e){
         ts.rollback();
@@ -243,6 +258,7 @@ function deleteDevices(deviceArr){
             }
         })
 
+        cacheManager.invalidate();
         ts.commit();
     } catch(e){
         ts.rollback();
@@ -276,6 +292,7 @@ function deleteIdentity(identityArr, module){
             }
         })
 
+        cacheManager.invalidate();
         ts.commit();
     } catch(e){
         ts.rollback();
