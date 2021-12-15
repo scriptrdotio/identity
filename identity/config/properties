@@ -11,4 +11,5 @@ const deleteGroupsScriptPath = 'identity/api/devices/scripts/deleteGroups';
 const updateDevicesGroups = 'identity/api/groups/scripts/updateDevicesGroups';
 const generateTokensPath = 'identity/api/devices/scripts/generateTokens';
 const deleteIdentityPath = 'identity/api/scripts/deleteIdentity';
+const cacheEnabled = false;
 const cacheManager = "identity/entities/cacheManager";
