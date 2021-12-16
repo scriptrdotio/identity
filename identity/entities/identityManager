@@ -158,15 +158,14 @@ function getGroups(params){
 }
 
 function importIdentity(identityParams){
-    //loop on all devices, save them one by one
-    //after successful save, generate token
-    //if one fails, rollback everything and return failure
-
     var identityArr = identityParams.identityArr;
     var gridType = identityParams.gridType;
-    var ts = apsdb.beginTransaction();
+    //var ts = apsdb.beginTransaction();
     try{
-        var responseObj = {};
+        var responseObj = {"status": "success"};
+        var succeeded = [];
+        var failed = [];
+        var skipped = [];
         identityArr.forEach(function(params) {
             if(params.id != null && params.id != ""){
                 var identityAttrs = params.identityAttrs;
@@ -186,55 +185,83 @@ function importIdentity(identityParams){
                             }
                         }
                         params['meta.types'] = jsonObj;
-                        if(gridType == "device"){
-                            if(params.description != null && params.description != "")
-                                params['meta.types'].description = "text";
-                        }
+                    }
+                }
+                if(gridType == "device"){
+                    if(params.description != null && params.description != ""){
+                        if(!params['meta.types'])
+                            params['meta.types'] = {};
+                        params['meta.types'].description = "text";
                     }
                 }
                 delete params['identityAttrs'];
                 params["password"] = Math.random().toString(36).substring(7);
                 var response;
+                log.info("Creating identity with params: " + JSON.stringify(params));
                 if(gridType == "device")
                     response = devices.create(params);
                 else if(gridType == "user")
                     response = users.create(params);
-                log.info("Creating identity: " + JSON.stringify(response));
                 if(response.metadata.status == "failure") {
-                    log.error("Creating identity failed: " + JSON.stringify(response.metadata));
-                    responseObj = response.metadata;
-                    throw {
-                        errorCode: response.metadata.errorCode,
-                        errorDetail: response.metadata.errorDetail
-                    };
-                } else {
-                    responseObj = {"status": "success"};
-                    if(gridType == "device") {
-                        //generate token after successfull device creation AND if device is not suspended
-                        if(params.isSuspended == "false"){
-                            var tokenResponse = devices.generateToken(response.result.device.id);
-                            log.info("Generating token response: " + JSON.stringify(tokenResponse));
-                            //  var tokenResponse = apsdb.callApi("identity/api/devices/scripts/generateTokens", response.result.device.id, null);
-                            if(tokenResponse.metadata.status == "failure") {
-                                log.error("Generating token failed: " + JSON.stringify(tokenResponse.metadata));
-                                responseObj = tokenResponse.metadata;
-                                throw {
-                                    errorCode: tokenResponse.metadata.errorCode,
-                                    errorDetail: tokenResponse.metadata.errorDetail
-                                };
-                            } else {
-                                responseObj = {"status": "success"};
-                            }
+                    log.error("Identity creation failure: " + JSON.stringify(response.metadata));
+                    //check if the failure was due to duplicate
+                    if(response.metadata.errorCode && (response.metadata.errorCode == "DUPLICATE_DEVICE" || response.metadata.errorCode == "DUPLICATE_USER")){
+                        log.info("Duplicate " + gridType);
+                        skipped.push(params.id);
+                    }else{
+                        failed.push(params.id);
+                    }
+                }else{
+                    log.info("Identity creation success: " + JSON.stringify(response));
+                    succeeded.push(params.id);
+                }
+                if(gridType == "device" && response.metadata.status == "success") {
+                    //generate token after successfull device creation AND if device is not suspended
+                    if(params.isSuspended == "false"){
+                        var tokenResponse = devices.generateToken(response.result.device.id);
+                        log.info("Generating token response: " + JSON.stringify(tokenResponse));
+                        //  var tokenResponse = apsdb.callApi("identity/api/devices/scripts/generateTokens", response.result.device.id, null);
+                        if(tokenResponse.metadata.status == "failure") {
+                            log.error("Generating token failed for device: " + response.result.device.id);
                         }
                     }
                 }
             }
         });
         
+        var succeededCount = succeeded.length;
+        var failedCount = failed.length;
+        var skippedCount = skipped.length;
+        
+        if(failedCount > 0){
+            responseObj["status"] = "failure";
+            responseObj["failedReport"] = failed;
+            responseObj["message"] = "Import failed for ["+failedCount+"] "+gridType+"(s).";
+            if(skippedCount > 0){
+                responseObj["skippedReport"] = skipped;
+                responseObj["message"] = "Import skipped for duplicated ["+skippedCount+"] "+gridType+"(s) and failed for ["+failedCount+"] "+gridType+"(s).";
+            }
+            if(succeededCount > 0){
+                responseObj["succeededReport"] = succeeded;
+                responseObj["message"] = "Import succeeded for ["+succeededCount+"] "+gridType+"(s), skipped for duplicated ["+skippedCount+"] "+gridType+"(s) and failed for ["+failedCount+"] "+gridType+"(s).";
+            }
+        }else if(skippedCount > 0){
+            responseObj["status"] = "partial";
+            responseObj["skippedReport"] = skipped;
+            responseObj["message"] = "Import skipped for duplicated ["+skippedCount+"] "+gridType+"(s).";
+            if(succeededCount > 0){
+                responseObj["succeededReport"] = succeeded;
+                responseObj["message"] = "Import succeeded for ["+succeededCount+"] "+gridType+"(s) and skipped for duplicated ["+skippedCount+"] "+gridType+"(s).";
+            }
+        }else if(succeededCount > 0){
+            responseObj["status"] = "success";
+            responseObj["message"] = "Import succeeded for ["+succeededCount+"] "+gridType+"(s).";
+        }
+        
         cacheManager.invalidate();
-        ts.commit();
+        //ts.commit();
     } catch(e){
-        ts.rollback();
+        //ts.rollback();
         log.error("Failure when importing identity\n" + typeof(e) == "string" ? e : JSON.stringify(e));
     }
 
@@ -270,9 +297,13 @@ function deleteDevices(deviceArr){
 
 function deleteIdentity(identityArr, module){
     var groups = require("group");
-    var ts = apsdb.beginTransaction();
+    var arrLength = identityArr.length;
+    if(arrLength==1)
+        var ts = apsdb.beginTransaction();
     try{
-        var responseObj = {};
+        var responseObj = {"status": "success"};
+        var succeeded = [];
+        var failed = [];
         identityArr.forEach(function(identityId) {
             var response;
             if(module == "group")
@@ -282,20 +313,42 @@ function deleteIdentity(identityArr, module){
             else if(module == "user")
                 response = users.delete(identityId);
             if(response.metadata.status == "failure") {
-                responseObj = response.metadata;
-                throw {
-                    errorCode: response.metadata.errorCode,
-                    errorDetail: response.metadata.errorDetail
-                };
+                if(arrLength>1)
+                    failed.push(identityId);
+                else{
+                    responseObj = response.metadata;
+                    throw {
+                        errorCode: response.metadata.errorCode,
+                        errorDetail: response.metadata.errorDetail
+                    };
+                }
             } else {
-                responseObj = {"status": "success"};
+                if(arrLength>1)
+                    succeeded.push(identityId);
             }
         })
+        
+        var succeededCount = succeeded.length;
+        var failedCount = failed.length;
+        
+        if(failedCount > 0){
+            responseObj["status"] = "failure";
+            responseObj["message"] = "Deletion succeeded for ["+succeededCount+"] "+module+"(s) and failed for ["+failedCount+"] "+module+"(s).";
+            responseObj["failedReport"] = failed;
+            if(succeededCount > 0){
+                responseObj["succeededReport"] = succeeded;
+            }
+        }else if(succeededCount > 0){
+            responseObj["status"] = "success";
+            responseObj["message"] = "Deletion succeeded for ["+succeededCount+"] "+module+"(s).";
+        }
 
         cacheManager.invalidate();
-        ts.commit();
+        if(arrLength==1)
+            ts.commit();
     } catch(e){
-        ts.rollback();
+        if(arrLength==1)
+            ts.rollback();
         log.error("Failure when deleting "+module+"\n" + typeof(e) == "string" ? e : JSON.stringify(e));
     }      
 

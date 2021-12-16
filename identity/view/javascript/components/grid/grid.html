@@ -23,7 +23,20 @@
     </div>
 </div>
     
-<div class="col-xs-12" ng-show="$ctrl.showError"><div class="alert" ng-class="'alert-' + ( $ctrl.message.type || 'warning')">{{$ctrl.message.content}}</div></div>
+<!--div class="col-xs-12" ng-show="$ctrl.showError"><div class="alert" ng-class="'alert-' + ( $ctrl.message.type || 'warning')">{{$ctrl.message.content}}</div></div-->
+
+
+<div ng-if="$ctrl.hasAlert && $ctrl.message.duration!=0" class="col-xs-12"><div class="alert" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')" close="$ctrl.closeAlert()" dismiss-on-timeout="{{$ctrl.message.duration}}">{{$ctrl.message.content}}</div></div>
+<div ng-if="$ctrl.hasAlert && $ctrl.message.duration==0" class="col-xs-12"><div class="alert" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')" close="$ctrl.closeAlert()">{{$ctrl.message.content}}
+    <article ng-if="$ctrl.failedReport">
+        <h4>Failed Report:</h4>
+        <p class="listInAlert">{{$ctrl.failedReport}}</p>
+        <span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="{{$ctrl.copyReportTooltip}}" class="icon" ng-click="$ctrl.copyReport('failed')" ng-mouseleave="$ctrl.resetReportTooltip()"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>
+        <!--button class="btn btn-default btn-sm" ng-click="$ctrl.copyReport('failed')">Copy</button-->
+    </article>
+    </div>
+</div>
+
 <div class="clearfix"></div>
 <div class="col-xs-12">
   <div ag-grid="$ctrl.gridOptions" class="ag-bootstrap"  ng-style="$ctrl.style" style="min-height: 200px"></div>

@@ -4,7 +4,19 @@
         	<h4 class="mrgb20">Import {{$ctrl.gridTypeToUpperCase}}s</h4>
         </div>
     </div>
-    <div ng-if="$ctrl.hasAlert" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')  + ' m10'" close="$ctrl.closeAlert()" dismiss-on-timeout="5000">{{$ctrl.message.content}}</div>
+    <div ng-if="$ctrl.hasAlert && $ctrl.message.duration" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')  + ' m10'" close="$ctrl.closeAlert()" dismiss-on-timeout="{{$ctrl.message.duration}}">{{$ctrl.message.content}}</div>
+    <div ng-if="$ctrl.hasAlert && !$ctrl.message.duration" uib-alert ng-class="'alert-' + ( $ctrl.message.type || 'warning')  + ' m10'" close="$ctrl.closeAlert()">{{$ctrl.message.content}}
+    	<article ng-if="$ctrl.skippedReport">
+            <h4>Skipped Report:</h4>
+            <p class="listInAlert">{{$ctrl.skippedReport}}</p>
+            <span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="{{$ctrl.copyReportTooltip}}" class="icon" ng-click="$ctrl.copyReport('skipped')" ng-mouseleave="$ctrl.resetReportTooltip()"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>
+        </article>
+        <article ng-if="$ctrl.failedReport">
+            <h4>Failed Report:</h4>
+            <p class="listInAlert">{{$ctrl.failedReport}}</p>
+            <span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="{{$ctrl.copyReportTooltip}}" class="icon" ng-click="$ctrl.copyReport('failed')" ng-mouseleave="$ctrl.resetReportTooltip()"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>
+        </article>
+    </div>
     <form name="uploadFileForm" class="adminHome" ng-submit="$ctrl.save(uploadFileForm)">
         <div class="modal-body">
             <div sf-options="$ctrl.frmGlobalOptions" sf-schema="$ctrl.schema" sf-form="$ctrl.form" sf-model="$ctrl.model" ></div>

@@ -344,19 +344,20 @@ angular
             }
 
             this.closeAlert = function() {
-                this.show = false;
+                this.hasAlert = false;
             };
 
-            this.showAlert = function(type, content) {
+            this.showAlert = function(type, content, duration) {
+                // set duration to 0 to show alert without timeout
                 $loadingOverlay.hide();
-                self.message = {
+                this.message = {
                     "type" : type,
-                    "content" : content
+                    "content" : content,
+                    "duration": 5000
                 }
-                self.showError = true;
-                $timeout(function(){
-                    self.showError = false;
-                }, 5000);
+                if(duration!=undefined && duration!=null)
+                    this.message["duration"] = duration;
+                this.hasAlert = true;
             }
 
             this._saveData = function(event){
@@ -703,6 +704,8 @@ angular
                                 params[self._dataIdentifierProperty] =  selectedKeys;
                             }
                             params["module"] =  self.gridEventsId;
+                            self.failedReport = "";
+                            self.closeAlert();
                             
                             dataStore.postGridHelper(api, params).then(
                                 function(data, response) {
@@ -711,7 +714,8 @@ angular
                                             self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
                                         } else {
                                             identityFactory.getJobStatus(api, {scriptHandleId:  data.scriptHandleId }, 30, function (res){
-                                                self.gridOptions.api.hideOverlay();     
+                                                self.gridOptions.api.hideOverlay();  
+                                                self.copyReportTooltip = "Copy Report";
                                                 if (res && (res.result == "success" || res.status == "success")) {
                                                     self.showAlert("success", self.gridEventsId.charAt(0).toUpperCase() + self.gridEventsId.substring(1) + "(s) deleted successfully");
                                                     self.onServerCall();
@@ -720,7 +724,13 @@ angular
                                                     if(res && res.errorDetail){
                                                         self.showAlert("danger", res.errorDetail);
                                                     }else{
-                                                        self.showAlert("danger", "Unable to delete "+self.gridEventsId+"(s), please try again");
+                                                        if(res.failedReport)
+                                                            self.failedReport = res.failedReport.join(", ");
+                                                        self.showAlert("danger", res.message ? res.message : "Unable to delete "+self.gridEventsId+"(s), please try again", 0);
+                                                        if(res.succeededReport){
+                                                            self.onServerCall();
+                                                            self.gridOptions.api.deselectAll();
+                                                        }
                                                     }
                                                 }
                                             },function(err){
@@ -757,6 +767,25 @@ angular
                     var selectedNodes = self.gridOptions.api.getSelectedNodes();
                     self.gridOptions.api.removeItems(selectedNodes);
                 }
+            }
+            
+            this.copyReport = function(type){
+                var report = "";
+                if(type=="failed"){
+                    report = self.failedReport;
+                }
+                navigator.clipboard.writeText(report).then(function() {
+                    console.log('Copying to clipboard was successful');
+                    self.copyReportTooltip = "Copied!";
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+
+            this.resetReportTooltip = function(){
+                $timeout(function() {
+                    self.copyReportTooltip = "Copy Report";
+                }, 500);
             }
 
             this.onServerCall = function(data){

@@ -8,7 +8,7 @@ angular
         dismiss: '&'
     },
     templateUrl: '/identity/view/javascript/components/forms/uploadFile.html',
-    controller: function ($scope, httpClient, $q, $loadingOverlay,identityFactory) {
+    controller: function ($scope, $timeout, httpClient, $q, $loadingOverlay,identityFactory) {
         var self = this;
         
         self.showLoading = false;
@@ -55,6 +55,9 @@ angular
             $scope.$broadcast('schemaFormValidate');
             // Then we check if the form is valid
             if (form.$valid) {
+                self.closeAlert();
+                self.skippedReport = "";
+                self.failedReport = "";
                 self.showLoading = true;
                 $loadingOverlay.show('<i class="fa fa-spinner fa-spin fa-1x"></i>&nbsp;<b>Uploading CSV, please wait...</b>');
                 var d = $q.defer();  
@@ -78,21 +81,36 @@ angular
                     function(data, response) {
                         if(data.status == "failure") {
                             self.showLoading = false;
-                            self.showAlert("danger", data.errorDetail);
+                            self.showAlert("danger", data.errorDetail, 5000);
                         } else {
                             identityFactory.getJobStatus(identityConfig.reports.apis.import, {scriptHandleId: data.scriptHandleId }, 30, function (res){
                                 self.showLoading = false;
+                                self.copyReportTooltip = "Copy Report";
                                 if (res.status && res.status == "success") {
-                                    self.showAlert("success", "The "+self.gridType+"s have been imported successfully");
+                                    self.showAlert("success", "The "+self.gridType+"s have been imported successfully", 5000);
                                     self.parent._createNewDatasource();
+                                    d.resolve(data, response);
+                                } else if (res.status && res.status == "partial") {
+                                    if(res.skippedReport)
+                                        self.skippedReport = res.skippedReport.join(", ");
+                                    self.showAlert("warning", res.message ? res.message : "The "+self.gridType+"s have been imported successfully");
+                                    if(res.succeededReport)
+                                        self.parent._createNewDatasource();
                                     d.resolve(data, response);
                                 } else {
                                     //This is in case some devices/users failed to be created
-                                    self.showAlert("danger", res.errorDetail? res.errorDetail : "Failed to import "+self.gridType+"s");
-                                    d.reject(res.errorCode, res.errorDetail);
+                                    if(res.skippedReport)
+                                        self.skippedReport = res.skippedReport.join(", ");
+                                    if(res.failedReport)
+                                        self.failedReport = res.failedReport.join(", ");
+                                    var errorMsg = res.errorDetail? res.errorDetail : (res.message ? res.message : "Failed to import "+self.gridType+"s");
+                                    self.showAlert("danger", errorMsg);
+                                    if(res.succeededReport)
+                                        self.parent._createNewDatasource();
+                                    d.reject(res.errorCode?res.errorCode:400, errorMsg);
                                 }
                             },function(errorDetail){
-                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+self.gridType+"s");
+                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+self.gridType+"s", 5000);
                                 self.showLoading = false;
                                 d.reject(errorDetail);  
                             })
@@ -100,13 +118,34 @@ angular
                         }
 
                     }, function(err) {
-                        self.showAlert("danger", err.data.response.metadata.errorDetail);
+                        self.showAlert("danger", err.data.response.metadata.errorDetail, 5000);
                         self.showLoading = false;
                         d.reject(err); 
 
                     });
                 return d.promise;  
             }
+        }
+        
+        this.copyReport = function(type){
+            var report = "";
+            if(type=="skipped"){
+                report = self.skippedReport;
+            }else if(type=="failed"){
+                report = self.failedReport;
+            }
+            navigator.clipboard.writeText(report).then(function() {
+                console.log('Copying to clipboard was successful');
+                self.copyReportTooltip = "Copied!";
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+        
+        this.resetReportTooltip = function(){
+            $timeout(function() {
+               self.copyReportTooltip = "Copy Report";
+            }, 500);
         }
         
         this.downloadTemplate = function(){
@@ -118,9 +157,9 @@ angular
                 function(data, response) {
                     self.showLoading = false;
                     if(data.status == "failure") {
-                        self.showAlert("danger", "Unable to download template, please try again");
+                        self.showAlert("danger", "Unable to download template, please try again", 5000);
                     } else {
-                        self.showAlert("success", "Template downloaded successfully");
+                        self.showAlert("success", "Template downloaded successfully", 5000);
                         var element = document.createElement('a');
                         element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
                         element.setAttribute('download', params.fileName);
@@ -131,17 +170,19 @@ angular
                     } 
                 }, function(err) {
                     self.showLoading = false;
-                    self.showAlert("danger", "Unable to download template, please try again");
+                    self.showAlert("danger", "Unable to download template, please try again", 5000);
                 }
             );
         }
 
-        this.showAlert = function(type, content) {
+        this.showAlert = function(type, content, duration) {
             $loadingOverlay.hide();
             this.message = {
                 "type" : type,
                 "content" : content
             }
+            if(duration)
+                this.message["duration"] = duration;
             this.hasAlert = true;
         };
 
