@@ -690,3 +690,15 @@
 .identityTheme .alert-danger {
   background-image: none;
 }
+
+.identityTheme .listInAlert {margin-top: 15px;}
+.identityTheme .listInAlert h4 {font-weight: bold;font-size: 1em;}
+.identityTheme .listInAlert p {
+    max-height: 100px;
+    overflow: auto;
+    background: rgba(255,255,255,0.3);
+    padding: 10px;
+    border-radius: 5px;
+    width: 95%;
+    display: inline-block;
+}
