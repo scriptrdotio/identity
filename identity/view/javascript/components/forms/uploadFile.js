@@ -110,7 +110,8 @@ angular
                                     d.reject(res.errorCode?res.errorCode:400, errorMsg);
                                 }
                             },function(errorDetail){
-                                self.showAlert("danger", errorDetail? errorDetail : "Failed to import "+self.gridType+"s", 5000);
+                                console.log("Failed to import: ", errorDetail);
+                                self.showAlert("danger", "Failed to import "+self.gridType+"s", 5000);
                                 self.showLoading = false;
                                 d.reject(errorDetail);  
                             })
