@@ -119,7 +119,8 @@ angular
                         }
 
                     }, function(err) {
-                        self.showAlert("danger", err.data.response.metadata.errorDetail, 5000);
+                        var errorMsg = (err.data && err.data.response && err.data.response.metadata && err.data.response.metadata.errorDetail) ? err.data.response.metadata.errorDetail : "Failed to import "+self.gridType+"s");
+                        self.showAlert("danger", errorMsg, 5000);
                         self.showLoading = false;
                         d.reject(err); 
 
