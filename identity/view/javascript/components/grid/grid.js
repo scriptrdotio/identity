@@ -631,7 +631,7 @@ angular
                                     function(data, response) {
                                         self.showAlert("success", "Data exported successfully");
                                         var element = document.createElement('a');
-                                        element.setAttribute('href', 'data:text/csv;charset=utf-8,' + data.data);
+                                        element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(data.data));
                                         element.setAttribute('download', self.gridEventsId + 's.csv');
                                         element.style.display = 'none';
                                         document.body.appendChild(element);
