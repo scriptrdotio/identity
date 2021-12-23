@@ -213,6 +213,8 @@ angular
             suppressSorting : true,
             tooltipField: 'auth_token',
             cellRenderer: function(params) {
+                if(params.data && params.data.isSuspended == "true")
+                    return 'N/A';
                 if(params.value) {
                     var eDiv = document.createElement('div');
                     var copyHtml = '<span tooltip-placement="auto" tooltip-append-to-body="true" uib-tooltip="'+self.copyTooltip+'" class="icon"><i class="glyphicon glyphicon-duplicate" aria-hidden="true"></i></span>';

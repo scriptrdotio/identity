@@ -51,17 +51,17 @@
                                 <label>Status</label>
                                 <p>{{vm.status}}</p>
                             </div>
-                            <div ng-if= "vm.parent.gridId == 'device'" class="col-xs-12">
+                            <div ng-if= "vm.parent.gridId == 'device' && vm.status=='Active'" class="col-xs-12">
                                 <label>Token</label>
                                 <p>{{vm.token}}</p>
                             </div>
-                            <div ng-if="vm.parent.gridId == 'device' && vm.showTokenButtons" class="col-xs-12 mb15">
+                            <div ng-if="vm.parent.gridId == 'device' && vm.showTokenButtons && vm.status=='Active'" class="col-xs-12 mb15">
                                 <button ng-if="vm.token != 'N/A'" ng-click="vm.copyToken()" ng-mouseleave="vm.resetCopyTooltip()" class="btn btn-default mgr5" onclick="this.blur();" id="copyButton" uib-tooltip="{{vm.copyTooltip}}"  tooltip-placement="top" tooltip-append-to-body="true">Copy</button>
                                 <button ng-if="vm.token == 'N/A' && vm.status != 'Suspended'" ng-click="vm.generateToken()" class="btn btn-default mgr5" onclick="this.blur();">Generate</button>
                                 <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('regenerate')" class="btn btn-default mgr5" onclick="this.blur();">Regenerate</button>
                                 <button ng-if="vm.token != 'N/A'" ng-click="vm.confirmTokenAction('delete')" class="btn btn-default mgr5" onclick="this.blur();">Delete</button>
                             </div>
-                            <div ng-if=" vm.parent.gridId == 'device' && !vm.showTokenButtons" class="col-xs-12 mb15">
+                            <div ng-if=" vm.parent.gridId == 'device' && !vm.showTokenButtons && vm.status=='Active'" class="col-xs-12 mb15">
                                 <span>{{vm.tokenActionMsg}}</span>
                                 <button ng-click="vm.cancelTokenAction()" class="btn btn-default mgr5">No</button>
                                 <button ng-if="vm.actionDelete" ng-click="vm.revokeToken()" class="btn btn-default mgr5" onclick="this.blur();">Yes</button>

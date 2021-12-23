@@ -62,8 +62,12 @@ function ConvertToCSV(params) {
                 line += ((array[i].id != undefined && array[i].id!=null) ? array[i].id : "N/A") + ","; 
                 if(gridType == "device"){
                     line += ((array[i].description != undefined && array[i].description!=null) ? "\"" +array[i].description.replace(/"/g,'""')+ "\"" : "N/A") + ","; 
-                    line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ","; 
-                    
+                    //if device is suspended dont show its token
+                    if(array[i].isSuspended != undefined && array[i].isSuspended != null && array[i].isSuspended == "true"){
+                        line += "N/A,";
+                    }else{
+                        line += ((array[i].auth_token != undefined && array[i].auth_token != null) ? array[i].auth_token : "N/A") + ",";
+                    }
                 } else if(gridType == "user"){
                     line += ((array[i].email != undefined && array[i].email!= null) ? array[i].email : "N/A") + ","; 
                 }
